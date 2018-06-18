@@ -1,0 +1,30 @@
+# PostgreSQL. Versions 9.1 and up are supported.
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: scrumwell_development
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: scrumwell_test
+
+staging:
+  <<: *default
+  database: scrumwell_staging
+  username: <%= Rails.application.credentials.staging[:database_username] %>
+  password: <%= Rails.application.credentials.staging[:database_password] %>
+
+production:
+  <<: *default
+  database: scrumwell_production
+  username: <%= Rails.application.credentials.production[:database_username] %>
+  password: <%= Rails.application.credentials.production[:database_password] %>
