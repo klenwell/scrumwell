@@ -3,13 +3,28 @@
   <head>
     <title>Scrumwell</title>
     <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
 
+    <%#= favicon_link_tag asset_path('favicon.ico'), :rel => 'icon', :type => "image/x-icon" %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="<%= controller.controller_name %>"
+        data-controller="<%= controller.controller_path %>"
+        data-action="<%= controller.action_name %>">
+
+    <%= render 'layouts/navbar' %>
+    <%= bootstrap_flash %>
+
+    <main role="main">
+
+      <%= yield %>
+
+    </main>
+
+    <!-- Footer Here -->
+
+    <!-- JS CDN Links -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
   </body>
 </html>
