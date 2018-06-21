@@ -6,4 +6,8 @@ class TrelloService
   def self.board(id)
     Trello::Board.find(id)
   end
+
+  def self.org(id)
+    Trello::Organization.find(id)
+  end
 end

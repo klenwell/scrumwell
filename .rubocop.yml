@@ -60,6 +60,9 @@ Style/HashSyntax:
 Style/FormatString:
   EnforcedStyle: format
 
+Style/FormatStringToken:
+  Enabled: false
+
 Style/CollectionMethods:
   Enabled: true
   PreferredMethods:
