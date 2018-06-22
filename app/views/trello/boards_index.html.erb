@@ -1,0 +1,19 @@
+<h2>Trello Boards</h2>
+<p class="lead">For user <%= @trello.me.username %><p>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Board</th>
+      <th scope="col">URL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @trello.boards.each do |board| %>
+      <tr>
+        <th scope="row"><%= board.name %></th>
+        <td><%= board.url %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
