@@ -1,18 +1,21 @@
 <h2>Trello Boards</h2>
 <p class="lead">For user <%= @trello.me.username %><p>
+<p><%= @active_boards.count %> boards listed<p>
 
 <table class="table table-sm">
   <thead>
     <tr>
       <th scope="col">Board</th>
       <th scope="col">URL</th>
+      <th scope="col">Last Updated</th>
     </tr>
   </thead>
   <tbody>
-    <% @trello.boards.each do |board| %>
+    <% @active_boards.sort_by(&:last_activity_date).reverse.each do |board| %>
       <tr>
         <th scope="row"><%= board.name %></th>
         <td><%= board.url %></td>
+        <td><%= board.last_activity_date %></td>
       </tr>
     <% end %>
   </tbody>
