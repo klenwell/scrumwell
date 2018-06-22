@@ -3,4 +3,8 @@ class TrelloController < ApplicationController
     @trello = TrelloService.new
     @active_boards = @trello.boards.keep_if{ |b| b.last_activity_date.present? }
   end
+
+  def orgs_index
+    @trello = TrelloService.new
+  end
 end
