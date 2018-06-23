@@ -9,7 +9,7 @@
   <tbody>
     <% @boards.each do |board| %>
       <tr>
-        <th scope="row"><%= board.name %></th>
+        <th scope="row"><%= link_to board.name, trello_boards_show_path(board.id) %></th>
         <td><%= link_to board.url, board.url %></td>
         <td><%= board.last_activity_date %></td>
       </tr>
