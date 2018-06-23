@@ -27,6 +27,19 @@ Install gems:
     cd scrumwell
     bundle install
 
+### Credentials
+
+Credentials are encrypted in `credentials.yml.enc`.
+
+To use the existing `credentials.yml.enc` file, you'll need to get the key from the project's current maintainer and add it to the `master.key` file.
+
+To reset the encrypted `credentials.yml.enc` file:
+
+    rm config/credentials.yml.enc
+    EDITOR=vi rails credentials:edit
+
+Then copy-paste contents of `credentials.yml-dist` where indicated below into vi buffer and update values as needed.
+
 ### Database
 
 Create your application's postgres database user:
