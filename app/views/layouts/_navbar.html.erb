@@ -8,6 +8,15 @@
 
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav mr-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Trello
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <%= link_to 'Orgs', trello_orgs_path, class: 'dropdown-item' %>
+          <%= link_to 'Boards', trello_boards_path, class: 'dropdown-item' %>
+        </div>
+      </li>
     </div>
   </div>
 </nav>

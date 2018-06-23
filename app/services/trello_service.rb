@@ -14,11 +14,15 @@ class TrelloService
   end
 
   def initialize
-    @me = TrelloService::user('me')
+    @me = TrelloService.user('me')
   end
 
   def orgs
     @me.organizations
+  end
+
+  def public_orgs
+    orgs.keep_if { |org| org_public?(org) }
   end
 
   def org_map
@@ -29,6 +33,19 @@ class TrelloService
     org_hash
   end
 
+  def org_prefs(org)
+    path = format('/organizations/%s/prefs', org.id)
+    response = @me.client.get(path)
+    JSON.parse(response.body)
+  rescue
+    {}
+  end
+
+  def org_public?(org)
+    return false if org.nil?
+    org_prefs(org)['permissionLevel'] == 'public'
+  end
+
   def boards
     @me.boards
   end
@@ -36,14 +53,7 @@ class TrelloService
   def public_boards
     collected_boards = []
     boards.each do |board|
-      if board.prefs['permissionLevel'] == 'public'
-        collected_boards << board
-      # ruby-trello gem doesn't seem to provide org permission data so we'll just
-      # treat as public for now.
-      # See https://stackoverflow.com/questions/50979870
-      elsif board.prefs['permissionLevel'] == 'org'
-        collected_boards << board
-      end
+      collected_boards << board
     end
     collected_boards
   end
@@ -54,6 +64,23 @@ class TrelloService
       board_hash[board.name] = board.id
     end
     board_hash
+  end
+
+  def board_public?(board)
+    # Sometimes board.organization will return a 401 error when there is a board.
+    # Maybe it's been deleted?
+    org = board.organization rescue nil
+
+    # If board is public, sure
+    return true if board.prefs['permissionLevel'] == 'public'
+
+    # If board permission tied to org
+    return true if board.prefs['permissionLevel'] == 'org' && org_public?(org)
+
+    # Any other cases?
+    false
+
+    is_public_board = board.prefs['permissionLevel'] == 'public'
   end
 
   def org_board_map(org)

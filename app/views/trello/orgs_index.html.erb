@@ -1,6 +1,6 @@
 <h2>Trello Organizations</h2>
 <p class="lead">For user <%= @trello.me.username %><p>
-<p><%= @trello.orgs.count %> orgs listed<p>
+<p><%= @trello.public_orgs.count %> orgs listed<p>
 
 <table class="table table-sm">
   <thead>
@@ -11,11 +11,11 @@
     </tr>
   </thead>
   <tbody>
-    <% @trello.orgs.each do |org| %>
+    <% @trello.public_orgs.each do |org| %>
       <tr>
         <th scope="row"><%= org.display_name %></th>
         <td><%= link_to org.url, org.url %></td>
-        <td><%= org.boards.count %></td>
+        <td><%= link_to org.boards.count, trello_orgs_boards_path(org.id) %></td>
       </tr>
     <% end %>
   </tbody>

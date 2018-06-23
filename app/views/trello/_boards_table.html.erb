@@ -1,0 +1,18 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Board</th>
+      <th scope="col">URL</th>
+      <th scope="col">Last Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @boards.each do |board| %>
+      <tr>
+        <th scope="row"><%= board.name %></th>
+        <td><%= link_to board.url, board.url %></td>
+        <td><%= board.last_activity_date %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
