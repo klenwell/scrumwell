@@ -53,7 +53,7 @@ namespace :trello do
     end
 
     pp org_map
-    puts format("%s has %d boards", member.username, org_map.keys.count)
+    puts format("%s belongs to %d orgs", member.username, org_map.keys.count)
   end
 
   desc "Lists organization ids for kwoss org"
