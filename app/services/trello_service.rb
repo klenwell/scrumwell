@@ -67,20 +67,7 @@ class TrelloService
   end
 
   def board_public?(board)
-    # Sometimes board.organization will return a 401 error when there is a board.
-    # Maybe it's been deleted?
-    org = board.organization rescue nil
-
-    # If board is public, sure
-    return true if board.prefs['permissionLevel'] == 'public'
-
-    # If board permission tied to org
-    return true if board.prefs['permissionLevel'] == 'org' && org_public?(org)
-
-    # Any other cases?
-    false
-
-    is_public_board = board.prefs['permissionLevel'] == 'public'
+    board.prefs['permissionLevel'] == 'public'
   end
 
   def org_board_map(org)
