@@ -33,6 +33,10 @@ Credentials are encrypted in `credentials.yml.enc`.
 
 To use the existing `credentials.yml.enc` file, you'll need to get the key from the project's current maintainer and add it to the `master.key` file.
 
+To edit the `credentials.yml.enc` file:
+
+    EDITOR=vi rails credentials:edit
+
 To reset the encrypted `credentials.yml.enc` file:
 
     rm config/credentials.yml.enc
