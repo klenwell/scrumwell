@@ -37,7 +37,7 @@ class TrelloService
     path = format('/organizations/%s/prefs', org.id)
     response = @me.client.get(path)
     JSON.parse(response.body)
-  rescue
+  rescue StandardError
     {}
   end
 
