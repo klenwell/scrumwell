@@ -1,7 +1,7 @@
 <table class="table table-sm">
   <thead>
     <tr>
-      <th scope="col"><i data-feather="help-circle"></i></th>
+      <th scope="col"><%= material_icon.bubble_chart %></th>
       <th scope="col">Board</th>
       <th scope="col">URL</th>
       <th scope="col">Last Updated</th>
@@ -10,7 +10,7 @@
   <tbody>
     <% @boards.each do |board| %>
       <tr>
-        <th><i data-feather="circle"></i></th>
+        <th><%= material_icon.add_circle_outline %></th>
         <th scope="row"><%= link_to board.name, trello_boards_show_path(board.id) %></th>
         <td><%= link_to board.url, board.url %></td>
         <td><%= board.last_activity_date %></td>
