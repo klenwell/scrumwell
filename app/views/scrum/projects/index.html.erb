@@ -22,6 +22,9 @@
   </tbody>
 </table>
 
-<br>
+<hr>
 
-<%= link_to 'New Scrum Project', new_scrum_project_path %>
+<div class="actions">
+  <p>To add a new project, choose a Trello board.</p>
+  <p><%= link_to 'Trello Boards', trello_boards_path, role: 'button', class: 'btn btn-primary' %></p>
+</div>
