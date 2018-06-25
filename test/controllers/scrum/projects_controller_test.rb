@@ -3,7 +3,7 @@ require 'test_helper'
 module Scrum
   class ProjectsControllerTest < ActionDispatch::IntegrationTest
     setup do
-      @scrum_project = scrum_projects(:one)
+      @scrum_project = scrum_projects(:scrumwell)
     end
 
     test "should get index" do
