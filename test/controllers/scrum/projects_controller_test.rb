@@ -11,11 +11,6 @@ module Scrum
       assert_response :success
     end
 
-    test "should get new" do
-      get new_scrum_project_url
-      assert_response :success
-    end
-
     test "should create scrum_project" do
       assert_difference('ScrumProject.count') do
         post scrum_projects_url, params: { scrum_project: { name: @scrum_project.name } }
