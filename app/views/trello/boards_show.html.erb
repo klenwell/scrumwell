@@ -10,7 +10,7 @@
   <dt><strong>URL</strong></dt>
   <dd><%= link_to @board.url, @board.url %></dd>
   <dt><strong>Org</strong></dt>
-  <dd><%= link_to @board.organization.display_name, @board.organization.url %></dd>
+  <dd><%= board_org_link @board %></dd>
 </dl>
 
 <%= link_to 'back', trello_boards_path, role: 'button', class: 'btn btn-primary' %>
