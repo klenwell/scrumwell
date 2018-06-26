@@ -68,5 +68,21 @@ namespace :trello do
     pp board_map
     puts format("%s org has %d boards", org.name, board_map.keys.count)
   end
+
+  desc "Identify scrummy boards"
+  task scrummy: :environment do |_|
+    boards = TrelloService.me.boards
+
+    board_map = {}
+    scrummy_count = 0
+    boards.each do |board|
+      scrummy = ScrumBacklog.scrummy_trello_board?(board)
+      board_map[board.name] = scrummy ? 'scrummy' : 'unscrummy'
+      scrummy_count += 1 if scrummy
+    end
+
+    pp board_map
+    puts format("%s has %d scrummy board(s)", TrelloService.me.username, scrummy_count)
+  end
 end
 # rubocop: enable Metrics/BlockLength

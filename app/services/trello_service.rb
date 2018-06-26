@@ -5,6 +5,10 @@ class TrelloService
     Trello::Member.find(name)
   end
 
+  def self.me
+    Trello::Member.find('me')
+  end
+
   def self.board(id)
     Trello::Board.find(id)
   end
@@ -14,7 +18,7 @@ class TrelloService
   end
 
   def initialize
-    @me = TrelloService.user('me')
+    @me = TrelloService.me
   end
 
   def orgs

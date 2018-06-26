@@ -1,6 +1,9 @@
 <div class="page-header">
   <h2>Trello Board <span class="text-primary"><%= @board.name %></span></h2>
   <p><%= @board.description %></p>
+  <% if ScrumBacklog.scrummy_trello_board?(@board) && @backlog.nil? %>
+    <p><button class="btn btn-success">Create Project</button></p>
+  <% end %>
 </div>
 
 <dl class="dl-horizontal">
