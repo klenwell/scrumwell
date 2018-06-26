@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_25_011157) do
+ActiveRecord::Schema.define(version: 2018_06_26_022024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "scrum_backlogs", force: :cascade do |t|
+    t.string "trello_board_id"
+    t.string "name"
+    t.string "trello_url"
+    t.datetime "last_board_activity_at"
+    t.datetime "last_pulled_at"
+    t.bigint "scrum_project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["scrum_project_id"], name: "index_scrum_backlogs_on_scrum_project_id"
+  end
 
   create_table "scrum_projects", force: :cascade do |t|
     t.string "name"
@@ -21,15 +33,5 @@ ActiveRecord::Schema.define(version: 2018_06_25_011157) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "trello_boards", force: :cascade do |t|
-    t.string "trello_id"
-    t.string "name"
-    t.string "url"
-    t.bigint "scrum_project_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["scrum_project_id"], name: "index_trello_boards_on_scrum_project_id"
-  end
-
-  add_foreign_key "trello_boards", "scrum_projects"
+  add_foreign_key "scrum_backlogs", "scrum_projects"
 end
