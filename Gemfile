@@ -39,7 +39,9 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # Bootstrap 4: https://github.com/twbs/bootstrap-rubygem
 gem 'bootstrap', '~> 4.1.1'
 gem 'jquery-rails'
-gem 'feathericon-sass'
+
+# Google Material Icons: https://github.com/Angelmmiguel/material_icons
+gem 'material_icons'
 
 # Trello API: https://github.com/jeremytregunna/ruby-trello
 gem 'ruby-trello'

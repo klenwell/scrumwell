@@ -1,13 +1,16 @@
 <div class="page-header">
   <h2>Trello Board <span class="text-primary"><%= @board.name %></span></h2>
   <p><%= @board.description %></p>
+  <% if ScrumBacklog.scrummy_trello_board?(@board) && @backlog.nil? %>
+    <p><button class="btn btn-success">Create Project</button></p>
+  <% end %>
 </div>
 
 <dl class="dl-horizontal">
   <dt><strong>URL</strong></dt>
   <dd><%= link_to @board.url, @board.url %></dd>
   <dt><strong>Org</strong></dt>
-  <dd><%= link_to @board.organization.display_name, @board.organization.url %></dd>
+  <dd><%= board_org_link @board %></dd>
 </dl>
 
 <%= link_to 'back', trello_boards_path, role: 'button', class: 'btn btn-primary' %>

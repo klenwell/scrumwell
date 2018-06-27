@@ -1,10 +1,18 @@
-// General layout settings
+/*
+ * General layout settings
+ */
 
 main.container {
 	padding-top: 2em;
 }
 
+/* Navbar */
 nav.navbar a.navbar.brand {
   color: white;
   font-weight: 400;
+}
+
+/* Icons */
+i.material-icons {
+  vertical-align: middle;
 }
