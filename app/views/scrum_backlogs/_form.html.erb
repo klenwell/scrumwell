@@ -1,0 +1,42 @@
+<%= form_with(model: scrum_backlog, local: true) do |form| %>
+  <% if scrum_backlog.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(scrum_backlog.errors.count, "error") %> prohibited this scrum_backlog from being saved:</h2>
+
+      <ul>
+      <% scrum_backlog.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :trello_board_id %>
+    <%= form.text_field :trello_board_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :trello_url %>
+    <%= form.text_field :trello_url %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :last_board_activity_at %>
+    <%= form.datetime_select :last_board_activity_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :last_pulled_at %>
+    <%= form.datetime_select :last_pulled_at %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

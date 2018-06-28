@@ -1,0 +1,2 @@
+class ScrumBacklog < ApplicationRecord
+end

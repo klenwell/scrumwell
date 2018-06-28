@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :scrum_backlogs
   get '/trello/boards', to: 'trello#boards_index'
   get '/trello/boards/:id', to: 'trello#boards_show', as: 'trello_boards_show'
   get '/trello/orgs', to: 'trello#orgs_index'

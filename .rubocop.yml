@@ -38,9 +38,9 @@ Layout/SpaceAroundEqualsInParameterDefault:
 Style/StringLiterals:
   Enabled: false
 
-# We do not need to support Ruby 1.9, so this is good to use.
+# We do not need to support Ruby 1.9, so this is good to use. (Disagree.)
 Style/SymbolArray:
-  Enabled: true
+  Enabled: false
 
 # Most readable form.
 #Style/AlignHash:
@@ -164,4 +164,8 @@ Style/WordArray:
 
 # Allow compact style module/class definitions: e.g. class ActiveSupport::TestCase
 Style/ClassAndModuleChildren:
+  Enabled: false
+
+# Don't require alphabetical ordering.
+Bundler/OrderedGems:
   Enabled: false

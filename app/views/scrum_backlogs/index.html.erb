@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Scrum Backlogs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Trello board</th>
+      <th>Trello url</th>
+      <th>Name</th>
+      <th>Last board activity at</th>
+      <th>Last pulled at</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @scrum_backlogs.each do |scrum_backlog| %>
+      <tr>
+        <td><%= scrum_backlog.trello_board_id %></td>
+        <td><%= scrum_backlog.trello_url %></td>
+        <td><%= scrum_backlog.name %></td>
+        <td><%= scrum_backlog.last_board_activity_at %></td>
+        <td><%= scrum_backlog.last_pulled_at %></td>
+        <td><%= link_to 'Show', scrum_backlog %></td>
+        <td><%= link_to 'Edit', edit_scrum_backlog_path(scrum_backlog) %></td>
+        <td><%= link_to 'Destroy', scrum_backlog, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Scrum Backlog', new_scrum_backlog_path %>

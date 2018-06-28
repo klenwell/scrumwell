@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Trello board:</strong>
+  <%= @scrum_backlog.trello_board_id %>
+</p>
+
+<p>
+  <strong>Trello url:</strong>
+  <%= @scrum_backlog.trello_url %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @scrum_backlog.name %>
+</p>
+
+<p>
+  <strong>Last board activity at:</strong>
+  <%= @scrum_backlog.last_board_activity_at %>
+</p>
+
+<p>
+  <strong>Last pulled at:</strong>
+  <%= @scrum_backlog.last_pulled_at %>
+</p>
+
+<%= link_to 'Edit', edit_scrum_backlog_path(@scrum_backlog) %> |
+<%= link_to 'Back', scrum_backlogs_path %>
