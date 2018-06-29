@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ScrumBacklogsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @scrum_backlog = scrum_backlogs(:one)
+    @scrum_backlog = scrum_backlogs(:scrummy)
   end
 
   test "should get index" do

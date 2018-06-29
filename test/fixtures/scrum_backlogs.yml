@@ -1,15 +1,15 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  trello_board_id: MyString
-  trello_url: MyString
-  name: MyString
-  last_board_activity_at: 2018-06-27 21:27:51
-  last_pulled_at: 2018-06-27 21:27:51
+scrummy:
+  trello_board_id: vmyLroUQ
+  trello_url: https://trello.com/b/vmyLroUQ
+  name: Scrum Backlog
+  last_board_activity_at: 2018-06-25 19:20:24
+  last_pulled_at: 2018-06-25 19:20:24
 
-two:
-  trello_board_id: MyString
-  trello_url: MyString
-  name: MyString
-  last_board_activity_at: 2018-06-27 21:27:51
-  last_pulled_at: 2018-06-27 21:27:51
+non_scrummy:
+  trello_board_id: 1ROiESlt
+  trello_url: https://trello.com/b/1ROiESlt
+  name: Non-Scrum Backlog
+  last_board_activity_at: 2018-06-25 19:20:24
+  last_pulled_at: 2018-06-25 19:20:24

@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
 
-  resources :scrum_backlogs
+  # Scrum Routes
+  # http://guides.rubyonrails.org/routing.html#controller-namespaces-and-routing
+  namespace :scrum do
+    resources :backlogs
+  end
+
+  # Trello Routes
   get '/trello/boards', to: 'trello#boards_index'
   get '/trello/boards/:id', to: 'trello#boards_show', as: 'trello_boards_show'
   get '/trello/orgs', to: 'trello#orgs_index'
