@@ -5,6 +5,8 @@ require 'test_helper'
 
 class ScrumBacklogsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    stub_trello_response
+
     @scrum_backlog = scrum_backlogs(:scrummy)
     @scrummy_board = Trello::Board.new(id: 'scrummy-board', name: 'Scrummy Board')
     lists = ['wish heap', 'backlog', 'current'].map { |name| Trello::List.new(name: name) }

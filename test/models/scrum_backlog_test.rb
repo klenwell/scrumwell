@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class ScrumBacklogTest < ActiveSupport::TestCase
+  setup do
+    stub_trello_response
+  end
+
   test "expects trello board to be identified as scrummy" do
     # Arrange
     scrummy_board = Trello::Board.new(id: 'scrummy-board')
@@ -25,5 +29,33 @@ class ScrumBacklogTest < ActiveSupport::TestCase
 
     # Assert
     assert_not is_scrummy
+  end
+
+  test "expects to find backlog by trello board id" do
+    # Arrange
+    existing_backlog = scrum_backlogs(:scrummy)
+    trello_board = Trello::Board.new(id: existing_backlog.trello_board_id)
+
+    # Act
+    backlog = ScrumBacklog.by_trello_board_or_new(trello_board)
+
+    # Assert
+    assert_equal existing_backlog, backlog
+  end
+
+  test "expects to create backlog by trello board id" do
+    # Arrange
+    trello_board = Trello::Board.new(id: 'trello-id')
+
+    # Assume
+    backlog_count_before = ScrumBacklog.count
+
+    # Act
+    backlog = ScrumBacklog.by_trello_board_or_new(trello_board)
+    backlog.save!
+
+    # Assert
+    assert_equal trello_board.id, backlog.trello_board_id
+    assert_equal backlog_count_before + 1, ScrumBacklog.count
   end
 end

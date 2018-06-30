@@ -32,11 +32,7 @@ module Scrum
         return
       end
 
-      @scrum_backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
-                                        trello_url: trello_board.url,
-                                        name: trello_board.name,
-                                        last_board_activity_at: trello_board.last_activity_date,
-                                        last_pulled_at: Time.now.utc)
+      @scrum_backlog = ScrumBacklog.by_trello_board_or_new(trello_board)
 
       respond_to do |format|
         if @scrum_backlog.save
