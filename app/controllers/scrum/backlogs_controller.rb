@@ -23,7 +23,17 @@ module Scrum
     # POST /scrum_backlogs
     # POST /scrum_backlogs.json
     def create
-      @scrum_backlog = ScrumBacklog.new(scrum_backlog_params)
+      trello_board_id = scrum_backlog_params[:trello_board_id]
+      trello_board = TrelloService.board(trello_board_id)
+
+      redirect_to trello_boards_path, notice: 'Trello backlog not found.' and return unless trello_board
+
+
+      @scrum_backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
+                                        trello_url: trello_board.url,
+                                        name: trello_board.name,
+                                        last_board_activity_at: trello_board.last_activity_date,
+                                        last_pulled_at: Time.now.utc)
 
       respond_to do |format|
         if @scrum_backlog.save
