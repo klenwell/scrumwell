@@ -22,12 +22,15 @@ module Scrum
 
     # POST /scrum_backlogs
     # POST /scrum_backlogs.json
+    # rubocop: disable Metrics/AbcSize
     def create
       trello_board_id = scrum_backlog_params[:trello_board_id]
       trello_board = TrelloService.board(trello_board_id)
 
-      redirect_to trello_boards_path, notice: 'Trello backlog not found.' and return unless trello_board
-
+      unless trello_board
+        redirect_to trello_boards_path, notice: 'Trello backlog not found.'
+        return
+      end
 
       @scrum_backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
                                         trello_url: trello_board.url,
@@ -45,6 +48,7 @@ module Scrum
         end
       end
     end
+    # rubocop: enable Metrics/AbcSize
 
     # PATCH/PUT /scrum_backlogs/1
     # PATCH/PUT /scrum_backlogs/1.json
