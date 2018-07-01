@@ -1,5 +1,8 @@
 class ScrumBacklog < ApplicationRecord
+  has_many :scrum_sprints, dependent: :destroy
+
   attr_accessor :api
+  alias_attribute :sprints, :scrum_sprints
 
   validates :name, :trello_board_id, :trello_url, presence: true
   validate :trello_url_is_valid

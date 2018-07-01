@@ -69,7 +69,7 @@ namespace :trello do
     puts format("%s org has %d boards", org.name, board_map.keys.count)
   end
 
-  desc "Lists list ids for kwoss org"
+  desc "Lists board's lists"
   task :lists, [:board_id] => :environment do |_, args|
     args.with_defaults(board_id: scrumwell_board_id)
 
