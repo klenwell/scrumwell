@@ -1,0 +1,10 @@
+<h2>Edit Scrum Backlog</h2>
+
+<%= render 'form', scrum_backlog: @scrum_backlog %>
+
+<hr>
+
+<div class="actions">
+  <%= link_to 'Show', @scrum_backlog, role: 'button', class: 'btn btn-info' %>
+  <%= link_to 'Index', scrum_backlogs_path, role: 'button', class: 'btn btn-info ml-2' %>
+</div>

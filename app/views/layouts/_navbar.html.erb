@@ -8,8 +8,21 @@
 
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav mr-auto">
+      <!-- Scrum Dropdown -->
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <%= material_icon.bubble_chart %>
+          Scrum
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <%= link_to 'Backlogs', scrum_backlogs_path, class: 'dropdown-item' %>
+        </div>
+      </li>
+
+      <!-- Trello Dropdown -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <%= material_icon.table_chart %>
           Trello
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">

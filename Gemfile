@@ -39,7 +39,9 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # Bootstrap 4: https://github.com/twbs/bootstrap-rubygem
 gem 'bootstrap', '~> 4.1.1'
 gem 'jquery-rails'
-gem 'feathericon-sass'
+
+# Google Material Icons: https://github.com/Angelmmiguel/material_icons
+gem 'material_icons'
 
 # Trello API: https://github.com/jeremytregunna/ruby-trello
 gem 'ruby-trello'
@@ -50,6 +52,9 @@ group :development, :test do
 
   # Brakeman security analysis: https://github.com/presidentbeef/brakeman
   gem 'brakeman', require: false
+
+  # Rubocop: https://github.com/rubocop-hq/rubocop
+  gem 'rubocop', require: false
 end
 
 group :development do
@@ -59,9 +64,6 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-
-  # Rubocop: https://github.com/rubocop-hq/rubocop
-  gem 'rubocop', require: false
 end
 
 group :test do
@@ -70,6 +72,12 @@ group :test do
   gem 'selenium-webdriver'
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
+
+  # Mocking and stubbing: https://github.com/freerange/mocha
+  gem "mocha"
+
+  # Stop live web requests: https://github.com/bblimke/webmock
+  gem "webmock"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

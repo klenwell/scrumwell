@@ -1,0 +1,64 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "1f3a59140e07d0475c3057f0f17073951c67774a91aa9f48b978bcbc489bdd6c",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in link_to href",
+      "file": "app/views/scrum/backlogs/index.html.erb",
+      "line": 20,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(ScrumBacklog.new.trello_url, ScrumBacklog.new.trello_url)",
+      "render_path": [{"type":"controller","class":"Scrum::BacklogsController","method":"index","line":9,"file":"app/controllers/scrum/backlogs_controller.rb"}],
+      "location": {
+        "type": "template",
+        "template": "scrum/backlogs/index"
+      },
+      "user_input": "ScrumBacklog.new.trello_url",
+      "confidence": "Weak",
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "675d175b5c765d122b7048dacd665700a9b0b0b53d65ace2f69f6cb7491a1e79",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in link_to href",
+      "file": "app/views/scrum/backlogs/show.html.erb",
+      "line": 9,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(ScrumBacklog.find(params[:id]).trello_url, ScrumBacklog.find(params[:id]).trello_url)",
+      "render_path": [{"type":"controller","class":"Scrum::BacklogsController","method":"show","line":14,"file":"app/controllers/scrum/backlogs_controller.rb"}],
+      "location": {
+        "type": "template",
+        "template": "scrum/backlogs/show"
+      },
+      "user_input": "ScrumBacklog.find(params[:id]).trello_url",
+      "confidence": "Weak",
+      "note": ""
+    },
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "6b59bfcd5407db5481bbfbf5f44c84a47bbc7474fa824f5ff12c7ee16293dfaf",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/scrum/backlogs_controller.rb",
+      "line": 39,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(ScrumBacklog.by_trello_board_or_new(TrelloService.board(scrum_backlog_params[:trello_board_id])), :notice => \"Backlog was successfully created.\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Scrum::BacklogsController",
+        "method": "create"
+      },
+      "user_input": "ScrumBacklog.by_trello_board_or_new(TrelloService.board(scrum_backlog_params[:trello_board_id]))",
+      "confidence": "High",
+      "note": ""
+    }
+  ],
+  "updated": "2018-07-01 11:03:51 -0700",
+  "brakeman_version": "4.3.1"
+}

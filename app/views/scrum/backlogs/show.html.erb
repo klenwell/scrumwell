@@ -1,0 +1,27 @@
+<div class="page-header">
+  <h2>Backlog <span class="text-primary"><%= @scrum_backlog.name %></span></h2>
+</div>
+
+<div class="row">
+  <div class="col-sm">
+    <dl class="dl-horizontal">
+      <dt><strong>Trello URL</strong></dt>
+      <dd><%= link_to @scrum_backlog.trello_url, @scrum_backlog.trello_url %></dd>
+      <dt><strong>Last Trello Pull</strong></dt>
+      <dd><%= @scrum_backlog.last_pulled_at %></dd>
+    </dl>
+  </div>
+  <div class="col-sm">
+    <%# TODO: Future story. Need scrum_backlog_pull_trello_path %>
+    <%#= form_for @scrum_backlog, url: scrum_backlog_path(@scrum_backlog), method: :put, html: { class: "form-inline" } do |f| %>
+
+      <%#= f.hidden_field :id, value: @scrum_backlog.id %>
+      <%#= f.submit "Pull from Trello", class: "btn btn-warning ml-2" %>
+    <%# end %>
+  </div>
+</div>
+
+<div class="actions">
+  <%= link_to 'Edit', edit_scrum_backlog_path(@scrum_backlog), role: 'button', class: 'btn btn-primary' %>
+  <%= link_to 'Index', scrum_backlogs_path, role: 'button', class: 'btn btn-primary ml-2' %>
+</div>

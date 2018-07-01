@@ -23,5 +23,6 @@ class TrelloController < ApplicationController
   def boards_show
     @trello = TrelloService.new
     @board = TrelloService.board(params[:id])
+    @backlog = ScrumBacklog.find_by(trello_board_id: @board.id)
   end
 end

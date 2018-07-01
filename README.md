@@ -78,6 +78,14 @@ bundle exec brakeman
 bundle exec rubocop
 ```
 
+#### False Positives
+
+To ignore Brakeman warnings, use the `-I` option:
+
+    bundle exec brakeman -I
+
+For more information, see https://brakemanscanner.org/docs/ignoring_false_positives/.
+
 ### Local Server
 
 To start the local server:
