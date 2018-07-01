@@ -56,4 +56,31 @@ class ScrumBacklogTest < ActiveSupport::TestCase
     assert_equal trello_board.id, backlog.trello_board_id
     assert_equal backlog_count_before + 1, ScrumBacklog.count
   end
+
+  test "expects backlog missing trello url to be invalid" do
+    # Arrange
+    trello_board = mock_trello_board
+
+    # Act
+    backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
+                               name: trello_board.name)
+
+    # Assert
+    assert_not backlog.valid?
+    assert_equal ["can't be blank"], backlog.errors.messages[:trello_url]
+  end
+
+  test "expects backlog with invalid trello url to be invalid" do
+    # Arrange
+    trello_board = mock_trello_board
+
+    # Act
+    backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
+                               name: trello_board.name,
+                               trello_url: 'https://asana.com/scrummy-board')
+
+    # Assert
+    assert_not backlog.valid?
+    assert_equal ["must be valid Trello url"], backlog.errors.messages[:trello_url]
+  end
 end

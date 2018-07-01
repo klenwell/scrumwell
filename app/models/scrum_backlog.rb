@@ -51,7 +51,7 @@ class ScrumBacklog < ApplicationRecord
   def trello_url_is_valid
     return if trello_url.nil?
     url_start = 'https://trello.com/b'
-    error_message = 'Invalid Trello board url'
+    error_message = 'must be valid Trello url'
     errors.add(:trello_url, error_message) unless trello_url.downcase.start_with?(url_start)
   end
 end
