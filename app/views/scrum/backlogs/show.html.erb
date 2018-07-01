@@ -12,12 +12,12 @@
     </dl>
   </div>
   <div class="col-sm">
-    <%# TODO: Add scrum_backlog_pull_trello_path %>
-    <%= form_for @scrum_backlog, url: scrum_backlog_path(@scrum_backlog), method: :put, html: { class: "form-inline" } do |f| %>
+    <%# TODO: Future story. Need scrum_backlog_pull_trello_path %>
+    <%#= form_for @scrum_backlog, url: scrum_backlog_path(@scrum_backlog), method: :put, html: { class: "form-inline" } do |f| %>
 
-      <%= f.hidden_field :id, value: @scrum_backlog.id %>
-      <%= f.submit "Pull from Trello", class: "btn btn-warning ml-2" %>
-    <% end %>
+      <%#= f.hidden_field :id, value: @scrum_backlog.id %>
+      <%#= f.submit "Pull from Trello", class: "btn btn-warning ml-2" %>
+    <%# end %>
   </div>
 </div>
 

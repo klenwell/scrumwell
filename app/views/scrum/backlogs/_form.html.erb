@@ -11,32 +11,18 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :trello_board_id %>
-    <%= form.text_field :trello_board_id %>
-  </div>
-
-  <div class="field">
-    <%= form.label :trello_url %>
-    <%= form.text_field :trello_url %>
-  </div>
-
-  <div class="field">
+  <div class="form-group">
     <%= form.label :name %>
-    <%= form.text_field :name %>
+    <%= form.text_field :name, class: 'form-control', aria_describedby: 'nameHelp' %>
   </div>
 
-  <div class="field">
-    <%= form.label :last_board_activity_at %>
-    <%= form.datetime_select :last_board_activity_at %>
-  </div>
-
-  <div class="field">
-    <%= form.label :last_pulled_at %>
-    <%= form.datetime_select :last_pulled_at %>
+  <div class="form-group">
+    <%= form.label :trello_url %>
+    <%= form.text_field :trello_url, class: 'form-control', aria_describedby: 'trelloUrlHelp' %>
+    <small id="trelloUrlHelp" class="form-text text-muted">Trello Board URL</small>
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit "Update", class: "btn btn-primary ml-2" %>
   </div>
 <% end %>

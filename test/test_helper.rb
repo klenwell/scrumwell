@@ -18,4 +18,23 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+  def mock_trello_board(params={})
+    # Optional params
+    trello_id = params[:id] || 'trello-id'
+    trello_url = params[:url] || 'https://trello.com/b/id/trello-name'
+    trello_name = params[:name] || 'Trello Board Name'
+    list_names = params[:list_names] || []
+
+    trello_board = Trello::Board.new(id: trello_id, name: trello_name)
+
+    # url is read-only
+    # https://github.com/jeremytregunna/ruby-trello/blob/master/lib/trello/board.rb#L21
+    trello_board.stubs(:url).returns(trello_url)
+
+    # Mock lists
+    lists = list_names.map { |name| Trello::List.new(name: name) }
+    trello_board.stubs(:lists).returns(lists)
+
+    trello_board
+  end
 end

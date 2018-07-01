@@ -8,9 +8,9 @@ class ScrumBacklogsControllerTest < ActionDispatch::IntegrationTest
     stub_trello_response
 
     @scrum_backlog = scrum_backlogs(:scrummy)
-    @scrummy_board = Trello::Board.new(id: 'scrummy-board', name: 'Scrummy Board')
-    lists = ['wish heap', 'backlog', 'current'].map { |name| Trello::List.new(name: name) }
-    @scrummy_board.stubs(:lists).returns(lists)
+    @scrummy_board = mock_trello_board(id: 'scrummy-board',
+                                       name: 'Scrummy Board',
+                                       list_names: ['wish heap', 'backlog', 'current'])
   end
 
   test "expects to create backlock from Trello Board" do
@@ -64,14 +64,43 @@ class ScrumBacklogsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should update scrum_backlog" do
-    params = { last_board_activity_at: @scrum_backlog.last_board_activity_at,
-               last_pulled_at: @scrum_backlog.last_pulled_at,
-               name: @scrum_backlog.name,
-               trello_board_id: @scrum_backlog.trello_board_id,
-               trello_url: @scrum_backlog.trello_url }
+  test "expects to update name of backlog" do
+    # Arrange
+    params = {
+      name: 'Updated Name',
+      trello_url: @scrum_backlog.trello_url
+    }
+
+    # Assume
+    assert_not_equal params[:name], @scrum_backlog.name
+
+    # Act
     patch scrum_backlog_url(@scrum_backlog), params: { scrum_backlog: params }
+    @scrum_backlog.reload
+
+    # Assert
     assert_redirected_to scrum_backlog_url(@scrum_backlog)
+    assert_equal params[:name], @scrum_backlog.name
+  end
+
+  test "expects update to fail with invalid Trello URL" do
+    # Arrange
+    params = {
+      name: 'Updated Name',
+      trello_url: 'https://asana.com/my-scrummy-board'
+    }
+
+    # Assume
+    assert_not_equal params[:name], @scrum_backlog.name
+
+    # Act
+    patch scrum_backlog_url(@scrum_backlog), params: { scrum_backlog: params }
+    @scrum_backlog.reload
+
+    # Assert
+    # Will be redirected if update succeeded
+    assert_response :success
+    assert_not_equal params[:name], @scrum_backlog.name
   end
 
   test "should destroy scrum_backlog" do

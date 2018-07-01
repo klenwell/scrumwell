@@ -7,9 +7,8 @@ class ScrumBacklogTest < ActiveSupport::TestCase
 
   test "expects trello board to be identified as scrummy" do
     # Arrange
-    scrummy_board = Trello::Board.new(id: 'scrummy-board')
-    lists = ['wish heap', 'backlog', 'current'].map { |name| Trello::List.new(name: name) }
-    scrummy_board.stubs(:lists).returns(lists)
+    list_names = ['wish heap', 'backlog', 'current']
+    scrummy_board = mock_trello_board(id: 'scrummy-board', list_names: list_names)
 
     # Act
     is_scrummy = ScrumBacklog.scrummy_trello_board?(scrummy_board)
@@ -20,9 +19,8 @@ class ScrumBacklogTest < ActiveSupport::TestCase
 
   test "expects trello board NOT to be identified as scrummy" do
     # Arrange
-    unscrummy_board = Trello::Board.new(id: 'non-scrummy-board')
-    lists = ['Todo', 'Doing', 'Done'].map { |name| Trello::List.new(name: name) }
-    unscrummy_board.stubs(:lists).returns(lists)
+    list_names = ['Todo', 'Doing', 'Done']
+    unscrummy_board = mock_trello_board(id: 'non-scrummy-board', list_names: list_names)
 
     # Act
     is_scrummy = ScrumBacklog.scrummy_trello_board?(unscrummy_board)
@@ -34,7 +32,7 @@ class ScrumBacklogTest < ActiveSupport::TestCase
   test "expects to find backlog by trello board id" do
     # Arrange
     existing_backlog = scrum_backlogs(:scrummy)
-    trello_board = Trello::Board.new(id: existing_backlog.trello_board_id)
+    trello_board = mock_trello_board(id: existing_backlog.trello_board_id)
 
     # Act
     backlog = ScrumBacklog.by_trello_board_or_new(trello_board)
@@ -45,7 +43,7 @@ class ScrumBacklogTest < ActiveSupport::TestCase
 
   test "expects to create backlog by trello board id" do
     # Arrange
-    trello_board = Trello::Board.new(id: 'trello-id')
+    trello_board = mock_trello_board
 
     # Assume
     backlog_count_before = ScrumBacklog.count

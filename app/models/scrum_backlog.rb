@@ -1,6 +1,9 @@
 class ScrumBacklog < ApplicationRecord
   attr_accessor :api
 
+  validates :name, :trello_board_id, :trello_url, presence: true
+  validate :trello_url_is_valid
+
   after_initialize do |backlog|
     backlog.api = TrelloService.new
   end
@@ -40,5 +43,15 @@ class ScrumBacklog < ApplicationRecord
   # Live board data from Trello API
   def live_board
     api.board(trello_id)
+  end
+
+  private
+
+  # Custom Validators
+  def trello_url_is_valid
+    return if trello_url.nil?
+    url_start = 'https://trello.com/b'
+    error_message = 'Invalid Trello board url'
+    errors.add(:trello_url, error_message) unless trello_url.downcase.start_with?(url_start)
   end
 end
