@@ -4,6 +4,8 @@ class ScrumBacklog < ApplicationRecord
   attr_accessor :api
   alias_attribute :sprints, :scrum_sprints
 
+  DEFAULT_SPRINT_DURATION = 2.weeks
+
   validates :name, :trello_board_id, :trello_url, presence: true
   validate :trello_url_is_valid
 
@@ -12,6 +14,21 @@ class ScrumBacklog < ApplicationRecord
   end
 
   # Class Methods
+  def self.create_from_trello_board(trello_board)
+    backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
+                               trello_url: trello_board.url,
+                               name: trello_board.name,
+                               last_board_activity_at: trello_board.last_activity_date,
+                               last_pulled_at: Time.now.utc)
+    backlog.save!
+
+    trello_board.lists.each do |list|
+      ScrumSprint.create_from_trello_list(backlog, list) if ScrumSprint.sprinty_trello_list?(list)
+    end
+
+    backlog
+  end
+
   def self.scrummy_trello_board?(trello_board)
     # A scrummy board will contain these lists: wish heap, backlog, current
     scrummy_list_names = ['wish heap', 'backlog', 'current']
@@ -32,11 +49,7 @@ class ScrumBacklog < ApplicationRecord
       backlog.last_board_activity_at = trello_board.last_activity_date
       backlog.last_pulled_at = Time.now.utc
     else
-      backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
-                                 trello_url: trello_board.url,
-                                 name: trello_board.name,
-                                 last_board_activity_at: trello_board.last_activity_date,
-                                 last_pulled_at: Time.now.utc)
+      backlog = ScrumBacklog.create_from_trello_board(trello_board)
     end
 
     backlog
