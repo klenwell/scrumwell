@@ -3,7 +3,9 @@ Rails.application.routes.draw do
   # Scrum Routes
   # http://guides.rubyonrails.org/routing.html#controller-namespaces-and-routing
   namespace :scrum do
-    resources :backlogs
+    resources :backlogs do
+      resources :sprints, shallow: true
+    end
   end
 
   # Trello Routes

@@ -1,0 +1,2 @@
+module Scrum::SprintsHelper
+end

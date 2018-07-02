@@ -1,0 +1,23 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Last Pull</th>
+      <th scope="col">Last Update</th>
+      <th scope="col" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% sprints.each do |sprint| %>
+      <tr>
+        <th scope="row"><%= sprint.name %></th>
+        <td><%= sprint.last_pulled_at %></td>
+        <td><%= sprint.updated_at %></td>
+        <td>
+          <%= link_to material_icon.pageview, sprint %>
+          <%= link_to material_icon.edit, edit_scrum_sprint_path(sprint) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
