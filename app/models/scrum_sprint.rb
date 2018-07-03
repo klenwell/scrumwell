@@ -42,7 +42,15 @@ class ScrumSprint < ApplicationRecord
   #
   # Instance Methods
   #
+  def current?
+    !over? && !future?
+  end
+
+  def future?
+    started_on > Time.zone.today
+  end
+
   def over?
-    Time.zone.today > ended_on
+    ended_on < Time.zone.today
   end
 end

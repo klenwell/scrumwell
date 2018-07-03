@@ -17,30 +17,25 @@ class ScrumSprintTest < ActiveSupport::TestCase
     assert_equal backlog, sprint.backlog
   end
 
+  test "expects sprint to be current" do
+    # Arrange
+    sprint = scrum_sprints(:most_recent)
+    sprint.ended_on = Time.zone.today
+    sprint.save!
+
+    # Assert
+    assert sprint.current?
+    assert_not sprint.over?
+    assert_not sprint.future?
+  end
+
   test "expects sprint to be over" do
     # Arrange
     sprint = scrum_sprints(:most_recent)
     sprint.ended_on = Time.zone.yesterday
     sprint.save!
 
-    # Act
-    is_over = sprint.over?
-
     # Assert
-    assert Time.zone.yesterday < Time.zone.today
-    assert is_over
-  end
-
-  test "expects sprint to not be over yet" do
-    # Arrange
-    sprint = scrum_sprints(:most_recent)
-    sprint.ended_on = Time.zone.today
-    sprint.save!
-
-    # Act
-    is_over = sprint.over?
-
-    # Assert
-    assert_not is_over
+    assert sprint.over?
   end
 end

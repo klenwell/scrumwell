@@ -4,6 +4,7 @@
       <th scope="col">Name</th>
       <th scope="col">End Date</th>
       <th scope="col">Start Date</th>
+      <th scope="col">Active</th>
       <th scope="col">Last Pull</th>
       <th scope="col">Last Update</th>
       <th scope="col" class="actions"></th>
@@ -15,6 +16,7 @@
         <th scope="row"><%= sprint.name %></th>
         <td><%= sprint.ended_on %></td>
         <td><%= sprint.started_on %></td>
+        <td><%= sprint.current? %></td>
         <td><%= sprint.last_pulled_at %></td>
         <td><%= sprint.updated_at %></td>
         <td>
