@@ -6,10 +6,6 @@ class ScrumSprint < ApplicationRecord
   #
   # Class Methods
   #
-  def self.sprinty_trello_list?(trello_list)
-    trello_list.name.downcase.include? 'complete'
-  end
-
   def self.create_from_trello_list(scrum_backlog, trello_list)
     # https://stackoverflow.com/a/12858147/1093087
     name = trello_list.name.delete("^0-9")
@@ -25,12 +21,28 @@ class ScrumSprint < ApplicationRecord
                        last_pulled_at: Time.now.utc)
   end
 
+  def self.update_or_create_from_trello_list(scrum_backlog, trello_list)
+    sprint = ScrumSprint.find_by(trello_list_id: trello_list.id)
+
+    if sprint.present?
+      sprint.trello_pos = trello_list.pos
+      sprint.last_pulled_at = Time.now.utc
+      sprint.save!
+    else
+      sprint = ScrumSprint.create_from_trello_list(scrum_backlog, trello_list)
+    end
+
+    sprint
+  end
+
+  def self.sprinty_trello_list?(trello_list)
+    trello_list.name.downcase.include? 'complete'
+  end
+
   #
   # Instance Methods
   #
   def over?
-    Date.today < ended_on
+    Time.zone.today < ended_on
   end
-
-  private
 end

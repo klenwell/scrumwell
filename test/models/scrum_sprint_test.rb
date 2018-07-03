@@ -16,4 +16,16 @@ class ScrumSprintTest < ActiveSupport::TestCase
     assert sprint.valid?, sprint.errors.messages
     assert_equal backlog, sprint.backlog
   end
+
+  test "expects sprint to not be over yet" do
+    # Arrange
+    sprint = scrum_sprints(:most_recent)
+    sprint.ended_on = Time.zone.today
+
+    # Act
+    is_over = sprint.over?
+
+    # Assert
+    assert_not is_over
+  end
 end

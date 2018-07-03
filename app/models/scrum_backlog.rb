@@ -23,7 +23,9 @@ class ScrumBacklog < ApplicationRecord
     backlog.save!
 
     trello_board.lists.each do |list|
-      ScrumSprint.create_from_trello_list(backlog, list) if ScrumSprint.sprinty_trello_list?(list)
+      if ScrumSprint.sprinty_trello_list?(list)
+        ScrumSprint.update_or_create_from_trello_list(backlog, list)
+      end
     end
 
     backlog
