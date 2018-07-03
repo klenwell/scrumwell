@@ -68,5 +68,25 @@ namespace :trello do
     pp board_map
     puts format("%s org has %d boards", org.name, board_map.keys.count)
   end
+
+  desc "Lists board's lists"
+  task :lists, [:board_id] => :environment do |_, args|
+    args.with_defaults(board_id: scrumwell_board_id)
+
+    board = TrelloService.board(args[:board_id])
+
+    board_lists_map = { board.name => [] }
+    board.lists.each do |list|
+      list_data = {
+        name: list.name,
+        pos: list.pos,
+        stories: list.cards.count
+      }
+      board_lists_map[board.name] << list_data
+    end
+
+    pp board_lists_map
+    puts format("%s board has %d lists.", board.name, board_lists_map[board.name].count)
+  end
 end
 # rubocop: enable Metrics/BlockLength

@@ -1,5 +1,6 @@
 <div class="page-header">
   <h2>Backlog <span class="text-primary"><%= @scrum_backlog.name %></span></h2>
+  <p><%= link_to 'Edit', edit_scrum_backlog_path(@scrum_backlog), role: 'button', class: 'btn btn-primary' %></p>
 </div>
 
 <div class="row">
@@ -21,7 +22,9 @@
   </div>
 </div>
 
+<h3>Sprints</h3>
+<%= render partial: "scrum/sprints/table", locals: {sprints: @scrum_backlog.sprints} %>
+
 <div class="actions">
-  <%= link_to 'Edit', edit_scrum_backlog_path(@scrum_backlog), role: 'button', class: 'btn btn-primary' %>
-  <%= link_to 'Index', scrum_backlogs_path, role: 'button', class: 'btn btn-primary ml-2' %>
+  <%= link_to 'Index', scrum_backlogs_path, role: 'button', class: 'btn btn-light ml-2' %>
 </div>

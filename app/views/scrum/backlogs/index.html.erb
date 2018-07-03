@@ -7,6 +7,7 @@
     <tr>
       <th scope="col">Name</th>
       <th scope="col">Trello URL</th>
+      <th scope="col">Sprints</th>
       <th scope="col">Created</th>
       <th scope="col">Last Pull</th>
       <th scope="col">Last Update</th>
@@ -18,11 +19,12 @@
       <tr>
         <th scope="row"><%= backlog.name %></th>
         <td><%= link_to backlog.trello_url, backlog.trello_url %></td>
+        <td><%= backlog.sprints.count %></td>
         <td><%= backlog.created_at %></td>
         <td><%= backlog.last_pulled_at %></td>
         <td><%= backlog.updated_at %></td>
         <td>
-          <%= link_to material_icon.pageview, backlog %>
+          <%= link_to material_icon.web_asset, backlog %>
           <%= link_to material_icon.edit, edit_scrum_backlog_path(backlog) %>
         </td>
       </tr>
