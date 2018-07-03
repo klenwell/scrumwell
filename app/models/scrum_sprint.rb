@@ -43,6 +43,6 @@ class ScrumSprint < ApplicationRecord
   # Instance Methods
   #
   def over?
-    Time.zone.today < ended_on
+    Time.zone.today > ended_on
   end
 end
