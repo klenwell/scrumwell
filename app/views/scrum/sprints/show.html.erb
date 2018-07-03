@@ -1,0 +1,30 @@
+<div class="page-header">
+  <h2>Sprint <span class="text-primary"><%= @scrum_sprint.name %></span></h2>
+  <p><%#= link_to 'Edit', edit_scrum_sprint_path(@scrum_sprint), role: 'button', class: 'btn btn-primary' %></p>
+</div>
+
+<div class="row">
+  <div class="col-sm">
+    <dl class="dl-horizontal">
+      <dt><strong>Trello Position</strong></dt>
+      <dd><%= @scrum_sprint.trello_pos %></dd>
+      <dt><strong>Started</strong></dt>
+      <dd><%= @scrum_sprint.started_on %></dd>
+      <dt><strong><%= @scrum_sprint.over? ? 'Ended' : 'Ends' %></strong></dt>
+      <dd><%= @scrum_sprint.ended_on %></dd>
+      <dt><strong>Last Trello Pull</strong></dt>
+      <dd><%= @scrum_sprint.last_pulled_at %></dd>
+    </dl>
+  </div>
+  <div class="col-sm">
+    <%# TODO: Button to pull info from Trello %>
+  </div>
+</div>
+
+<h3>User Stories</h3>
+<p>Coming Soon.</p>
+<%#= render partial: "scrum/stories/table", locals: {sprints: @scrum_sprint.stories} %>
+
+<div class="actions">
+  <%= link_to 'Backlog', scrum_backlog_path(@scrum_sprint.backlog), role: 'button', class: 'btn btn-info ml-2' %>
+</div>
