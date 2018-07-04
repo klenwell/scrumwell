@@ -1,5 +1,6 @@
 class ScrumBacklog < ApplicationRecord
-  has_many :scrum_sprints, -> { order(ended_on: :desc) }, dependent: :destroy
+  has_many :scrum_sprints, -> { order(ended_on: :desc) }, dependent: :destroy,
+                                                          inverse_of: :scrum_backlog
 
   attr_accessor :api
   alias_attribute :sprints, :scrum_sprints

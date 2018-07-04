@@ -1,7 +1,10 @@
 class ScrumSprint < ApplicationRecord
   belongs_to :scrum_backlog
+  has_many :user_stories, -> { order(trello_pos: :asc) }, dependent: :destroy,
+                                                          inverse_of: :scrum_sprint
 
   alias_attribute :backlog, :scrum_backlog
+  alias_attribute :stories, :user_stories
 
   #
   # Class Methods
@@ -52,5 +55,9 @@ class ScrumSprint < ApplicationRecord
 
   def over?
     ended_on < Time.zone.today
+  end
+
+  def story_points
+    stories.sum(&:points)
   end
 end
