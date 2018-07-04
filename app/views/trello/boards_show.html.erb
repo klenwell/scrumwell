@@ -9,7 +9,7 @@
       <%= f.submit "Create Project", class: "btn btn-success" %>
     <% end %>
   <% elsif @backlog %>
-    <%= link_to @backlog.name, scrum_backlogs_path(@backlog) %>
+    <%= link_to @backlog.name, scrum_backlog_path(@backlog) %>
   <% end %>
   </p>
 </div>

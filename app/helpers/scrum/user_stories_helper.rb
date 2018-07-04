@@ -1,0 +1,2 @@
+module Scrum::UserStoriesHelper
+end

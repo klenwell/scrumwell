@@ -1,17 +1,23 @@
 <table class="table table-sm">
   <thead>
     <tr>
+      <th scope="col" class="icon"></th>
       <th scope="col">Board</th>
       <th scope="col">URL</th>
-      <th scope="col">Last Updated</th>
+      <th scope="col">Last Activity</th>
+      <th scope="col" class="actions"></th>
     </tr>
   </thead>
   <tbody>
     <% @boards.each do |board| %>
       <tr>
-        <th scope="row"><%= link_to board.name, trello_boards_show_path(board.id) %></th>
+        <td><%= trello_board_icon(board) %></td>
+        <th scope="row"><%= board.name %></th>
         <td><%= link_to board.url, board.url %></td>
         <td><%= board.last_activity_date %></td>
+        <td>
+          <%= link_to material_icon.web_asset, trello_boards_show_path(board.id) %>
+        </td>
       </tr>
     <% end %>
   </tbody>

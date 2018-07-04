@@ -16,11 +16,9 @@ namespace :trello do
 
     backlog_story_points = 0
     backlog.cards.each do |card|
-      card_title = card.name
-      agile_plugin = card.plugin_data.find { |d| d.idPlugin == agile_tools_plugin_id }
-      story_points = agile_plugin.present? ? agile_plugin.value['points'] : 0
+      story_points = UserStory.story_points_from_card(card)
       backlog_story_points += story_points
-      puts format('[%d] %s', story_points, card_title)
+      puts format('[%d] %s', story_points, card.name)
     end
 
     puts format("Backlog points for board %s: %d", board.name, backlog_story_points)

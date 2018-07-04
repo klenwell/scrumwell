@@ -38,4 +38,14 @@ class ScrumSprintTest < ActiveSupport::TestCase
     # Assert
     assert sprint.over?
   end
+
+  test "expect sprint to have two stories ordered by trello_pos" do
+    # Arrange
+    sprint = scrum_sprints(:most_recent)
+    first_story = user_stories(:complete)
+
+    # Assert
+    assert_equal 2, sprint.stories.count
+    assert_equal first_story, sprint.stories.first
+  end
 end
