@@ -15,13 +15,20 @@ class ScrumSprint < ApplicationRecord
     ends_on = Date.parse(name)
     starts_on = ends_on - ScrumBacklog::DEFAULT_SPRINT_DURATION
 
-    ScrumSprint.create(scrum_backlog_id: scrum_backlog.id,
-                       trello_list_id: trello_list.id,
-                       trello_pos: trello_list.pos,
-                       name: name,
-                       started_on: starts_on,
-                       ended_on: ends_on,
-                       last_pulled_at: Time.now.utc)
+    sprint = ScrumSprint.create(scrum_backlog_id: scrum_backlog.id,
+                                trello_list_id: trello_list.id,
+                                trello_pos: trello_list.pos,
+                                name: name,
+                                started_on: starts_on,
+                                ended_on: ends_on,
+                                last_pulled_at: Time.now.utc)
+
+    # Create associate user story cards.
+    trello_list.cards.each do |card|
+      UserStory.update_or_create_from_trello_card(sprint, card) if UserStory.user_story_card?(card)
+    end
+
+    sprint
   end
 
   def self.update_or_create_from_trello_list(scrum_backlog, trello_list)
