@@ -1,7 +1,9 @@
 class UserStory < ApplicationRecord
+  AGILE_TOOLS_PLUGIN_ID = '59d4ef8cfea15a55b0086614'.freeze
+
   belongs_to :scrum_sprint, optional: true
 
-  AGILE_TOOLS_PLUGIN_ID = '59d4ef8cfea15a55b0086614'.freeze
+  alias_attribute :sprint, :scrum_sprint
 
   # Class Methods
   def self.update_or_create_from_trello_card(scrum_sprint, trello_card)
@@ -25,6 +27,7 @@ class UserStory < ApplicationRecord
     UserStory.create(scrum_sprint_id: scrum_sprint.id,
                      trello_card_id: trello_card.id,
                      trello_short_url: trello_card.short_url,
+                     trello_pos: trello_card.pos,
                      trello_name: trello_card.name,
                      description: trello_card.desc,
                      points: UserStory.story_points_from_card(trello_card),

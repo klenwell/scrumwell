@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h2 class="text-primary"><%= @user_story.public_title %></h2>
+  <p><%#= link_to 'Edit', edit_scrum_user_story_path(@user_story), role: 'button', class: 'btn btn-primary' %></p>
+</div>
+
+<div class="row">
+  <div class="col-sm">
+    <h5><span class="badge badge-pill badge-success"><%= @user_story.points %></span> Story Points</h5>
+
+    <br>
+
+    <dl class="dl-horizontal">
+      <dt><strong>Trello URL</strong></dt>
+      <dd><%= link_to @user_story.trello_short_url %></dd>
+      <dt><strong>List Position</strong></dt>
+      <dd><%= @user_story.trello_pos %></dd>
+      <dt><strong>Last Activity</strong></dt>
+      <dd><%= @user_story.last_activity_at %></dd>
+      <dt><strong>Last Trello Pull</strong></dt>
+      <dd><%= @user_story.last_pulled_at %></dd>
+    </dl>
+  </div>
+  <div class="col-sm">
+    <%# TODO: Button to pull info from Trello %>
+    <h5>Description</h5>
+    <pre><code><%= @user_story.description %></code></pre>
+  </div>
+</div>
+
+<!-- <h3>Comments</h3> -->
+<%#= render partial: "user_story/comments/table", locals: {comments: @user_story.comments} %>
+
+<div class="actions">
+  <%= link_to 'Sprint', scrum_sprint_path(@user_story.sprint), role: 'button', class: 'btn btn-info ml-2' %>
+</div>
