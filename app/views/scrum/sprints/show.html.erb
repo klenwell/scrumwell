@@ -18,12 +18,13 @@
   </div>
   <div class="col-sm">
     <%# TODO: Button to pull info from Trello %>
+    <h4><span class="badge badge-pill badge-primary"><%= @scrum_sprint.stories.count %></span> User Stories</h4>
+    <h4><span class="badge badge-pill badge-success"><%= @scrum_sprint.story_points %></span> Story Points</h4>
   </div>
 </div>
 
 <h3>User Stories</h3>
-<p>Coming Soon.</p>
-<%#= render partial: "scrum/stories/table", locals: {sprints: @scrum_sprint.stories} %>
+<%= render partial: "scrum/user_stories/table", locals: {stories: @scrum_sprint.stories} %>
 
 <div class="actions">
   <%= link_to 'Backlog', scrum_backlog_path(@scrum_sprint.backlog), role: 'button', class: 'btn btn-info ml-2' %>

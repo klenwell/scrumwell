@@ -46,4 +46,9 @@ class UserStory < ApplicationRecord
     agile_plugin = trello_card.plugin_data.find { |pd| pd.idPlugin == AGILE_TOOLS_PLUGIN_ID }
     agile_plugin.present? ? agile_plugin.value['points'].to_i : 0
   end
+
+  # Instance Methods
+  def public_title
+    title.present? ? title : trello_name
+  end
 end

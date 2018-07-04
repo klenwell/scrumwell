@@ -1,0 +1,26 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Points</th>
+      <th scope="col">URL</th>
+      <th scope="col">Last Activity</th>
+      <th scope="col">Last Pull</th>
+      <th scope="col" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% stories.each do |story| %>
+      <tr>
+        <td><%= story.public_title %></td>
+        <td><%= story.points %></td>
+        <td><%= link_to story.trello_short_url %></td>
+        <td><%= story.last_activity_at %></td>
+        <td><%= story.last_pulled_at %></td>
+        <td>
+          <%= link_to material_icon.web_asset, scrum_user_story_path(story) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
