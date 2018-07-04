@@ -3,8 +3,11 @@ Rails.application.routes.draw do
   # Scrum Routes
   # http://guides.rubyonrails.org/routing.html#controller-namespaces-and-routing
   namespace :scrum do
-    resources :backlogs do
-      resources :sprints, shallow: true
+    # Nested Resources: https://stackoverflow.com/a/10661690/1093087
+    resources :backlogs, shallow: true do
+      resources :sprints, shallow: true do
+        resources :user_stories
+      end
     end
   end
 
