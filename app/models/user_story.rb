@@ -52,6 +52,6 @@ class UserStory < ApplicationRecord
 
   # Instance Methods
   def public_title
-    title.present? ? title : trello_name
+    title.presence || trello_name
   end
 end

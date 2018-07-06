@@ -1,4 +1,5 @@
 module TrelloBoardHelper
+  # rubocop: disable Rails/OutputSafety, Metrics/AbcSize
   def trello_board_icon(board)
     scrummy_board = ScrumBacklog.scrummy_trello_board?(board)
     backlog = ScrumBacklog.find_by(trello_board_id: board.id)
@@ -12,6 +13,7 @@ module TrelloBoardHelper
       format('<span class="text-secondary">%s</span>', material_icon.table_chart).html_safe
     end
   end
+  # rubocop: enable Rails/OutputSafety, Metrics/AbcSize
 
   def board_org_link(board)
     if board.organization_id

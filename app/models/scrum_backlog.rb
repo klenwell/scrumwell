@@ -10,10 +10,6 @@ class ScrumBacklog < ApplicationRecord
   validates :name, :trello_board_id, :trello_url, presence: true
   validate :trello_url_is_valid
 
-  after_initialize do |backlog|
-    backlog.api = TrelloService.new
-  end
-
   # Class Methods
   def self.create_from_trello_board(trello_board)
     backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
@@ -59,12 +55,57 @@ class ScrumBacklog < ApplicationRecord
   end
 
   # Instance Methods
+  def wish_heap
+    Rails.cache.fetch('scrum_backlog/wish_heap', expires_in: 1.minute) do
+      wish_heap_list = live_board.lists.find { |list| list.name.downcase.include? 'wish heap' }
+      wish_heap_list_to_sprint(wish_heap_list)
+    end
+  end
+
+  def backlog; end
+
+  def current_sprint; end
+
+  def completed_sprints; end
+
   # Live board data from Trello API
   def live_board
-    api.board(trello_id)
+    Rails.cache.fetch("scrum_backlog/trello_board/#{trello_board_id}", expires_in: 1.minute) do
+      TrelloService.board(trello_board_id)
+    end
   end
 
   private
+
+  def wish_heap_list_to_sprint(wish_heap_list)
+    sprint = ScrumSprint.new(scrum_backlog_id: id,
+                             trello_list_id: wish_heap_list.id,
+                             trello_pos: wish_heap_list.pos,
+                             name: wish_heap_list.name,
+                             last_pulled_at: Time.now.utc)
+    sprint.stories = wish_heap_cards_to_stories(wish_heap_list)
+    sprint
+  end
+
+  def wish_heap_cards_to_stories(wish_heap_list)
+    # Associate user story cards.
+    stories = []
+
+    wish_heap_list.cards.each do |card|
+      next unless UserStory.user_story_card?(card)
+      story = UserStory.new(trello_card_id: card.id,
+                            trello_short_url: card.short_url,
+                            trello_pos: card.pos,
+                            trello_name: card.name,
+                            description: card.desc,
+                            points: UserStory.story_points_from_card(card),
+                            last_activity_at: card.last_activity_date,
+                            last_pulled_at: Time.zone.now)
+      stories << story
+    end
+
+    stories
+  end
 
   # Custom Validators
   def trello_url_is_valid
