@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ScrumBacklogTest < ActiveSupport::TestCase
+class ScrumBoardTest < ActiveSupport::TestCase
   setup do
     stub_trello_response
   end
@@ -11,7 +11,7 @@ class ScrumBacklogTest < ActiveSupport::TestCase
     scrummy_board = mock_trello_board(id: 'scrummy-board', list_names: list_names)
 
     # Act
-    is_scrummy = ScrumBacklog.scrummy_trello_board?(scrummy_board)
+    is_scrummy = ScrumBoard.scrummy_trello_board?(scrummy_board)
 
     # Assert
     assert is_scrummy
@@ -23,7 +23,7 @@ class ScrumBacklogTest < ActiveSupport::TestCase
     unscrummy_board = mock_trello_board(id: 'non-scrummy-board', list_names: list_names)
 
     # Act
-    is_scrummy = ScrumBacklog.scrummy_trello_board?(unscrummy_board)
+    is_scrummy = ScrumBoard.scrummy_trello_board?(unscrummy_board)
 
     # Assert
     assert_not is_scrummy
@@ -31,14 +31,14 @@ class ScrumBacklogTest < ActiveSupport::TestCase
 
   test "expects to find backlog by trello board id" do
     # Arrange
-    existing_backlog = scrum_backlogs(:scrummy)
-    trello_board = mock_trello_board(id: existing_backlog.trello_board_id)
+    existing_board = scrum_boards(:scrummy)
+    trello_board = mock_trello_board(id: existing_board.trello_board_id)
 
     # Act
-    backlog = ScrumBacklog.by_trello_board_or_new(trello_board)
+    board = ScrumBoard.by_trello_board_or_new(trello_board)
 
     # Assert
-    assert_equal existing_backlog, backlog
+    assert_equal existing_board, board
   end
 
   test "expects to create backlog by trello board id" do
@@ -46,15 +46,15 @@ class ScrumBacklogTest < ActiveSupport::TestCase
     trello_board = mock_trello_board
 
     # Assume
-    backlog_count_before = ScrumBacklog.count
+    scrum_board_count_before = ScrumBoard.count
 
     # Act
-    backlog = ScrumBacklog.by_trello_board_or_new(trello_board)
-    backlog.save!
+    scrum_board = ScrumBoard.by_trello_board_or_new(trello_board)
+    scrum_board.save!
 
     # Assert
     assert_equal trello_board.id, backlog.trello_board_id
-    assert_equal backlog_count_before + 1, ScrumBacklog.count
+    assert_equal scrum_board_count_before + 1, ScrumBoard.count
   end
 
   test "expects backlog missing trello url to be invalid" do
@@ -62,11 +62,11 @@ class ScrumBacklogTest < ActiveSupport::TestCase
     trello_board = mock_trello_board
 
     # Act
-    backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
-                               name: trello_board.name)
+    scrum_board = ScrumBoard.new(trello_board_id: trello_board.id,
+                                 name: trello_board.name)
 
     # Assert
-    assert_not backlog.valid?
+    assert_not scrum_board.valid?
     assert_equal ["can't be blank"], backlog.errors.messages[:trello_url]
   end
 
@@ -75,12 +75,12 @@ class ScrumBacklogTest < ActiveSupport::TestCase
     trello_board = mock_trello_board
 
     # Act
-    backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
-                               name: trello_board.name,
-                               trello_url: 'https://asana.com/scrummy-board')
+    scrum_board = ScrumBoard.new(trello_board_id: trello_board.id,
+                                 name: trello_board.name,
+                                 trello_url: 'https://asana.com/scrummy-board')
 
     # Assert
-    assert_not backlog.valid?
+    assert_not scrum_board.valid?
     assert_equal ["must be valid Trello url"], backlog.errors.messages[:trello_url]
   end
 end

@@ -1,21 +1,21 @@
 class ScrumSprint < ApplicationRecord
-  belongs_to :scrum_backlog
+  belongs_to :scrum_board
   has_many :user_stories, -> { order(trello_pos: :asc) }, dependent: :destroy,
                                                           inverse_of: :scrum_sprint
 
-  alias_attribute :backlog, :scrum_backlog
+  alias_attribute :board, :scrum_board
   alias_attribute :stories, :user_stories
 
   #
   # Class Methods
   #
-  def self.create_from_trello_list(scrum_backlog, trello_list)
+  def self.create_from_trello_list(scrum_board, trello_list)
     # https://stackoverflow.com/a/12858147/1093087
     name = trello_list.name.delete("^0-9")
     ends_on = Date.parse(name)
     starts_on = ends_on - ScrumBacklog::DEFAULT_SPRINT_DURATION
 
-    sprint = ScrumSprint.create(scrum_backlog_id: scrum_backlog.id,
+    sprint = ScrumSprint.create(scrum_board_id: scrum_board.id,
                                 trello_list_id: trello_list.id,
                                 trello_pos: trello_list.pos,
                                 name: name,
@@ -31,7 +31,7 @@ class ScrumSprint < ApplicationRecord
     sprint
   end
 
-  def self.update_or_create_from_trello_list(scrum_backlog, trello_list)
+  def self.update_or_create_from_trello_list(scrum_board, trello_list)
     sprint = ScrumSprint.find_by(trello_list_id: trello_list.id)
 
     if sprint.present?
@@ -39,7 +39,7 @@ class ScrumSprint < ApplicationRecord
       sprint.last_pulled_at = Time.now.utc
       sprint.save!
     else
-      sprint = ScrumSprint.create_from_trello_list(scrum_backlog, trello_list)
+      sprint = ScrumSprint.create_from_trello_list(scrum_board, trello_list)
     end
 
     sprint

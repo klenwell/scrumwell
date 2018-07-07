@@ -1,0 +1,33 @@
+<h2>Scrum Backlogs</h2>
+<p><%= @scrum_boards.count %> boards listed<p>
+<p><%= link_to 'Add Scrum Backlog', new_scrum_board_path, role: 'button', class: 'btn btn-primary' %></p>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Trello URL</th>
+      <th scope="col">Sprints</th>
+      <th scope="col">Created</th>
+      <th scope="col">Last Pull</th>
+      <th scope="col">Last Update</th>
+      <th scope="col" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @scrum_boards.each do |board| %>
+      <tr>
+        <th scope="row"><%= board.name %></th>
+        <td><%= link_to board.trello_url, board.trello_url %></td>
+        <td><%= board.sprints.count %></td>
+        <td><%= board.created_at %></td>
+        <td><%= board.last_pulled_at %></td>
+        <td><%= board.updated_at %></td>
+        <td>
+          <%= link_to material_icon.web_asset, board %>
+          <%= link_to material_icon.edit, edit_scrum_board_path(board) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

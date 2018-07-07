@@ -9,10 +9,10 @@ namespace :trello do
   task :wish_heap, [:board_id] => :environment do |_, args|
     args.with_defaults(board_id: scrumwell_board_id)
 
-    board = TrelloService.board(args[:board_id])
-    backlog = ScrumBacklog.create_from_trello_board(board)
+    trello_board = TrelloService.board(args[:board_id])
+    board = ScrumBoard.create_from_trello_board(trello_board)
 
-    puts format("Board %s Wish Heap stories: %d", backlog.name, backlog.wish_heap.stories.length)
+    puts format("Board %s Wish Heap stories: %d", board.name, board.wish_heap.stories.length)
   end
 
   desc "Counts story points in backlog info for given board"
