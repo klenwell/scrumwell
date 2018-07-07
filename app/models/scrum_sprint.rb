@@ -13,7 +13,7 @@ class ScrumSprint < ApplicationRecord
     # https://stackoverflow.com/a/12858147/1093087
     name = trello_list.name.delete("^0-9")
     ends_on = Date.parse(name)
-    starts_on = ends_on - ScrumBacklog::DEFAULT_SPRINT_DURATION
+    starts_on = ends_on - ScrumBoard::DEFAULT_SPRINT_DURATION
 
     sprint = ScrumSprint.create(scrum_board_id: scrum_board.id,
                                 trello_list_id: trello_list.id,

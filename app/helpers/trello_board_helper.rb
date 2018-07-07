@@ -1,12 +1,12 @@
 module TrelloBoardHelper
   # rubocop: disable Rails/OutputSafety, Metrics/AbcSize
-  def trello_board_icon(board)
-    scrummy_board = ScrumBacklog.scrummy_trello_board?(board)
-    backlog = ScrumBacklog.find_by(trello_board_id: board.id)
+  def trello_board_icon(trello_board)
+    scrummy_board = ScrumBoard.scrummy_trello_board?(trello_board)
+    scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)
 
-    if scrummy_board && backlog.present?
-      opts = { class: 'scrummy backlog text-success' }
-      link_to material_icon.bubble_chart, scrum_backlog_path(backlog), opts
+    if scrummy_board && scrum_board.present?
+      opts = { class: 'scrummy board text-success' }
+      link_to material_icon.bubble_chart, scrum_board_path(scrum_board), opts
     elsif scrummy_board
       format('<span class="scrummy">%s</span>', material_icon.bubble_chart).html_safe
     else

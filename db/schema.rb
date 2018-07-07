@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_04_014959) do
+ActiveRecord::Schema.define(version: 2018_07_07_045415) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "scrum_backlogs", force: :cascade do |t|
+  create_table "scrum_boards", force: :cascade do |t|
     t.string "trello_board_id"
     t.string "trello_url"
     t.string "name"
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 2018_07_04_014959) do
   end
 
   create_table "scrum_sprints", force: :cascade do |t|
-    t.bigint "scrum_backlog_id"
+    t.bigint "scrum_board_id"
     t.string "trello_list_id"
     t.integer "trello_pos"
     t.string "name"
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 2018_07_04_014959) do
     t.datetime "last_pulled_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["scrum_backlog_id"], name: "index_scrum_sprints_on_scrum_backlog_id"
+    t.index ["scrum_board_id"], name: "index_scrum_sprints_on_scrum_board_id"
   end
 
   create_table "user_stories", force: :cascade do |t|
@@ -55,6 +55,6 @@ ActiveRecord::Schema.define(version: 2018_07_04_014959) do
     t.index ["scrum_sprint_id"], name: "index_user_stories_on_scrum_sprint_id"
   end
 
-  add_foreign_key "scrum_sprints", "scrum_backlogs"
+  add_foreign_key "scrum_sprints", "scrum_boards"
   add_foreign_key "user_stories", "scrum_sprints"
 end
