@@ -3,22 +3,22 @@
   <p><%= @board.description %></p>
 
   <p>
-  <% if ScrumBoard.scrummy_trello_board?(@trello_board) && @scrum_board.nil? %>
-    <%= form_for ScrumBoard.new, url: scrum_boards_path, method: :post do |f| %>
-      <%= f.hidden_field :trello_board_id, value: @trello_board.id %>
+  <% if ScrumBacklog.scrummy_trello_board?(@board) && @backlog.nil? %>
+    <%= form_for ScrumBacklog.new, url: scrum_backlogs_path, method: :post do |f| %>
+      <%= f.hidden_field :trello_board_id, value: @board.id %>
       <%= f.submit "Create Project", class: "btn btn-success" %>
     <% end %>
-  <% elsif @scrum_board %>
-    <%= link_to @scrum_board.name, scrum_boards_path(@scrum_board) %>
+  <% elsif @backlog %>
+    <%= link_to @backlog.name, scrum_backlog_path(@backlog) %>
   <% end %>
   </p>
 </div>
 
 <dl class="dl-horizontal">
   <dt><strong>URL</strong></dt>
-  <dd><%= link_to @trello_board.url, @trello_board.url %></dd>
+  <dd><%= link_to @board.url, @board.url %></dd>
   <dt><strong>Org</strong></dt>
-  <dd><%= board_org_link(@trello_board) %></dd>
+  <dd><%= board_org_link(@board) %></dd>
 </dl>
 
 <%= link_to 'back', trello_boards_path, role: 'button', class: 'btn btn-primary' %>

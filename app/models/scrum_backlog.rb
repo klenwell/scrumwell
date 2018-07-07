@@ -1,7 +1,8 @@
-class ScrumBoard < ApplicationRecord
+class ScrumBacklog < ApplicationRecord
   has_many :scrum_sprints, -> { order(ended_on: :desc) }, dependent: :destroy,
-                                                          inverse_of: :scrum_board
+                                                          inverse_of: :scrum_backlog
 
+  attr_accessor :api
   alias_attribute :sprints, :scrum_sprints
 
   DEFAULT_SPRINT_DURATION = 2.weeks
@@ -11,20 +12,20 @@ class ScrumBoard < ApplicationRecord
 
   # Class Methods
   def self.create_from_trello_board(trello_board)
-    board = ScrumBoard.new(trello_board_id: trello_board.id,
-                           trello_url: trello_board.url,
-                           name: trello_board.name,
-                           last_board_activity_at: trello_board.last_activity_date,
-                           last_pulled_at: Time.now.utc)
-    board.save!
+    backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
+                               trello_url: trello_board.url,
+                               name: trello_board.name,
+                               last_board_activity_at: trello_board.last_activity_date,
+                               last_pulled_at: Time.now.utc)
+    backlog.save!
 
     trello_board.lists.each do |list|
       if ScrumSprint.sprinty_trello_list?(list)
-        ScrumSprint.update_or_create_from_trello_list(board, list)
+        ScrumSprint.update_or_create_from_trello_list(backlog, list)
       end
     end
 
-    board
+    backlog
   end
 
   def self.scrummy_trello_board?(trello_board)
@@ -40,22 +41,22 @@ class ScrumBoard < ApplicationRecord
   end
 
   def self.by_trello_board_or_new(trello_board)
-    board = ScrumBoard.find_by(trello_board_id: trello_board.id)
+    backlog = ScrumBacklog.find_by(trello_board_id: trello_board.id)
 
-    if board
-      board.trello_url = trello_board.url
-      board.last_board_activity_at = trello_board.last_activity_date
-      board.last_pulled_at = Time.now.utc
+    if backlog
+      backlog.trello_url = trello_board.url
+      backlog.last_board_activity_at = trello_board.last_activity_date
+      backlog.last_pulled_at = Time.now.utc
     else
-      board = ScrumBoard.create_from_trello_board(trello_board)
+      backlog = ScrumBacklog.create_from_trello_board(trello_board)
     end
 
-    board
+    backlog
   end
 
   # Instance Methods
   def wish_heap
-    Rails.cache.fetch('scrum_board/wish_heap', expires_in: 1.minute) do
+    Rails.cache.fetch('scrum_backlog/wish_heap', expires_in: 1.minute) do
       wish_heap_list = live_board.lists.find { |list| list.name.downcase.include? 'wish heap' }
       wish_heap_list_to_sprint(wish_heap_list)
     end
@@ -69,7 +70,7 @@ class ScrumBoard < ApplicationRecord
 
   # Live board data from Trello API
   def live_board
-    Rails.cache.fetch("scrum_board/trello_board/#{trello_board_id}", expires_in: 1.minute) do
+    Rails.cache.fetch("scrum_backlog/trello_board/#{trello_board_id}", expires_in: 1.minute) do
       TrelloService.board(trello_board_id)
     end
   end
@@ -77,7 +78,7 @@ class ScrumBoard < ApplicationRecord
   private
 
   def wish_heap_list_to_sprint(wish_heap_list)
-    sprint = ScrumSprint.new(scrum_board_id: id,
+    sprint = ScrumSprint.new(scrum_backlog_id: id,
                              trello_list_id: wish_heap_list.id,
                              trello_pos: wish_heap_list.pos,
                              name: wish_heap_list.name,
