@@ -8,26 +8,26 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
     stub_trello_response
 
     @scrum_board = scrum_boards(:scrummy)
-    @scrummy_board = mock_trello_board(id: 'scrummy-board',
-                                       name: 'Scrummy Board',
-                                       list_names: ['wish heap', 'board', 'current'])
+    @trello_board = mock_trello_board(id: 'scrummy-board',
+                                      name: 'Scrummy Board',
+                                      list_names: ['wish heap', 'backlog', 'current'])
   end
 
   test "expects to create scrum board from Trello Board" do
     # Arrange
-    TrelloService.stubs(:board).returns(@scrummy_board)
+    TrelloService.stubs(:board).returns(@trello_board)
 
     # Act
     assert_difference('ScrumBoard.count') do
-      params = { trello_board_id: @scrummy_board.id }
+      params = { trello_board_id: @trello_board.id }
       post scrum_boards_url, params: { scrum_board: params }
     end
 
     # Assert
     created_board = ScrumBoard.last
     assert_redirected_to scrum_board_url(created_board)
-    assert_equal @scrummy_board.id, created_board.trello_board_id
-    assert_equal @scrummy_board.name, created_board.name
+    assert_equal @trello_board.id, created_board.trello_board_id
+    assert_equal @trello_board.name, created_board.name
   end
 
   test "expects board not to be created when Trello Board not found" do

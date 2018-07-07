@@ -3,8 +3,10 @@ class ScrumBoard < ApplicationRecord
                                                           inverse_of: :scrum_board
   has_many :wish_heaps, -> { order(trello_pos: :desc) }, dependent: :destroy,
                                                          inverse_of: :scrum_board
+  has_one :scrum_backlog, dependent: :destroy
 
   alias_attribute :sprints, :scrum_sprints
+  alias_attribute :backlog, :scrum_backlog
 
   DEFAULT_SPRINT_DURATION = 2.weeks
 
@@ -57,12 +59,14 @@ class ScrumBoard < ApplicationRecord
     trello_list.name.downcase.include? 'wish'
   end
 
+  def self.backloggy_trello_list?(trello_list)
+    trello_list.name.downcase.include? 'backlog'
+  end
+
   # Instance Methods
   def wish_heap
     wish_heaps.first
   end
-
-  def backlog; end
 
   def current_sprint; end
 
@@ -72,6 +76,11 @@ class ScrumBoard < ApplicationRecord
 
   def wish_heap_story_count
     wish_heaps.sum(&:story_count)
+  end
+
+  def backlog_points
+    # Safe navigation: https://stackoverflow.com/q/37977721/1093087
+    backlog&.story_points
   end
 
   def update_from_trello_board(trello_board)
@@ -86,6 +95,8 @@ class ScrumBoard < ApplicationRecord
         WishHeap.update_or_create_from_trello_list(self, list)
       elsif ScrumBoard.sprinty_trello_list?(list)
         ScrumSprint.update_or_create_from_trello_list(self, list)
+      elsif ScrumBoard.backloggy_trello_list?(list)
+        ScrumBacklog.update_or_create_from_trello_list(self, list)
       end
     end
   end
