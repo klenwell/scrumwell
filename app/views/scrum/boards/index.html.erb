@@ -8,6 +8,7 @@
       <th scope="col">Name</th>
       <th scope="col">Trello URL</th>
       <th scope="col">Sprints</th>
+      <th scope="col">Wish Heap Stories</th>
       <th scope="col">Created</th>
       <th scope="col">Last Pull</th>
       <th scope="col">Last Update</th>
@@ -20,6 +21,7 @@
         <th scope="row"><%= board.name %></th>
         <td><%= link_to board.trello_url, board.trello_url %></td>
         <td><%= board.sprints.count %></td>
+        <td><%= board.wish_heap_story_count %></td>
         <td><%= board.created_at %></td>
         <td><%= board.last_pulled_at %></td>
         <td><%= board.updated_at %></td>

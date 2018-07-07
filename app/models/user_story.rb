@@ -1,10 +1,7 @@
 class UserStory < ApplicationRecord
   AGILE_TOOLS_PLUGIN_ID = '59d4ef8cfea15a55b0086614'.freeze
 
-  belongs_to :scrum_sprint, optional: true
-  belongs_to :wish_heap, optional: true
-
-  alias_attribute :sprint, :scrum_sprint
+  belongs_to :queue, polymorphic: true, optional: true
 
   # Class Methods
   def self.update_or_create_from_trello_card(queue, trello_card)
@@ -12,6 +9,7 @@ class UserStory < ApplicationRecord
     story = UserStory.find_by(trello_card_id: trello_card.id)
 
     if story.present?
+      story.queue = queue
       story.trello_pos = trello_card.pos
       story.trello_name = trello_card.name
       story.description = trello_card.desc
@@ -26,8 +24,7 @@ class UserStory < ApplicationRecord
   end
 
   def self.create_from_trello_card(queue, trello_card)
-    story = UserStory.new(scrum_sprint_id: queue.id,
-                          trello_card_id: trello_card.id,
+    story = UserStory.new(trello_card_id: trello_card.id,
                           trello_short_url: trello_card.short_url,
                           trello_pos: trello_card.pos,
                           trello_name: trello_card.name,
@@ -35,6 +32,7 @@ class UserStory < ApplicationRecord
                           points: UserStory.story_points_from_card(trello_card),
                           last_activity_at: trello_card.last_activity_date,
                           last_pulled_at: Time.zone.now)
+    story.queue = queue
     story.save!
   end
 

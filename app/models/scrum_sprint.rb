@@ -1,7 +1,8 @@
 class ScrumSprint < ApplicationRecord
   belongs_to :scrum_board
-  has_many :user_stories, -> { order(trello_pos: :asc) }, dependent: :destroy,
-                                                          inverse_of: :scrum_sprint
+  has_many :user_stories, -> { order(trello_pos: :asc) }, as: :queue,
+                                                          dependent: :destroy,
+                                                          inverse_of: :queue
 
   alias_attribute :board, :scrum_board
   alias_attribute :stories, :user_stories

@@ -19,6 +19,10 @@
       <%#= f.hidden_field :id, value: @scrum_board.id %>
       <%#= f.submit "Pull from Trello", class: "btn btn-warning ml-2" %>
     <%# end %>
+    <h4>
+      <span class="badge badge-pill badge-primary"><%= @scrum_board.wish_heap_story_count %></span>
+      Stories in Wish Heap
+    </h4>
   </div>
 </div>
 

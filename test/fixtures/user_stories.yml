@@ -1,7 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 complete:
-  scrum_sprint_id: <%= ActiveRecord::FixtureSet.identify(:most_recent) %>
+  queue: most_recent (ScrumSprint)
   trello_card_id: user_story_1
   trello_short_url: https://trello.com/c/zkeN1hrm
   trello_pos: 1
@@ -14,7 +14,7 @@ complete:
   last_pulled_at: 2018-07-03 18:20:50
 
 incomplete:
-  scrum_sprint_id: <%= ActiveRecord::FixtureSet.identify(:most_recent) %>
+  queue: most_recent (ScrumSprint)
   trello_card_id: user_story_2
   trello_short_url: https://trello.com/c/ztKdHyKM
   trello_name: As a user, I want another story.

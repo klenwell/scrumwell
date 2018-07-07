@@ -76,6 +76,10 @@ class ScrumBoard < ApplicationRecord
 
   def completed_sprints; end
 
+  def wish_heap_story_count
+    wish_heaps.sum(&:story_count)
+  end
+
   # Live board data from Trello API
   def live_board
     Rails.cache.fetch("scrum_board/trello_board/#{trello_board_id}", expires_in: 1.minute) do

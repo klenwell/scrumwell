@@ -1,6 +1,6 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-example:
+wish_heap:
   scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
   trello_list_id: tba
   trello_pos: tba

@@ -3,8 +3,9 @@
 #
 class WishHeap < ApplicationRecord
   belongs_to :scrum_board
-  has_many :user_stories, -> { order(trello_pos: :asc) }, foreign_key: :scrum_sprint_id,
-                                                          dependent: :destroy
+  has_many :user_stories, -> { order(trello_pos: :asc) }, as: :queue,
+                                                          dependent: :destroy,
+                                                          inverse_of: :queue
 
   alias_attribute :board, :scrum_board
   alias_attribute :stories, :user_stories
@@ -42,6 +43,10 @@ class WishHeap < ApplicationRecord
   #
   # Instance Methods
   #
+  def story_count
+    stories.count
+  end
+
   def save_stories_from_trello_list(trello_list)
     trello_list.cards.each do |card|
       UserStory.update_or_create_from_trello_card(self, card) if UserStory.user_story_card?(card)
