@@ -1,0 +1,8 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+example:
+  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
+  trello_list_id: tba
+  trello_pos: tba
+  name: Wish Heap
+  last_pulled_at: 2018-07-07 10:21:48

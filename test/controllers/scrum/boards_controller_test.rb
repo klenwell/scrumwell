@@ -1,5 +1,5 @@
 #
-# rake test TEST=test/controllers/scrum/backlogs_controller_test.rb
+# rake test TEST=test/controllers/scrum/boards_controller_test.rb
 #
 require 'test_helper'
 
@@ -10,10 +10,10 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
     @scrum_board = scrum_boards(:scrummy)
     @scrummy_board = mock_trello_board(id: 'scrummy-board',
                                        name: 'Scrummy Board',
-                                       list_names: ['wish heap', 'backlog', 'current'])
+                                       list_names: ['wish heap', 'board', 'current'])
   end
 
-  test "expects to create backlog from Trello Board" do
+  test "expects to create scrum board from Trello Board" do
     # Arrange
     TrelloService.stubs(:board).returns(@scrummy_board)
 
@@ -24,23 +24,23 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
     end
 
     # Assert
-    created_backlog = ScrumBoard.last
-    assert_redirected_to scrum_board_url(created_backlog)
-    assert_equal @scrummy_board.id, created_backlog.trello_board_id
-    assert_equal @scrummy_board.name, created_backlog.name
+    created_board = ScrumBoard.last
+    assert_redirected_to scrum_board_url(created_board)
+    assert_equal @scrummy_board.id, created_board.trello_board_id
+    assert_equal @scrummy_board.name, created_board.name
   end
 
-  test "expects backlog not to be created when Trello Board not found" do
+  test "expects board not to be created when Trello Board not found" do
     # Arrange
     TrelloService.stubs(:board).returns(nil)
-    backlog_count_before = ScrumBoard.count
+    board_count_before = ScrumBoard.count
 
     # Act
     params = { trello_board_id: 'not-found' }
     post scrum_boards_url, params: { scrum_board: params }
 
     # Assert
-    assert_equal backlog_count_before, ScrumBoard.count
+    assert_equal board_count_before, ScrumBoard.count
     assert_redirected_to trello_boards_url
   end
 
@@ -64,7 +64,7 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "expects to update name of backlog" do
+  test "expects to update name of board" do
     # Arrange
     params = {
       name: 'Updated Name',

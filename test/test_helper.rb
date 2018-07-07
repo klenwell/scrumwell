@@ -18,6 +18,7 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+  # rubocop: disable Metrics/AbcSize
   def mock_trello_board(params={})
     # Optional params
     trello_id = params[:id] || 'trello-id'
@@ -31,10 +32,15 @@ class ActiveSupport::TestCase
     # https://github.com/jeremytregunna/ruby-trello/blob/master/lib/trello/board.rb#L21
     trello_board.stubs(:url).returns(trello_url)
 
-    # Mock lists
-    lists = list_names.map { |name| Trello::List.new(name: name) }
+    # Mock lists: need to stub out cards attr or will get a map error.
+    lists = list_names.map do |name|
+      list = Trello::List.new(name: name)
+      list.stubs(:cards).returns([])
+      list
+    end
     trello_board.stubs(:lists).returns(lists)
 
     trello_board
   end
+  # rubocop: enable Metrics/AbcSize
 end

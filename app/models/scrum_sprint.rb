@@ -22,12 +22,7 @@ class ScrumSprint < ApplicationRecord
                                 started_on: starts_on,
                                 ended_on: ends_on,
                                 last_pulled_at: Time.now.utc)
-
-    # Create associate user story cards.
-    trello_list.cards.each do |card|
-      UserStory.update_or_create_from_trello_card(sprint, card) if UserStory.user_story_card?(card)
-    end
-
+    sprint.save_stories_from_trello_list(trello_list)
     sprint
   end
 
@@ -35,9 +30,11 @@ class ScrumSprint < ApplicationRecord
     sprint = ScrumSprint.find_by(trello_list_id: trello_list.id)
 
     if sprint.present?
+      sprint.scrum_board_id = scrum_board.id
       sprint.trello_pos = trello_list.pos
       sprint.last_pulled_at = Time.now.utc
       sprint.save!
+      sprint.save_stories_from_trello_list(trello_list)
     else
       sprint = ScrumSprint.create_from_trello_list(scrum_board, trello_list)
     end
@@ -45,13 +42,15 @@ class ScrumSprint < ApplicationRecord
     sprint
   end
 
-  def self.sprinty_trello_list?(trello_list)
-    trello_list.name.downcase.include? 'complete'
-  end
-
   #
   # Instance Methods
   #
+  def save_stories_from_trello_list(trello_list)
+    trello_list.cards.each do |card|
+      UserStory.update_or_create_from_trello_card(self, card) if UserStory.user_story_card?(card)
+    end
+  end
+
   def current?
     !over? && !future?
   end

@@ -1,6 +1,8 @@
 class ScrumBoard < ApplicationRecord
   has_many :scrum_sprints, -> { order(ended_on: :desc) }, dependent: :destroy,
                                                           inverse_of: :scrum_board
+  has_many :wish_heaps, -> { order(trello_pos: :desc) }, dependent: :destroy,
+                                                         inverse_of: :scrum_board
 
   alias_attribute :sprints, :scrum_sprints
 
@@ -11,17 +13,33 @@ class ScrumBoard < ApplicationRecord
 
   # Class Methods
   def self.create_from_trello_board(trello_board)
-    board = ScrumBoard.new(trello_board_id: trello_board.id,
-                           trello_url: trello_board.url,
-                           name: trello_board.name,
-                           last_board_activity_at: trello_board.last_activity_date,
-                           last_pulled_at: Time.now.utc)
-    board.save!
+    scrum_board = ScrumBoard.new(trello_board_id: trello_board.id,
+                                 trello_url: trello_board.url,
+                                 name: trello_board.name,
+                                 last_board_activity_at: trello_board.last_activity_date,
+                                 last_pulled_at: Time.now.utc)
+    scrum_board.save!
 
     trello_board.lists.each do |list|
-      if ScrumSprint.sprinty_trello_list?(list)
-        ScrumSprint.update_or_create_from_trello_list(board, list)
+      if ScrumBoard.wishy_trello_list?(list)
+        WishHeap.update_or_create_from_trello_list(scrum_board, list)
+      elsif ScrumBoard.sprinty_trello_list?(list)
+        ScrumSprint.update_or_create_from_trello_list(scrum_board, list)
       end
+    end
+
+    scrum_board
+  end
+
+  def self.by_trello_board_or_new(trello_board)
+    board = ScrumBoard.find_by(trello_board_id: trello_board.id)
+
+    if board
+      board.trello_url = trello_board.url
+      board.last_board_activity_at = trello_board.last_activity_date
+      board.last_pulled_at = Time.now.utc
+    else
+      board = ScrumBoard.create_from_trello_board(trello_board)
     end
 
     board
@@ -39,26 +57,17 @@ class ScrumBoard < ApplicationRecord
     true
   end
 
-  def self.by_trello_board_or_new(trello_board)
-    board = ScrumBoard.find_by(trello_board_id: trello_board.id)
+  def self.sprinty_trello_list?(trello_list)
+    trello_list.name.downcase.include? 'complete'
+  end
 
-    if board
-      board.trello_url = trello_board.url
-      board.last_board_activity_at = trello_board.last_activity_date
-      board.last_pulled_at = Time.now.utc
-    else
-      board = ScrumBoard.create_from_trello_board(trello_board)
-    end
-
-    board
+  def self.wishy_trello_list?(trello_list)
+    trello_list.name.downcase.include? 'wish'
   end
 
   # Instance Methods
   def wish_heap
-    Rails.cache.fetch('scrum_board/wish_heap', expires_in: 1.minute) do
-      wish_heap_list = live_board.lists.find { |list| list.name.downcase.include? 'wish heap' }
-      wish_heap_list_to_sprint(wish_heap_list)
-    end
+    wish_heaps.first
   end
 
   def backlog; end
