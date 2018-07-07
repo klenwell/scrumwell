@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   # http://guides.rubyonrails.org/routing.html#controller-namespaces-and-routing
   namespace :scrum do
     # Nested Resources: https://stackoverflow.com/a/10661690/1093087
-    resources :backlogs, shallow: true do
+    resources :boards, shallow: true do
       resources :sprints, shallow: true do
         resources :user_stories
       end
