@@ -29,7 +29,7 @@ class ScrumBoardTest < ActiveSupport::TestCase
     assert_not is_scrummy
   end
 
-  test "expects to find backlog by trello board id" do
+  test "expects to find scrum board by trello board id" do
     # Arrange
     existing_board = scrum_boards(:scrummy)
     trello_board = mock_trello_board(id: existing_board.trello_board_id)
@@ -41,7 +41,7 @@ class ScrumBoardTest < ActiveSupport::TestCase
     assert_equal existing_board, board
   end
 
-  test "expects to create backlog by trello board id" do
+  test "expects to create scrum board by trello board id" do
     # Arrange
     trello_board = mock_trello_board
 
@@ -53,11 +53,11 @@ class ScrumBoardTest < ActiveSupport::TestCase
     scrum_board.save!
 
     # Assert
-    assert_equal trello_board.id, backlog.trello_board_id
+    assert_equal trello_board.id, scrum_board.trello_board_id
     assert_equal scrum_board_count_before + 1, ScrumBoard.count
   end
 
-  test "expects backlog missing trello url to be invalid" do
+  test "expects scrum board missing trello url to be invalid" do
     # Arrange
     trello_board = mock_trello_board
 
@@ -67,10 +67,10 @@ class ScrumBoardTest < ActiveSupport::TestCase
 
     # Assert
     assert_not scrum_board.valid?
-    assert_equal ["can't be blank"], backlog.errors.messages[:trello_url]
+    assert_equal ["can't be blank"], scrum_board.errors.messages[:trello_url]
   end
 
-  test "expects backlog with invalid trello url to be invalid" do
+  test "expects scrum board with invalid trello url to be invalid" do
     # Arrange
     trello_board = mock_trello_board
 
@@ -81,6 +81,6 @@ class ScrumBoardTest < ActiveSupport::TestCase
 
     # Assert
     assert_not scrum_board.valid?
-    assert_equal ["must be valid Trello url"], backlog.errors.messages[:trello_url]
+    assert_equal ["must be valid Trello url"], scrum_board.errors.messages[:trello_url]
   end
 end

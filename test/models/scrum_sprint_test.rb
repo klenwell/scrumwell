@@ -7,14 +7,14 @@ class ScrumSprintTest < ActiveSupport::TestCase
 
   test "expects sprint to be valid" do
     # Arrange
-    backlog = scrum_boards(:scrummy)
+    board = scrum_boards(:scrummy)
 
     # Act
-    sprint = ScrumSprint.new(scrum_board_id: backlog.id)
+    sprint = ScrumSprint.new(scrum_board_id: board.id)
 
     # Assert
     assert sprint.valid?, sprint.errors.messages
-    assert_equal backlog, sprint.backlog
+    assert_equal board, sprint.board
   end
 
   test "expects sprint to be current" do

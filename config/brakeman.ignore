@@ -3,62 +3,62 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 4,
-      "fingerprint": "1f3a59140e07d0475c3057f0f17073951c67774a91aa9f48b978bcbc489bdd6c",
+      "fingerprint": "74e111a9fa5f0b8929b02d7f533260a328c3ff7dede956ee6a92e11f4bc1f09b",
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in link_to href",
-      "file": "app/views/scrum/backlogs/index.html.erb",
-      "line": 20,
+      "file": "app/views/scrum/boards/index.html.erb",
+      "line": 21,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
-      "code": "link_to(ScrumBacklog.new.trello_url, ScrumBacklog.new.trello_url)",
-      "render_path": [{"type":"controller","class":"Scrum::BacklogsController","method":"index","line":9,"file":"app/controllers/scrum/backlogs_controller.rb"}],
+      "code": "link_to(ScrumBoard.new.trello_url, ScrumBoard.new.trello_url)",
+      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":9,"file":"app/controllers/scrum/boards_controller.rb"}],
       "location": {
         "type": "template",
-        "template": "scrum/backlogs/index"
+        "template": "scrum/boards/index"
       },
-      "user_input": "ScrumBacklog.new.trello_url",
+      "user_input": "ScrumBoard.new.trello_url",
       "confidence": "Weak",
       "note": ""
     },
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 4,
-      "fingerprint": "675d175b5c765d122b7048dacd665700a9b0b0b53d65ace2f69f6cb7491a1e79",
+      "fingerprint": "923566cbb27a35f8ce76fdde0e4390d220c8ce4c6cba02693126d94599977226",
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in link_to href",
-      "file": "app/views/scrum/backlogs/show.html.erb",
-      "line": 9,
+      "file": "app/views/scrum/boards/show.html.erb",
+      "line": 10,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
-      "code": "link_to(ScrumBacklog.find(params[:id]).trello_url, ScrumBacklog.find(params[:id]).trello_url)",
-      "render_path": [{"type":"controller","class":"Scrum::BacklogsController","method":"show","line":14,"file":"app/controllers/scrum/backlogs_controller.rb"}],
+      "code": "link_to(ScrumBoard.find(params[:id]).trello_url, ScrumBoard.find(params[:id]).trello_url)",
+      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"show","line":14,"file":"app/controllers/scrum/boards_controller.rb"}],
       "location": {
         "type": "template",
-        "template": "scrum/backlogs/show"
+        "template": "scrum/boards/show"
       },
-      "user_input": "ScrumBacklog.find(params[:id]).trello_url",
+      "user_input": "ScrumBoard.find(params[:id]).trello_url",
       "confidence": "Weak",
       "note": ""
     },
     {
       "warning_type": "Redirect",
       "warning_code": 18,
-      "fingerprint": "6b59bfcd5407db5481bbfbf5f44c84a47bbc7474fa824f5ff12c7ee16293dfaf",
+      "fingerprint": "a578d5561beefe064b5ea9ed661438cd3657d6db642b0f903983ab1f8f3a621b",
       "check_name": "Redirect",
       "message": "Possible unprotected redirect",
-      "file": "app/controllers/scrum/backlogs_controller.rb",
+      "file": "app/controllers/scrum/boards_controller.rb",
       "line": 39,
       "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
-      "code": "redirect_to(ScrumBacklog.by_trello_board_or_new(TrelloService.board(scrum_backlog_params[:trello_board_id])), :notice => \"Backlog was successfully created.\")",
+      "code": "redirect_to(ScrumBoard.by_trello_board_or_new(TrelloService.board(scrum_board_params[:trello_board_id])), :notice => \"Backlog was successfully created.\")",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "Scrum::BacklogsController",
+        "class": "Scrum::BoardsController",
         "method": "create"
       },
-      "user_input": "ScrumBacklog.by_trello_board_or_new(TrelloService.board(scrum_backlog_params[:trello_board_id]))",
+      "user_input": "ScrumBoard.by_trello_board_or_new(TrelloService.board(scrum_board_params[:trello_board_id]))",
       "confidence": "High",
       "note": ""
     }
   ],
-  "updated": "2018-07-01 11:03:51 -0700",
+  "updated": "2018-07-06 22:57:14 -0700",
   "brakeman_version": "4.3.1"
 }
