@@ -10,7 +10,7 @@ namespace :trello do
     args.with_defaults(board_id: scrumwell_board_id)
 
     trello_board = TrelloService.board(args[:board_id])
-    board = ScrumBoard.by_trello_board_or_new(trello_board)
+    board = ScrumBoard.by_trello_board_or_create(trello_board)
 
     puts format("Board %s Wish Heap stories: %d", board.name, board.wish_heap.stories.length)
   end

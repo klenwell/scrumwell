@@ -32,7 +32,7 @@ module Scrum
         return
       end
 
-      @scrum_board = ScrumBoard.by_trello_board_or_new(trello_board)
+      @scrum_board = ScrumBoard.by_trello_board_or_create(trello_board)
 
       respond_to do |format|
         if @scrum_board.save

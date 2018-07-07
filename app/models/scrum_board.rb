@@ -8,10 +8,24 @@ class ScrumBoard < ApplicationRecord
 
   DEFAULT_SPRINT_DURATION = 2.weeks
 
-  validates :name, :trello_board_id, :trello_url, presence: true
+  validates :name, presence: true
+  validates :trello_board_id, presence: true
+  validates :trello_url, presence: true
   validate :trello_url_is_valid
 
   # Class Methods
+  def self.by_trello_board_or_create(trello_board)
+    scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)
+
+    if scrum_board
+      scrum_board.update_from_trello_board(trello_board)
+    else
+      scrum_board = ScrumBoard.create_from_trello_board(trello_board)
+    end
+
+    scrum_board
+  end
+
   def self.create_from_trello_board(trello_board)
     scrum_board = ScrumBoard.new(trello_board_id: trello_board.id,
                                  trello_url: trello_board.url,
@@ -19,30 +33,8 @@ class ScrumBoard < ApplicationRecord
                                  last_board_activity_at: trello_board.last_activity_date,
                                  last_pulled_at: Time.now.utc)
     scrum_board.save!
-
-    trello_board.lists.each do |list|
-      if ScrumBoard.wishy_trello_list?(list)
-        WishHeap.update_or_create_from_trello_list(scrum_board, list)
-      elsif ScrumBoard.sprinty_trello_list?(list)
-        ScrumSprint.update_or_create_from_trello_list(scrum_board, list)
-      end
-    end
-
+    scrum_board.update_queues_from_trello_board(trello_board)
     scrum_board
-  end
-
-  def self.by_trello_board_or_new(trello_board)
-    board = ScrumBoard.find_by(trello_board_id: trello_board.id)
-
-    if board
-      board.trello_url = trello_board.url
-      board.last_board_activity_at = trello_board.last_activity_date
-      board.last_pulled_at = Time.now.utc
-    else
-      board = ScrumBoard.create_from_trello_board(trello_board)
-    end
-
-    board
   end
 
   def self.scrummy_trello_board?(trello_board)
@@ -74,10 +66,28 @@ class ScrumBoard < ApplicationRecord
 
   def current_sprint; end
 
-  def completed_sprints; end
+  def completed_sprints
+    sprints.keep_if(&:over?)
+  end
 
   def wish_heap_story_count
     wish_heaps.sum(&:story_count)
+  end
+
+  def update_from_trello_board(trello_board)
+    update(trello_url: trello_board.url,
+           last_board_activity_at: trello_board.last_activity_date,
+           last_pulled_at: Time.now.utc)
+  end
+
+  def update_queues_from_trello_board(trello_board)
+    trello_board.lists.each do |list|
+      if ScrumBoard.wishy_trello_list?(list)
+        WishHeap.update_or_create_from_trello_list(self, list)
+      elsif ScrumBoard.sprinty_trello_list?(list)
+        ScrumSprint.update_or_create_from_trello_list(self, list)
+      end
+    end
   end
 
   # Live board data from Trello API
@@ -88,36 +98,6 @@ class ScrumBoard < ApplicationRecord
   end
 
   private
-
-  def wish_heap_list_to_sprint(wish_heap_list)
-    sprint = ScrumSprint.new(scrum_board_id: id,
-                             trello_list_id: wish_heap_list.id,
-                             trello_pos: wish_heap_list.pos,
-                             name: wish_heap_list.name,
-                             last_pulled_at: Time.now.utc)
-    sprint.stories = wish_heap_cards_to_stories(wish_heap_list)
-    sprint
-  end
-
-  def wish_heap_cards_to_stories(wish_heap_list)
-    # Associate user story cards.
-    stories = []
-
-    wish_heap_list.cards.each do |card|
-      next unless UserStory.user_story_card?(card)
-      story = UserStory.new(trello_card_id: card.id,
-                            trello_short_url: card.short_url,
-                            trello_pos: card.pos,
-                            trello_name: card.name,
-                            description: card.desc,
-                            points: UserStory.story_points_from_card(card),
-                            last_activity_at: card.last_activity_date,
-                            last_pulled_at: Time.zone.now)
-      stories << story
-    end
-
-    stories
-  end
 
   # Custom Validators
   def trello_url_is_valid

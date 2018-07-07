@@ -35,7 +35,7 @@ class ScrumBoardTest < ActiveSupport::TestCase
     trello_board = mock_trello_board(id: existing_board.trello_board_id)
 
     # Act
-    board = ScrumBoard.by_trello_board_or_new(trello_board)
+    board = ScrumBoard.by_trello_board_or_create(trello_board)
 
     # Assert
     assert_equal existing_board, board
@@ -49,7 +49,7 @@ class ScrumBoardTest < ActiveSupport::TestCase
     scrum_board_count_before = ScrumBoard.count
 
     # Act
-    scrum_board = ScrumBoard.by_trello_board_or_new(trello_board)
+    scrum_board = ScrumBoard.by_trello_board_or_create(trello_board)
     scrum_board.save!
 
     # Assert

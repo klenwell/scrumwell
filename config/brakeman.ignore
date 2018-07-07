@@ -7,7 +7,7 @@
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in link_to href",
       "file": "app/views/scrum/boards/index.html.erb",
-      "line": 21,
+      "line": 22,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
       "code": "link_to(ScrumBoard.new.trello_url, ScrumBoard.new.trello_url)",
       "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":9,"file":"app/controllers/scrum/boards_controller.rb"}],
@@ -17,6 +17,26 @@
       },
       "user_input": "ScrumBoard.new.trello_url",
       "confidence": "Weak",
+      "note": ""
+    },
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "84fb0844c9dbcf8fb81e8ffab2592de1984b5dc4d4569f4692cf64a1a9b6ccbe",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/scrum/boards_controller.rb",
+      "line": 39,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(ScrumBoard.by_trello_board_or_create(TrelloService.board(scrum_board_params[:trello_board_id])), :notice => \"Backlog was successfully created.\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Scrum::BoardsController",
+        "method": "create"
+      },
+      "user_input": "ScrumBoard.by_trello_board_or_create(TrelloService.board(scrum_board_params[:trello_board_id]))",
+      "confidence": "High",
       "note": ""
     },
     {
@@ -37,28 +57,8 @@
       "user_input": "ScrumBoard.find(params[:id]).trello_url",
       "confidence": "Weak",
       "note": ""
-    },
-    {
-      "warning_type": "Redirect",
-      "warning_code": 18,
-      "fingerprint": "a578d5561beefe064b5ea9ed661438cd3657d6db642b0f903983ab1f8f3a621b",
-      "check_name": "Redirect",
-      "message": "Possible unprotected redirect",
-      "file": "app/controllers/scrum/boards_controller.rb",
-      "line": 39,
-      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
-      "code": "redirect_to(ScrumBoard.by_trello_board_or_new(TrelloService.board(scrum_board_params[:trello_board_id])), :notice => \"Backlog was successfully created.\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Scrum::BoardsController",
-        "method": "create"
-      },
-      "user_input": "ScrumBoard.by_trello_board_or_new(TrelloService.board(scrum_board_params[:trello_board_id]))",
-      "confidence": "High",
-      "note": ""
     }
   ],
-  "updated": "2018-07-06 22:57:14 -0700",
+  "updated": "2018-07-07 14:50:44 -0700",
   "brakeman_version": "4.3.1"
 }
