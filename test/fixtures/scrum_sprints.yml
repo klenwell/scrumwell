@@ -1,7 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 most_recent:
-  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
+  scrum_backlog_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
   trello_list_id: most-recent
   trello_pos: 1
   name: Sprint 20180701 Completed
