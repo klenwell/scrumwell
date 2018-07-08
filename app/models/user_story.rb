@@ -23,15 +23,19 @@ class UserStory < ApplicationRecord
     story
   end
 
+  def self.new_from_trello_card(trello_card)
+    UserStory.new(trello_card_id: trello_card.id,
+                  trello_short_url: trello_card.short_url,
+                  trello_pos: trello_card.pos,
+                  trello_name: trello_card.name,
+                  description: trello_card.desc,
+                  points: UserStory.story_points_from_card(trello_card),
+                  last_activity_at: trello_card.last_activity_date,
+                  last_pulled_at: Time.zone.now)
+  end
+
   def self.create_from_trello_card(queue, trello_card)
-    story = UserStory.new(trello_card_id: trello_card.id,
-                          trello_short_url: trello_card.short_url,
-                          trello_pos: trello_card.pos,
-                          trello_name: trello_card.name,
-                          description: trello_card.desc,
-                          points: UserStory.story_points_from_card(trello_card),
-                          last_activity_at: trello_card.last_activity_date,
-                          last_pulled_at: Time.zone.now)
+    story = UserStory.new_from_trello_card(trello_card)
     story.queue = queue
     story.save!
   end

@@ -6,11 +6,15 @@ class TrelloService
   end
 
   def self.board(id)
-    Trello::Board.find(id)
+    Rails.cache.fetch("trello_board/#{id}", expires_in: 1.minute) do
+      Trello::Board.find(id)
+    end
   end
 
   def self.org(id)
-    Trello::Organization.find(id)
+    Rails.cache.fetch("trello_board/#{id}", expires_in: 1.minute) do
+      Trello::Organization.find(id)
+    end
   end
 
   def initialize

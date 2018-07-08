@@ -49,6 +49,23 @@ class ScrumSprint < ApplicationRecord
     sprint
   end
 
+  def self.sprint_backlog_from_trello_list(scrum_board, trello_list)
+    # Returns a temporary unsaved record from scrum backlog ("Current Sprint") column.
+    backlog = ScrumSprint.new(scrum_board_id: scrum_board.id,
+                              trello_list_id: trello_list.id,
+                              trello_pos: trello_list.pos,
+                              name: trello_list.name,
+                              last_pulled_at: Time.now.utc)
+
+    # Attach cards
+    trello_list.cards.each do |card|
+      next unless UserStory.user_story_card?(card)
+      backlog.stories << UserStory.new_from_trello_card(card)
+    end
+
+    backlog
+  end
+
   #
   # Instance Methods
   #
@@ -74,6 +91,10 @@ class ScrumSprint < ApplicationRecord
     stories.sum(&:points)
   end
 
+  def age
+    Time.zone.today - started_on
+  end
+
   # private
 
   # rubocop: disable Metrics/AbcSize
@@ -86,13 +107,13 @@ class ScrumSprint < ApplicationRecord
     if over?
       self.story_points_completed = story_points if story_points_completed.nil?
       self.average_velocity = board.average_velocity_for_sprint(self) if average_velocity.nil?
-      self.average_story_size = story_points / stories.count if average_story_size.nil?
+      self.average_story_size = compute_average_story_size if average_story_size.nil?
     end
 
     # Proceed to compute values below only if sprint is current
     return unless current?
 
-    self.story_points_committed = board.story_points_committed
+    self.story_points_committed = compute_story_points_committed
     self.story_points_completed = story_points
     self.average_velocity = board.average_velocity
     self.average_story_size = board.compute_average_story_size
@@ -102,6 +123,13 @@ class ScrumSprint < ApplicationRecord
     self.wish_heap_story_points = board.estimate_wish_heap_points
   end
   # rubocop: enable Metrics/AbcSize
+
+  def compute_story_points_committed
+    # Commited story points should only be set programmatically at the beginning of
+    # sprint. Otherwise scrum master will need to set manually.
+    return story_points_committed unless story_points_committed.nil?
+    board.story_points_committed if current? && age.days <= 2.days
+  end
 
   def compute_average_story_size
     return nil unless stories.count

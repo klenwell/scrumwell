@@ -70,7 +70,23 @@ class ScrumBoard < ApplicationRecord
     wish_heaps.first
   end
 
-  def current_sprint; end
+  def sprint_backlog
+    # This is the "current sprint" list in Trello Board.
+    needle = 'current'
+    trello_list = trello_board.lists.find { |list| list.name.downcase.include? needle }
+    ScrumSprint.sprint_backlog_from_trello_list(self, trello_list)
+  end
+
+  def current_sprint
+    # Merge stories for current sprint (i.e. completed stories) into sprint backlog.
+    # Creates an unsaved temporary ScrumSprint to represent current sprint, which spans
+    # the sprint backlog (i.e. "Current Sprint" Trello list) and current completed
+    # sprint ScrumSprint.
+    tmp_sprint = sprint_backlog
+    sprint_completed = sprints.find(&:current?)
+    sprint_completed.stories.each { |story| tmp_sprint.stories << story }
+    tmp_sprint
+  end
 
   def completed_sprints
     sprints.keep_if(&:over?)
@@ -104,8 +120,7 @@ class ScrumBoard < ApplicationRecord
   end
 
   def story_points_committed
-    # TODO
-    nil
+    current_sprint.story_points
   end
 
   def average_velocity
@@ -129,10 +144,8 @@ class ScrumBoard < ApplicationRecord
   end
 
   # Live board data from Trello API
-  def live_board
-    Rails.cache.fetch("scrum_board/trello_board/#{trello_board_id}", expires_in: 1.minute) do
-      TrelloService.board(trello_board_id)
-    end
+  def trello_board
+    TrelloService.board(trello_board_id)
   end
 
   private
