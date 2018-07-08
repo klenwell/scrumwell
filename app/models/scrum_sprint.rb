@@ -129,7 +129,7 @@ class ScrumSprint < ApplicationRecord
     self.story_points_completed = story_points
     self.average_story_size = compute_average_story_size
     self.backlog_story_points = board.backlog.story_points
-    self.backlog_stories_count = board.backlog.story_points
+    self.backlog_stories_count = board.backlog.stories.count
     self.wish_heap_stories_count = board.wish_heap.stories.count
     self.wish_heap_story_points = board.estimate_wish_heap_points
   end
