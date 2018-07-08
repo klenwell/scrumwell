@@ -106,22 +106,25 @@ class ScrumSprint < ApplicationRecord
 
   # private
 
-  # rubocop: disable Metrics/AbcSize
   def set_computed_fields
     # Need to reload stories to compute points accurately.
     # Reference: https://stackoverflow.com/a/29280034/1093087
     stories.reset
+    set_computed_fields_for_completed_sprint
+    set_computed_fields_for_current_sprint
+  end
 
-    # These values can be computed even if the sprint is over when values are empty.
-    if over?
-      self.story_points_completed = story_points if story_points_completed.nil?
-      self.average_velocity = board.average_velocity_for_sprint(self) if average_velocity.nil?
-      self.average_story_size = compute_average_story_size if average_story_size.nil?
-    end
+  def set_computed_fields_for_completed_sprint
+    # Notice most only get set if they're still nil.
+    return unless over?
+    self.story_points_completed = story_points if story_points_completed.nil?
+    self.average_velocity = board.average_velocity_for_sprint(self) if average_velocity.nil?
+    self.average_story_size = compute_average_story_size if average_story_size.nil?
+  end
 
-    # Proceed to compute values below only if sprint is current
+  # rubocop: disable Metrics/AbcSize
+  def set_computed_fields_for_current_sprint
     return unless current?
-
     self.story_points_committed = compute_story_points_committed
     self.story_points_completed = story_points
     self.average_story_size = compute_average_story_size
@@ -137,6 +140,13 @@ class ScrumSprint < ApplicationRecord
     # sprint. Otherwise scrum master will need to set manually.
     return story_points_committed unless story_points_committed.nil?
     board.story_points_committed if current? && age.days <= 2.days
+  end
+
+  def compute_wish_heap_points
+    # Commited story points should only be set programmatically at the beginning of
+    # sprint. Otherwise scrum master will need to set manually.
+    return wish_heap_story_points unless wish_heap_story_points.nil?
+    board.estimate_wish_heap_points if current? && age.days <= 2.days
   end
 
   # rubocop: disable Metrics/AbcSize

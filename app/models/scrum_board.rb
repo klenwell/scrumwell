@@ -146,8 +146,25 @@ class ScrumBoard < ApplicationRecord
   end
 
   def estimate_wish_heap_points
-    # TODO
-    nil
+    # Avg Pts per Story * Num Wish Stories
+    avg_pts_story = average_points_per_story
+    return nil if avg_pts_story.nil? || wish_heap.stories.empty?
+    (avg_pts_story * wish_heap.stories.length).round
+  end
+
+  def average_points_per_story
+    total_story_points = 0
+    user_story_count = 0
+    sprint_count = 0
+
+    sprints.each do |sprint|
+      total_story_points += sprint.story_points
+      user_story_count += sprint.stories.length
+      sprint_count += 1
+      break if sprint_count >= NUM_SPRINTS_FOR_AVG_VELOCITY + 1
+    end
+
+    1.0 * total_story_points / user_story_count
   end
 
   # Live board data from Trello API
