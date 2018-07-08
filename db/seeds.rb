@@ -15,4 +15,5 @@ end
 
 scrumwell_trello_board = TrelloService.board(SCRUMWELL_TRELLO_BOARD_ID)
 scrumwell_board = ScrumBoard.create_from_trello_board(scrumwell_trello_board)
+
 puts format('Created Scrumwell backlog with %s sprints', scrumwell_board.sprints.count)

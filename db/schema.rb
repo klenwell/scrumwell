@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_07_221630) do
+ActiveRecord::Schema.define(version: 2018_07_08_015906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,15 @@ ActiveRecord::Schema.define(version: 2018_07_07_221630) do
     t.datetime "last_pulled_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "story_points_committed"
+    t.integer "story_points_completed"
+    t.decimal "average_velocity"
+    t.decimal "average_story_size"
+    t.integer "backlog_story_points"
+    t.integer "backlog_stories_count"
+    t.integer "wish_heap_stories_count"
+    t.integer "wish_heap_story_points"
+    t.text "notes"
     t.index ["scrum_board_id"], name: "index_scrum_sprints_on_scrum_board_id"
   end
 

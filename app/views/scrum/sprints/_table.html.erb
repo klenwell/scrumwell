@@ -2,27 +2,38 @@
   <thead>
     <tr>
       <th scope="col">Name</th>
-      <th scope="col">End Date</th>
       <th scope="col">Start Date</th>
-      <th scope="col">Active</th>
-      <th scope="col">Stories</th>
-      <th scope="col">Story Points</th>
-      <th scope="col">Last Pull</th>
-      <th scope="col">Last Update</th>
+      <th scope="col">End Date</th>
+      <th scope="col">Commited</th>
+      <th scope="col">Completed</th>
+      <th scope="col">3-Sprint Avg Velocity</th>
+      <th scope="col">Average Story Size</th>
+      <th scope="col">Backlog Points</th>
+      <th scope="col">Backlog Stories</th>
+      <th scope="col">Wish Heap Stories</th>
+      <th scope="col">Estimated Wish Heap Points</th>
+      <th scope="col">Last Sync'd</th>
+      <th scope="col">Notes</th>
       <th scope="col" class="actions"></th>
+
     </tr>
   </thead>
   <tbody>
     <% sprints.each do |sprint| %>
       <tr>
         <th scope="row"><%= sprint.name %></th>
-        <td><%= sprint.ended_on %></td>
         <td><%= sprint.started_on %></td>
-        <td><%= sprint.current? %></td>
-        <td><%= sprint.stories.count %></td>
-        <td><%= sprint.story_points %></td>
+        <td><%= sprint.ended_on %></td>
+        <td><%= sprint.story_points_committed %></td>
+        <td><%= sprint.story_points_completed %></td>
+        <td><%= sprint.average_velocity %></td>
+        <td><%= sprint.average_story_size %></td>
+        <td><%= sprint.backlog_story_points %></td>
+        <td><%= sprint.backlog_stories_count %></td>
+        <td><%= sprint.wish_heap_stories_count %></td>
+        <td><%= sprint.wish_heap_story_points %></td>
         <td><%= sprint.last_pulled_at %></td>
-        <td><%= sprint.updated_at %></td>
+        <td><%= sprint.notes %></td>
         <td>
           <%= link_to material_icon.web_asset, sprint %>
           <%#= link_to material_icon.edit, edit_scrum_sprint_path(sprint) %>

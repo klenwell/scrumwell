@@ -13,7 +13,7 @@ class UserStory < ApplicationRecord
       story.trello_pos = trello_card.pos
       story.trello_name = trello_card.name
       story.description = trello_card.desc
-      story.story_points = UserStory.story_points_from_card(trello_card)
+      story.points = UserStory.story_points_from_card(trello_card)
       story.last_pulled_at = Time.now.utc
       story.save!
     else

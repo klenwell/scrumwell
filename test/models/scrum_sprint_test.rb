@@ -20,8 +20,10 @@ class ScrumSprintTest < ActiveSupport::TestCase
   test "expects sprint to be current" do
     # Arrange
     sprint = scrum_sprints(:most_recent)
-    sprint.ended_on = Time.zone.today
-    sprint.save!
+    sprint.update(ended_on: Time.zone.today)
+
+    # Assume
+    assert_equal Time.zone.today, sprint.ended_on
 
     # Assert
     assert sprint.current?

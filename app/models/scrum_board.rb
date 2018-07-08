@@ -63,7 +63,9 @@ class ScrumBoard < ApplicationRecord
     trello_list.name.downcase.include? 'backlog'
   end
 
+  #
   # Instance Methods
+  #
   def wish_heap
     wish_heaps.first
   end
@@ -99,6 +101,31 @@ class ScrumBoard < ApplicationRecord
         ScrumBacklog.update_or_create_from_trello_list(self, list)
       end
     end
+  end
+
+  def story_points_committed
+    # TODO
+    nil
+  end
+
+  def average_velocity
+    # TODO
+    nil
+  end
+
+  def average_velocity_for_sprint(sprint)
+    # TODO
+    nil
+  end
+
+  def compute_average_story_size
+    # TODO
+    nil
+  end
+
+  def estimate_wish_heap_points
+    # TODO
+    nil
   end
 
   # Live board data from Trello API
