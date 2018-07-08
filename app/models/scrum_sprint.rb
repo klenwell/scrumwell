@@ -75,6 +75,11 @@ class ScrumSprint < ApplicationRecord
     end
   end
 
+  def recompute!
+    # Force an update to run set_computed_fields callbacks.
+    update(updated_at: Time.zone.now)
+  end
+
   def current?
     !over? && !future?
   end
@@ -85,6 +90,10 @@ class ScrumSprint < ApplicationRecord
 
   def over?
     ended_on < Time.zone.today
+  end
+
+  def ended_after?(other_sprint)
+    ended_on > other_sprint.ended_on
   end
 
   def story_points
@@ -115,7 +124,6 @@ class ScrumSprint < ApplicationRecord
 
     self.story_points_committed = compute_story_points_committed
     self.story_points_completed = story_points
-    self.average_velocity = board.average_velocity
     self.average_story_size = compute_average_story_size
     self.backlog_story_points = board.backlog.story_points
     self.backlog_stories_count = board.backlog.story_points

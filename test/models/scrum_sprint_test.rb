@@ -46,6 +46,15 @@ class ScrumSprintTest < ActiveSupport::TestCase
     assert sprint.over?
   end
 
+  test "expects sprint to have ended after other sprint" do
+    # Arrange
+    sprint = ScrumSprint.new(ended_on: Time.zone.today)
+    other_sprint = ScrumSprint.new(ended_on: Time.zone.today - 2.weeks)
+
+    # Assert
+    assert sprint.ended_after?(other_sprint)
+  end
+
   test "expect sprint to have two stories ordered by trello_pos" do
     # Arrange
     sprint = scrum_sprints(:most_recent)

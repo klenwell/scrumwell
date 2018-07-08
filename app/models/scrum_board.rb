@@ -9,6 +9,7 @@ class ScrumBoard < ApplicationRecord
   alias_attribute :backlog, :scrum_backlog
 
   DEFAULT_SPRINT_DURATION = 2.weeks
+  NUM_SPRINTS_FOR_AVG_VELOCITY = 3
 
   validates :name, presence: true
   validates :trello_board_id, presence: true
@@ -36,6 +37,7 @@ class ScrumBoard < ApplicationRecord
                                  last_pulled_at: Time.now.utc)
     scrum_board.save!
     scrum_board.update_queues_from_trello_board(trello_board)
+    scrum_board.recompute_sprint_metrics
     scrum_board
   end
 
@@ -92,7 +94,7 @@ class ScrumBoard < ApplicationRecord
   # rubocop: enable Style/SafeNavigation
 
   def completed_sprints
-    sprints.keep_if(&:over?)
+    sprints.to_a.keep_if(&:over?)
   end
 
   def wish_heap_story_count
@@ -122,18 +124,25 @@ class ScrumBoard < ApplicationRecord
     end
   end
 
+  def recompute_sprint_metrics
+    sprints.each(&:recompute!)
+  end
+
   def story_points_committed
     current_sprint.story_points
   end
 
-  def average_velocity
-    # TODO
-    nil
-  end
-
   def average_velocity_for_sprint(sprint)
-    # TODO
-    nil
+    previous_sprints = []
+
+    completed_sprints.each do |completed_sprint|
+      next unless sprint == completed_sprint || sprint.ended_after?(completed_sprint)
+      previous_sprints << completed_sprint
+      break if previous_sprints.length >= NUM_SPRINTS_FOR_AVG_VELOCITY
+    end
+
+    return nil if previous_sprints.blank?
+    previous_sprints.sum(&:story_points) / previous_sprints.length
   end
 
   def estimate_wish_heap_points
