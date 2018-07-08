@@ -24,7 +24,7 @@ class ActiveSupport::TestCase
     trello_id = params[:id] || 'trello-id'
     trello_url = params[:url] || 'https://trello.com/b/id/trello-name'
     trello_name = params[:name] || 'Trello Board Name'
-    list_names = params[:list_names] || []
+    list_names = params[:list_names] || ['wish heap', 'backlog', 'current']
 
     trello_board = Trello::Board.new(id: trello_id, name: trello_name)
 

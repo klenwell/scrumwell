@@ -22,6 +22,10 @@ class ScrumSprintTest < ActiveSupport::TestCase
     sprint = scrum_sprints(:most_recent)
     ended_on = Time.zone.today
     started_on = ended_on - 2.weeks
+
+    # Need to stub sprint.board to return a valid trello board or will get error on update.
+    sprint.board.stubs(:trello_board).returns(mock_trello_board)
+
     sprint.update(started_on: started_on, ended_on: ended_on)
 
     # Assume

@@ -77,6 +77,8 @@ class ScrumBoard < ApplicationRecord
     ScrumSprint.sprint_backlog_from_trello_list(self, trello_list)
   end
 
+  # rubocop: disable Style/SafeNavigation
+  # Simpler just to check if sprint_completed than to try to use SafeNav &. syntax.
   def current_sprint
     # Merge stories for current sprint (i.e. completed stories) into sprint backlog.
     # Creates an unsaved temporary ScrumSprint to represent current sprint, which spans
@@ -84,9 +86,10 @@ class ScrumBoard < ApplicationRecord
     # sprint ScrumSprint.
     tmp_sprint = sprint_backlog
     sprint_completed = sprints.find(&:current?)
-    sprint_completed.stories.each { |story| tmp_sprint.stories << story }
+    sprint_completed.stories.each { |story| tmp_sprint.stories << story } if sprint_completed
     tmp_sprint
   end
+  # rubocop: enable Style/SafeNavigation
 
   def completed_sprints
     sprints.keep_if(&:over?)
@@ -129,11 +132,6 @@ class ScrumBoard < ApplicationRecord
   end
 
   def average_velocity_for_sprint(sprint)
-    # TODO
-    nil
-  end
-
-  def compute_average_story_size
     # TODO
     nil
   end

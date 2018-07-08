@@ -116,7 +116,7 @@ class ScrumSprint < ApplicationRecord
     self.story_points_committed = compute_story_points_committed
     self.story_points_completed = story_points
     self.average_velocity = board.average_velocity
-    self.average_story_size = board.compute_average_story_size
+    self.average_story_size = compute_average_story_size
     self.backlog_story_points = board.backlog.story_points
     self.backlog_stories_count = board.backlog.story_points
     self.wish_heap_stories_count = board.wish_heap.stories.count
@@ -131,8 +131,15 @@ class ScrumSprint < ApplicationRecord
     board.story_points_committed if current? && age.days <= 2.days
   end
 
+  # rubocop: disable Metrics/AbcSize
   def compute_average_story_size
     return nil unless stories.count
-    story_points / stories.count
+
+    if current? && board.current_sprint.stories.present?
+      board.current_sprint.story_points / board.current_sprint.stories.length
+    else
+      story_points / stories.length
+    end
   end
+  # rubocop: enable Metrics/AbcSize
 end
