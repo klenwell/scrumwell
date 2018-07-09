@@ -1,6 +1,6 @@
 <div class="page-header">
-  <h2>Trello Board <span class="text-primary"><%= @board.name %></span></h2>
-  <p><%= @board.description %></p>
+  <h2>Trello Board <span class="text-primary"><%= @trello_board.name %></span></h2>
+  <p><%= @trello_board.description %></p>
 
   <p>
   <% if ScrumBoard.scrummy_trello_board?(@trello_board) && @scrum_board.nil? %>
@@ -9,7 +9,10 @@
       <%= f.submit "Create Project", class: "btn btn-success" %>
     <% end %>
   <% elsif @scrum_board %>
-    <%= link_to @scrum_board.name, scrum_boards_path(@scrum_board) %>
+    <a href="<%= scrum_board_path(@scrum_board) %>">
+      <%= scrum_icon %>
+      <%= @scrum_board.name %>
+    </a>
   <% end %>
   </p>
 </div>

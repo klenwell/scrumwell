@@ -142,7 +142,13 @@ class ScrumBoard < ApplicationRecord
     end
 
     return nil if previous_sprints.blank?
-    previous_sprints.sum(&:story_points) / previous_sprints.length
+    1.0 * previous_sprints.sum(&:story_points) / previous_sprints.length
+  end
+
+  def average_velocity
+    last_sprint = completed_sprints.first
+    return nil unless last_sprint
+    average_velocity_for_sprint(last_sprint)
   end
 
   def estimate_wish_heap_points
@@ -150,6 +156,10 @@ class ScrumBoard < ApplicationRecord
     avg_pts_story = average_points_per_story
     return nil if avg_pts_story.nil? || wish_heap.stories.empty?
     (avg_pts_story * wish_heap.stories.length).round
+  end
+
+  def total_work_in_progress_points
+    sprint_backlog.story_points + backlog_points + estimate_wish_heap_points
   end
 
   def average_points_per_story

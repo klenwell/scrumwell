@@ -6,11 +6,11 @@ module TrelloBoardHelper
 
     if scrummy_board && scrum_board.present?
       opts = { class: 'scrummy board text-success' }
-      link_to material_icon.bubble_chart, scrum_board_path(scrum_board), opts
+      link_to scrum_icon, scrum_board_path(scrum_board), opts
     elsif scrummy_board
-      format('<span class="scrummy">%s</span>', material_icon.bubble_chart).html_safe
+      format('<span class="scrummy">%s</span>', scrum_icon).html_safe
     else
-      format('<span class="text-secondary">%s</span>', material_icon.table_chart).html_safe
+      format('<span class="text-secondary">%s</span>', trello_icon).html_safe
     end
   end
   # rubocop: enable Rails/OutputSafety, Metrics/AbcSize
