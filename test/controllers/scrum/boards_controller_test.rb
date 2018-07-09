@@ -45,7 +45,20 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
+    # Arrange
+    # TODO: Properly set up fixtures so all these stubs aren't required.
+    mock_sprint_backlog = stub(story_points: 0)
+    mock_board_backlog_stories = stub(count: 0)
+    mock_board_backlog = stub(stories: mock_board_backlog_stories)
+    ScrumBoard.any_instance.stubs(:sprint_backlog).returns(mock_sprint_backlog)
+    ScrumBoard.any_instance.stubs(:backlog_points).returns(0)
+    ScrumBoard.any_instance.stubs(:estimate_wish_heap_points).returns(0)
+    ScrumBoard.any_instance.stubs(:backlog).returns(mock_board_backlog)
+
+    # Act
     get scrum_boards_url
+
+    # Assert
     assert_response :success
   end
 

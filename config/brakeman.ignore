@@ -1,25 +1,6 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "Cross-Site Scripting",
-      "warning_code": 4,
-      "fingerprint": "74e111a9fa5f0b8929b02d7f533260a328c3ff7dede956ee6a92e11f4bc1f09b",
-      "check_name": "LinkToHref",
-      "message": "Potentially unsafe model attribute in link_to href",
-      "file": "app/views/scrum/boards/index.html.erb",
-      "line": 22,
-      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
-      "code": "link_to(ScrumBoard.new.trello_url, ScrumBoard.new.trello_url)",
-      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":9,"file":"app/controllers/scrum/boards_controller.rb"}],
-      "location": {
-        "type": "template",
-        "template": "scrum/boards/index"
-      },
-      "user_input": "ScrumBoard.new.trello_url",
-      "confidence": "Weak",
-      "note": ""
-    },
-    {
       "warning_type": "Redirect",
       "warning_code": 18,
       "fingerprint": "84fb0844c9dbcf8fb81e8ffab2592de1984b5dc4d4569f4692cf64a1a9b6ccbe",
@@ -57,8 +38,27 @@
       "user_input": "ScrumBoard.find(params[:id]).trello_url",
       "confidence": "Weak",
       "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "f6527a13ec4724d38a6470bf7b7d384ae0c112b94cf766750040e4030e518150",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in link_to href",
+      "file": "app/views/scrum/boards/index.html.erb",
+      "line": 33,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(trello_icon, ScrumBoard.new.trello_url, :title => \"visit Trello board\")",
+      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":9,"file":"app/controllers/scrum/boards_controller.rb"}],
+      "location": {
+        "type": "template",
+        "template": "scrum/boards/index"
+      },
+      "user_input": "ScrumBoard.new.trello_url",
+      "confidence": "Weak",
+      "note": ""
     }
   ],
-  "updated": "2018-07-07 14:50:44 -0700",
+  "updated": "2018-07-08 17:58:06 -0700",
   "brakeman_version": "4.3.1"
 }
