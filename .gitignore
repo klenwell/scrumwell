@@ -47,3 +47,5 @@ bower.json
 # Ignore node_modules
 node_modules/
 
+# Ignore Google OAuth Credentials File
+config/google-client_id.json
