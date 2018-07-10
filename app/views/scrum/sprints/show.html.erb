@@ -14,12 +14,27 @@
       <dd><%= @scrum_sprint.ended_on %></dd>
       <dt><strong>Last Trello Pull</strong></dt>
       <dd><%= @scrum_sprint.last_pulled_at %></dd>
+      <dt><strong>Notes</strong></dt>
+      <dd><%= @scrum_sprint.notes || '(no notes)' %></dd>
     </dl>
   </div>
   <div class="col-sm">
     <%# TODO: Button to pull info from Trello %>
-    <h4><span class="badge badge-pill badge-primary"><%= @scrum_sprint.stories.count %></span> User Stories</h4>
-    <h4><span class="badge badge-pill badge-success"><%= @scrum_sprint.story_points %></span> Story Points</h4>
+    <h4><span class="badge badge-pill badge-light">
+      <%= @scrum_sprint.story_points_committed || 'N/A' %></span> Story Points Committed
+    </h4>
+    <h4><span class="badge badge-pill badge-success">
+      <%= @scrum_sprint.story_points_completed %></span> Story Points Completed
+    </h4>
+    <% unless @scrum_sprint.current? %>
+      <h4><span class="badge badge-pill badge-info">
+        <%= format_avg_velocity(@scrum_sprint) %></span>
+        <%= ScrumBoard::NUM_SPRINTS_FOR_AVG_VELOCITY %>-Sprint Avg Velocity
+      </h4>
+    <% end %>
+    <h4><span class="badge badge-pill badge-info">
+      <%= @scrum_sprint.average_story_size %></span> Average Story Size
+    </h4>
   </div>
 </div>
 
@@ -27,5 +42,5 @@
 <%= render partial: "scrum/user_stories/table", locals: {stories: @scrum_sprint.stories} %>
 
 <div class="actions">
-  <%= link_to 'Backlog', scrum_backlog_path(@scrum_sprint.backlog), role: 'button', class: 'btn btn-info ml-2' %>
+  <%= link_to 'Scrum Board', scrum_board_path(@scrum_sprint.board), role: 'button', class: 'btn btn-info ml-2' %>
 </div>

@@ -7,12 +7,13 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 SCRUMWELL_TRELLO_BOARD_ID = '5b26fe3ad86bfdbb5a8290b1'
 
-scrumwell_backlog = ScrumBacklog.find_by_trello_board_id(SCRUMWELL_TRELLO_BOARD_ID)
-if scrumwell_backlog
-  puts 'Destroying existing Scrumwell backlog.'
-  scrumwell_backlog.destroy
+scrumwell_board = ScrumBoard.find_by_trello_board_id(SCRUMWELL_TRELLO_BOARD_ID)
+if scrumwell_board
+  puts 'Destroying existing Scrumwell board.'
+  scrumwell_board.destroy
 end
 
 scrumwell_trello_board = TrelloService.board(SCRUMWELL_TRELLO_BOARD_ID)
-scrumwell_backlog = ScrumBacklog.create_from_trello_board(scrumwell_trello_board)
-puts format('Created Scrumwell backlog with %s sprints', scrumwell_backlog.sprints.count)
+scrumwell_board = ScrumBoard.create_from_trello_board(scrumwell_trello_board)
+
+puts format('Created Scrumwell backlog with %s sprints', scrumwell_board.sprints.count)

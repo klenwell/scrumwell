@@ -16,7 +16,7 @@
         <td><%= link_to board.url, board.url %></td>
         <td><%= board.last_activity_date %></td>
         <td>
-          <%= link_to material_icon.web_asset, trello_boards_show_path(board.id) %>
+          <%= link_to show_icon, trello_boards_show_path(board.id) %>
         </td>
       </tr>
     <% end %>

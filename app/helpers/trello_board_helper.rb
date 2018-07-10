@@ -1,17 +1,19 @@
 module TrelloBoardHelper
-  def trello_board_icon(board)
-    scrummy_board = ScrumBacklog.scrummy_trello_board?(board)
-    backlog = ScrumBacklog.find_by(trello_board_id: board.id)
+  # rubocop: disable Rails/OutputSafety
+  def trello_board_icon(trello_board)
+    scrummy_board = ScrumBoard.scrummy_trello_board?(trello_board)
+    scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)
 
-    if scrummy_board && backlog.present?
-      opts = { class: 'scrummy backlog text-success' }
-      link_to material_icon.bubble_chart, scrum_backlog_path(backlog), opts
+    if scrummy_board && scrum_board.present?
+      opts = { class: 'scrummy board text-success' }
+      link_to scrum_icon, scrum_board_path(scrum_board), opts
     elsif scrummy_board
-      format('<span class="scrummy">%s</span>', material_icon.bubble_chart).html_safe
+      format('<span class="scrummy">%s</span>', scrum_icon).html_safe
     else
-      format('<span class="text-secondary">%s</span>', material_icon.table_chart).html_safe
+      format('<span class="text-secondary">%s</span>', trello_icon).html_safe
     end
   end
+  # rubocop: enable Rails/OutputSafety
 
   def board_org_link(board)
     if board.organization_id

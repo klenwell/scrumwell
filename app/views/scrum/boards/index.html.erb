@@ -1,0 +1,38 @@
+<h2>Scrum Boards</h2>
+<p><%= @scrum_boards.count %> boards listed<p>
+<p><%= link_to 'Add Scrum Backlog', new_scrum_board_path, role: 'button', class: 'btn btn-primary' %></p>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Sprints</th>
+      <th scope="col">Avg Velocity</th>
+      <th scope="col">Total WIP Points</th>
+      <th scope="col">Backlog Stories</th>
+      <th scope="col">Wish Heap Stories</th>
+      <th scope="col">Created</th>
+      <th scope="col">Last Pull</th>
+      <th scope="col" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @scrum_boards.each do |board| %>
+      <tr>
+        <th scope="row"><%= board.name %></th>
+        <td><%= board.sprints.count %></td>
+        <td><%= board.average_velocity %></td>
+        <td><%= board.total_work_in_progress_points %></td>
+        <td><%= board.backlog.stories.count %></td>
+        <td><%= board.wish_heap_story_count %></td>
+        <td><%= board.created_at.to_date %></td>
+        <td><%= board.last_pulled_at %></td>
+        <td>
+          <%= link_to show_icon, board, { title: 'view board' } %>
+          <%= link_to edit_icon, edit_scrum_board_path(board), { title: 'edit board' } %>
+          <%= link_to trello_icon, board.trello_url, { title: 'visit Trello board' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

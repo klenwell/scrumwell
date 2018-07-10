@@ -1,0 +1,34 @@
+<div class="page-header">
+  <h2>Board for <span class="text-primary"><%= @scrum_board.name %></span></h2>
+  <p><%= link_to 'Edit', edit_scrum_board_path(@scrum_board), role: 'button', class: 'btn btn-primary' %></p>
+</div>
+
+<div class="row">
+  <div class="col-sm">
+    <dl class="dl-horizontal">
+      <dt><strong>Trello URL</strong></dt>
+      <dd><%= link_to @scrum_board.trello_url, @scrum_board.trello_url %></dd>
+      <dt><strong>Last Trello Pull</strong></dt>
+      <dd><%= @scrum_board.last_pulled_at %></dd>
+    </dl>
+  </div>
+  <div class="col-sm">
+    <%# TODO: Future story. Need scrum_board_pull_trello_path %>
+    <%#= form_for @scrum_board, url: scrum_board_path(@scrum_board), method: :put, html: { class: "form-inline" } do |f| %>
+
+      <%#= f.hidden_field :id, value: @scrum_board.id %>
+      <%#= f.submit "Pull from Trello", class: "btn btn-warning ml-2" %>
+    <%# end %>
+    <h4>
+      <span class="badge badge-pill badge-primary"><%= @scrum_board.wish_heap_story_count %></span>
+      Stories in Wish Heap
+    </h4>
+  </div>
+</div>
+
+<h3>Sprints</h3>
+<%= render partial: "scrum/sprints/table", locals: {sprints: @scrum_board.sprints} %>
+
+<div class="actions">
+  <%= link_to 'Index', scrum_boards_path, role: 'button', class: 'btn btn-light ml-2' %>
+</div>

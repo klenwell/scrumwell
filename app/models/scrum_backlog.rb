@@ -1,76 +1,55 @@
 class ScrumBacklog < ApplicationRecord
-  has_many :scrum_sprints, -> { order(ended_on: :desc) }, dependent: :destroy,
-                                                          inverse_of: :scrum_backlog
+  belongs_to :scrum_board
+  has_many :user_stories, -> { order(trello_pos: :asc) }, as: :queue,
+                                                          dependent: :destroy,
+                                                          inverse_of: :queue
 
-  attr_accessor :api
-  alias_attribute :sprints, :scrum_sprints
+  alias_attribute :board, :scrum_board
+  alias_attribute :stories, :user_stories
 
-  DEFAULT_SPRINT_DURATION = 2.weeks
-
-  validates :name, :trello_board_id, :trello_url, presence: true
-  validate :trello_url_is_valid
-
-  after_initialize do |backlog|
-    backlog.api = TrelloService.new
-  end
-
+  #
   # Class Methods
-  def self.create_from_trello_board(trello_board)
-    backlog = ScrumBacklog.new(trello_board_id: trello_board.id,
-                               trello_url: trello_board.url,
-                               name: trello_board.name,
-                               last_board_activity_at: trello_board.last_activity_date,
-                               last_pulled_at: Time.now.utc)
-    backlog.save!
+  #
+  def self.update_or_create_from_trello_list(scrum_board, trello_list)
+    backlog = ScrumBacklog.find_by(trello_list_id: trello_list.id)
 
-    trello_board.lists.each do |list|
-      if ScrumSprint.sprinty_trello_list?(list)
-        ScrumSprint.update_or_create_from_trello_list(backlog, list)
-      end
-    end
-
-    backlog
-  end
-
-  def self.scrummy_trello_board?(trello_board)
-    # A scrummy board will contain these lists: wish heap, backlog, current
-    scrummy_list_names = ['wish heap', 'backlog', 'current']
-    board_list_names = trello_board.lists.map { |list| list.name.downcase.strip }
-
-    scrummy_list_names.each do |required_name|
-      return false unless board_list_names.any? { |list_name| list_name.include? required_name }
-    end
-
-    true
-  end
-
-  def self.by_trello_board_or_new(trello_board)
-    backlog = ScrumBacklog.find_by(trello_board_id: trello_board.id)
-
-    if backlog
-      backlog.trello_url = trello_board.url
-      backlog.last_board_activity_at = trello_board.last_activity_date
-      backlog.last_pulled_at = Time.now.utc
+    if backlog.present?
+      backlog.update_from_trello_list(trello_list)
+      backlog.save_stories_from_trello_list(trello_list)
     else
-      backlog = ScrumBacklog.create_from_trello_board(trello_board)
+      backlog = ScrumBacklog.create_from_trello_list(scrum_board, trello_list)
     end
 
     backlog
   end
 
-  # Instance Methods
-  # Live board data from Trello API
-  def live_board
-    api.board(trello_id)
+  def self.create_from_trello_list(scrum_board, trello_list)
+    backlog = ScrumBacklog.create(scrum_board_id: scrum_board.id,
+                                  trello_list_id: trello_list.id,
+                                  trello_pos: trello_list.pos,
+                                  name: trello_list.name,
+                                  last_pulled_at: Time.now.utc)
+    backlog.save_stories_from_trello_list(trello_list)
+    backlog
   end
 
-  private
+  #
+  # Instance Methods
+  #
+  def update_from_trello_list(trello_list)
+    update(scrum_board_id: scrum_board.id,
+           name: trello_list.name,
+           trello_pos: trello_list.pos,
+           last_pulled_at: Time.now.utc)
+  end
 
-  # Custom Validators
-  def trello_url_is_valid
-    return if trello_url.nil?
-    url_start = 'https://trello.com/b'
-    error_message = 'must be valid Trello url'
-    errors.add(:trello_url, error_message) unless trello_url.downcase.start_with?(url_start)
+  def save_stories_from_trello_list(trello_list)
+    trello_list.cards.each do |card|
+      UserStory.update_or_create_from_trello_card(self, card) if UserStory.user_story_card?(card)
+    end
+  end
+
+  def story_points
+    stories.sum(&:points)
   end
 end

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ScrumBacklogTest < ActiveSupport::TestCase
+class WishHeapTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

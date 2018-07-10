@@ -3,7 +3,16 @@ namespace :trello do
   default_member = 'me'
   kwoss_org_id = '5129323d688a384c63007609'
   scrumwell_board_id = '5b26fe3ad86bfdbb5a8290b1'
-  agile_tools_plugin_id = '59d4ef8cfea15a55b0086614'
+
+  desc "Counts wish heap stories for given board"
+  task :wish_heap, [:board_id] => :environment do |_, args|
+    args.with_defaults(board_id: scrumwell_board_id)
+
+    trello_board = TrelloService.board(args[:board_id])
+    board = ScrumBoard.by_trello_board_or_create(trello_board)
+
+    puts format("Board %s Wish Heap stories: %d", board.name, board.wish_heap.stories.length)
+  end
 
   desc "Counts story points in backlog info for given board"
   task :backlog, [:board_id] => :environment do |_, args|
