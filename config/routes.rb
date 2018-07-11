@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  get 'sessions/new'
+  get 'sessions/create'
+  get 'sessions/destroy'
+  get 'sessions/failure'
   # Scrum Routes
   # http://guides.rubyonrails.org/routing.html#controller-namespaces-and-routing
   namespace :scrum do
