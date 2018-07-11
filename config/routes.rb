@@ -1,9 +1,5 @@
 Rails.application.routes.draw do
 
-  get 'sessions/new'
-  get 'sessions/create'
-  get 'sessions/destroy'
-  get 'sessions/failure'
   # Scrum Routes
   # http://guides.rubyonrails.org/routing.html#controller-namespaces-and-routing
   namespace :scrum do
@@ -20,6 +16,12 @@ Rails.application.routes.draw do
   get '/trello/boards/:id', to: 'trello#boards_show', as: 'trello_boards_show'
   get '/trello/orgs', to: 'trello#orgs_index'
   get '/trello/orgs/:id/boards', to: 'trello#orgs_boards_index', as: 'trello_orgs_boards'
+
+  # Authentication
+  get '/authenticate', to: 'sessions#new', as: :auth_confirm
+  get '/auth/:provider/callback', to: 'sessions#create'
+  get '/sign_out', to: 'sessions#destroy'
+  get '/auth/failure', to: 'sessions#failure'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'home#index'

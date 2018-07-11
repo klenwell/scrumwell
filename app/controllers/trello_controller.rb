@@ -1,4 +1,6 @@
 class TrelloController < ApplicationController
+  before_action :authenticate
+
   def boards_index
     @trello = TrelloService.new
 
