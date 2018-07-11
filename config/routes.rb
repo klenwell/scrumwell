@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   # Authentication
   get '/authenticate', to: 'sessions#new', as: :auth_confirm
   get '/auth/:provider/callback', to: 'sessions#create'
-  get '/sign_out', to: 'sessions#destroy'
+  get '/sign_out', to: 'sessions#destroy', as: :sign_out
   get '/auth/failure', to: 'sessions#failure'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

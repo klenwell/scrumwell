@@ -5,7 +5,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
            Rails.application.credentials.google_client_secret
 end
 
-# Catch failure errors in dev. (E.g. user cancels authorization on Google page.)
+# Catch failure errors in dev (e.g. user cancels authorization on Google page.)
 # http://stackoverflow.com/a/11028187/1093087
 OmniAuth.config.on_failure = Proc.new { |env|
   OmniAuth::FailureEndpoint.new(env).redirect_to_failure

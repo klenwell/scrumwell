@@ -32,4 +32,12 @@
       </li>
     </div>
   </div>
+
+  <span class="auth">
+    <% if signed_in? %>
+      <%= link_to 'Logout', sign_out_path, class: 'btn btn-light' %>
+    <% else %>
+      <%= link_to 'Login', google_sign_in_path, class: 'btn btn-outline-light', id: 'button-login' %>
+    <% end %>
+  </span>
 </nav>

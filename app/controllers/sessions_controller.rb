@@ -9,6 +9,7 @@ class SessionsController < ApplicationController
     if google_auth
       auth_token = google_auth[:credentials][:token]
       sign_in auth_token
+      flash[:success] = 'You have been signed in.'
     else
       redirect_to auth_failure_path
     end

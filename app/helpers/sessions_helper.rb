@@ -4,11 +4,15 @@ module SessionsHelper
     redirect_to root_path
   end
 
-  def signed_in?
-    true if session[:auth_token]
-  end
-
   def sign_out
     session[:auth_token] = nil
+  end
+
+  def signed_in?
+    session[:auth_token].present?
+  end
+
+  def google_sign_in_path
+    '/auth/google_oauth2'
   end
 end
