@@ -17,6 +17,15 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
+  # Mock authentication.
+  def sign_in
+    ApplicationController.any_instance.stubs(:signed_in?).returns(true)
+  end
+
+  def sign_out
+    ApplicationController.any_instance.stubs(:signed_in?).returns(false)
+  end
+
   # Add more helper methods to be used by all tests here...
   # rubocop: disable Metrics/AbcSize
   def mock_trello_board(params={})

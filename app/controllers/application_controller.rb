@@ -2,8 +2,6 @@ class ApplicationController < ActionController::Base
   include SessionsHelper
 
   def authenticate
-    unless signed_in?
-      redirect_to auth_confirm_path
-    end
+    redirect_to auth_confirm_path unless signed_in?
   end
 end

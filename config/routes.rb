@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   # Authentication
   get '/authenticate', to: 'sessions#new', as: :auth_confirm
-  get '/auth/:provider/callback', to: 'sessions#create'
+  get '/auth/:provider/callback', to: 'sessions#create', as: :auth_callback
   get '/sign_out', to: 'sessions#destroy', as: :sign_out
   get '/auth/failure', to: 'sessions#failure'
 
