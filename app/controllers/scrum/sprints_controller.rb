@@ -9,6 +9,12 @@ module Scrum
       @scrum_sprints = ScrumSprint.all
     end
 
+    # GET /scrum/boards/:board_id/sprints/new
+    def new
+      @scrum_sprint = ScrumSprint.new
+      @scrum_sprint.scrum_board = ScrumBoard.find(params[:board_id])
+    end
+
     # GET /scrum/sprints/1
     # GET /scrum/sprints/1.json
     def show; end

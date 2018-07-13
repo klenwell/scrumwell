@@ -1,0 +1,89 @@
+<%= form_with(model: scrum_sprint,
+              url: (scrum_sprint.new_record? ? scrum_board_sprints_path(scrum_sprint.scrum_board, scrum_sprint): scrum_sprint),
+              local: true) do |form| %>
+
+  <% if scrum_sprint.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(scrum_sprint.errors.count, "error") %> prevented this sprint from being saved:</h2>
+
+      <ul>
+      <% scrum_sprint.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.hidden_field :scrum_board_id, value: scrum_sprint.scrum_board.id %>
+
+  <div class="form-group row">
+    <%= form.label :name, class: 'col-sm-2 col-form-label' %>
+    <div class="col-sm-4">
+      <%= form.text_field :name, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-2">
+      <label>Story Points</label>
+    </div>
+    <div class="col-sm-2">
+      <%= form.text_field :story_points_committed,
+                          class: 'form-control',
+                          placeholder: 'Committed' %>
+    </div>
+    <div class="col-sm-2">
+      <%= form.text_field :story_points_completed,
+                          class: 'form-control',
+                          placeholder: 'Completed' %>
+    </div>
+    <div class="col-sm-2">
+      <%= form.text_field :average_story_size,
+                          class: 'form-control',
+                          placeholder: 'Average Story Size' %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-2">
+      <label>Backlog Stories</label>
+    </div>
+    <div class="col-sm-2">
+      <%= form.text_field :backlog_stories_count,
+                          class: 'form-control',
+                          placeholder: 'Number' %>
+    </div>
+    <div class="col-sm-2">
+      <%= form.text_field :backlog_story_points,
+                          class: 'form-control',
+                          placeholder: 'Points' %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-2">
+      <label>Wish Heap Stories</label>
+    </div>
+    <div class="col-sm-2">
+      <%= form.text_field :wish_heap_stories_count,
+                          class: 'form-control',
+                          placeholder: 'Number' %>
+    </div>
+    <div class="col-sm-2">
+      <%= form.text_field :wish_heap_story_points,
+                          class: 'form-control',
+                          placeholder: 'Points' %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= form.label :notes, class: 'col-sm-2 col-form-label' %>
+    <div class="col-sm-10">
+      <%= form.text_field :notes, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Submit", class: "btn btn-primary ml-2" %>
+  </div>
+<% end %>
