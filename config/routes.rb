@@ -17,6 +17,12 @@ Rails.application.routes.draw do
   get '/trello/orgs', to: 'trello#orgs_index'
   get '/trello/orgs/:id/boards', to: 'trello#orgs_boards_index', as: 'trello_orgs_boards'
 
+  # Authentication
+  get '/authenticate', to: 'sessions#new', as: :auth_confirm
+  get '/auth/:provider/callback', to: 'sessions#create', as: :auth_callback
+  get '/sign_out', to: 'sessions#destroy', as: :sign_out
+  get '/auth/failure', to: 'sessions#failure'
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'home#index'
 end

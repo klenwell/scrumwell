@@ -1,5 +1,6 @@
 module Scrum
   class UserStoriesController < ApplicationController
+    before_action :authenticate
     before_action :set_user_story, only: [:show]
 
     # GET /scrum/user_stories/1

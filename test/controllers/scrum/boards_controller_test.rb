@@ -5,12 +5,25 @@ require 'test_helper'
 
 class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    sign_in
     stub_trello_response
 
     @scrum_board = scrum_boards(:scrummy)
     @trello_board = mock_trello_board(id: 'scrummy-board',
                                       name: 'Scrummy Board',
                                       list_names: ['wish heap', 'backlog', 'current'])
+  end
+
+  test "expects unauthenticated user to be unable to visit the index" do
+    # Arrange
+    sign_out
+
+    # Act
+    get scrum_boards_url
+
+    # Assert
+    assert_response :redirect
+    assert_redirected_to 'http://www.example.com/authenticate'
   end
 
   test "expects to create scrum board from Trello Board" do

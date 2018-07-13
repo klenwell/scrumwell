@@ -1,5 +1,6 @@
 module Scrum
   class BoardsController < ApplicationController
+    before_action :authenticate
     before_action :set_scrum_board, only: [:show, :edit, :update, :destroy]
 
     # GET /scrum_boards
