@@ -14,4 +14,10 @@ module ApplicationHelper
   def edit_icon
     material_icon.edit
   end
+
+  def bootstrap_datepicker(form, field, opts)
+    placeholder = opts.fetch(:placeholder, 'YYYY-MM-DD')
+    data = {'provide' => 'datepicker', 'date-format' => 'yyyy-mm-dd', 'date-autoclose' => 'true'}
+    form.text_field field, class: 'form-control', placeholder: placeholder, data: data
+  end
 end

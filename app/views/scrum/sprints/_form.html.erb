@@ -25,6 +25,22 @@
 
   <div class="form-group row">
     <div class="col-sm-2">
+      <label>Sprint Dates</label>
+    </div>
+    <div class="col-sm-2">
+      <%= bootstrap_datepicker form, :started_on, { placeholder: 'Start On' } %>
+    </div>
+    <div class="col-sm-1 text-center pt-2">
+      to
+    </div>
+    <div class="col-sm-2">
+      <%= bootstrap_datepicker form, :ended_on, { placeholder: 'End On' } %>
+    </div>
+
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-2">
       <label>Story Points</label>
     </div>
     <div class="col-sm-2">
