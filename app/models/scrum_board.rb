@@ -12,8 +12,6 @@ class ScrumBoard < ApplicationRecord
   NUM_SPRINTS_FOR_AVG_VELOCITY = 3
 
   validates :name, presence: true
-  validates :trello_board_id, presence: true
-  validates :trello_url, presence: true
   validate :trello_url_is_valid
 
   # Class Methods
@@ -68,17 +66,73 @@ class ScrumBoard < ApplicationRecord
   #
   # Instance Methods
   #
+  # Trello Methods
+  # Live board data from Trello API
+  def trello_board
+    return nil unless trello_board_id
+    TrelloService.board(trello_board_id)
+  end
+
+  def update_from_trello_board(board)
+    update(trello_url: board.url,
+           last_board_activity_at: board.last_activity_date,
+           last_pulled_at: Time.now.utc)
+  end
+
+  def update_queues_from_trello_board(board)
+    board.lists.each do |list|
+      if ScrumBoard.wishy_trello_list?(list)
+        WishHeap.update_or_create_from_trello_list(self, list)
+      elsif ScrumBoard.backloggy_trello_list?(list)
+        ScrumBacklog.update_or_create_from_trello_list(self, list)
+      elsif ScrumBoard.sprinty_trello_list?(list)
+        ScrumSprint.update_or_create_from_trello_list(self, list)
+      end
+    end
+  end
+
+  # Wish Heap Methods
   def wish_heap
     wish_heaps.first
   end
 
+  def wish_heap_story_count
+    wish_heaps.sum(&:story_count)
+  end
+
+  def estimate_wish_heap_points
+    # Avg Pts per Story * Num Wish Stories
+    return nil if wish_heap.nil?
+    avg_pts_story = average_points_per_story
+    return nil if avg_pts_story.nil? || wish_heap.stories.empty?
+    (avg_pts_story * wish_heap.stories.length).round
+  end
+
+  def total_work_in_progress_points
+    sprint_backlog_pts = sprint_backlog ? sprint_backlog.story_points : 0
+    sprint_backlog_pts + backlog_points.to_i + estimate_wish_heap_points.to_i
+  end
+
+  # Backlog Methods
+  def backlog_story_count
+    backlog ? backlog.stories.count : 0
+  end
+
+  def backlog_points
+    # Safe navigation: https://stackoverflow.com/q/37977721/1093087
+    backlog&.story_points
+  end
+
+  # Sprint Backlog Methods
   def sprint_backlog
     # This is the "current sprint" list in Trello Board.
+    return nil unless trello_board
     needle = 'current'
     trello_list = trello_board.lists.find { |list| list.name.downcase.include? needle }
     ScrumSprint.sprint_backlog_from_trello_list(self, trello_list)
   end
 
+  # Current Sprint Methods
   # rubocop: disable Style/SafeNavigation
   # Simpler just to check if sprint_completed than to try to use SafeNav &. syntax.
   def current_sprint
@@ -93,83 +147,32 @@ class ScrumBoard < ApplicationRecord
   end
   # rubocop: enable Style/SafeNavigation
 
-  def completed_sprints
-    sprints.to_a.keep_if(&:over?)
-  end
-
-  def wish_heap_story_count
-    wish_heaps.sum(&:story_count)
-  end
-
-  def backlog_points
-    # Safe navigation: https://stackoverflow.com/q/37977721/1093087
-    backlog&.story_points
-  end
-
-  def update_from_trello_board(trello_board)
-    update(trello_url: trello_board.url,
-           last_board_activity_at: trello_board.last_activity_date,
-           last_pulled_at: Time.now.utc)
-  end
-
-  def update_queues_from_trello_board(trello_board)
-    trello_board.lists.each do |list|
-      if ScrumBoard.wishy_trello_list?(list)
-        WishHeap.update_or_create_from_trello_list(self, list)
-      elsif ScrumBoard.sprinty_trello_list?(list)
-        ScrumSprint.update_or_create_from_trello_list(self, list)
-      elsif ScrumBoard.backloggy_trello_list?(list)
-        ScrumBacklog.update_or_create_from_trello_list(self, list)
-      end
-    end
-  end
-
-  def recompute_sprint_metrics
-    sprints.each(&:recompute!)
-  end
-
   def story_points_committed
     current_sprint.story_points
   end
 
-  def average_velocity_for_sprint(sprint)
-    previous_sprints = []
-
-    completed_sprints.each do |completed_sprint|
-      next unless sprint == completed_sprint || sprint.ended_after?(completed_sprint)
-      previous_sprints << completed_sprint
-      break if previous_sprints.length >= NUM_SPRINTS_FOR_AVG_VELOCITY
-    end
-
-    return nil if previous_sprints.blank?
-    1.0 * previous_sprints.sum(&:story_points) / previous_sprints.length
+  # Completed Sprints
+  def completed_sprints
+    sprints.to_a.keep_if(&:over?)
   end
 
+  # Board Metrics
   def average_velocity
     last_sprint = completed_sprints.first
     return nil unless last_sprint
     average_velocity_for_sprint(last_sprint)
   end
 
-  def estimate_wish_heap_points
-    # Avg Pts per Story * Num Wish Stories
-    avg_pts_story = average_points_per_story
-    return nil if avg_pts_story.nil? || wish_heap.stories.empty?
-    (avg_pts_story * wish_heap.stories.length).round
-  end
-
-  def total_work_in_progress_points
-    sprint_backlog.story_points + backlog_points + estimate_wish_heap_points
-  end
-
   def average_points_per_story
+    return nil if sprints.empty?
+
     total_story_points = 0
     user_story_count = 0
     sprint_count = 0
 
     sprints.each do |sprint|
       total_story_points += sprint.story_points
-      user_story_count += sprint.stories.length
+      user_story_count += sprint.story_count
       sprint_count += 1
       break if sprint_count >= NUM_SPRINTS_FOR_AVG_VELOCITY + 1
     end
@@ -177,9 +180,24 @@ class ScrumBoard < ApplicationRecord
     1.0 * total_story_points / user_story_count
   end
 
-  # Live board data from Trello API
-  def trello_board
-    TrelloService.board(trello_board_id)
+  # Other Methods
+  def recompute_sprint_metrics
+    sprints.each(&:recompute!)
+  end
+
+  def average_velocity_for_sprint(sprint)
+    previous_sprints_points = []
+    previous_sprints_points << sprint.story_points if sprint.over?
+
+    completed_sprints.each do |completed_sprint|
+      next if completed_sprint == sprint || completed_sprint.ended_after?(sprint)
+      story_points = completed_sprint.story_points_completed || completed_sprint.story_points
+      previous_sprints_points << story_points
+      break if previous_sprints_points.length >= NUM_SPRINTS_FOR_AVG_VELOCITY
+    end
+
+    return nil if previous_sprints_points.blank?
+    1.0 * previous_sprints_points.sum / previous_sprints_points.length
   end
 
   private
