@@ -120,6 +120,7 @@ class ScrumSprint < ApplicationRecord
     set_computed_fields_for_current_sprint
   end
 
+  # rubocop: disable Metrics/AbcSize
   def set_computed_fields_for_completed_sprint
     return unless over?
     saved_story_pts = story_points_completed.to_i
@@ -130,6 +131,7 @@ class ScrumSprint < ApplicationRecord
     self.average_story_size = compute_average_story_size unless saved_avg_story_size > 0
     self.wish_heap_story_points = compute_wish_heap_points
   end
+  # rubocop: enable Metrics/AbcSize
 
   # rubocop: disable Metrics/AbcSize
   def set_computed_fields_for_current_sprint
@@ -151,6 +153,7 @@ class ScrumSprint < ApplicationRecord
     board.story_points_committed if current? && age.days <= 2.days
   end
 
+  # rubocop: disable Metrics/AbcSize
   def compute_wish_heap_points
     # wish_heap_points = backlog_story_points / backlog_stories_count * wish_heap_stories_count
     # If we have saved values available to calculate, calculate
@@ -165,6 +168,7 @@ class ScrumSprint < ApplicationRecord
     # If we're current, let the board try to compute
     board.estimate_wish_heap_points if current?
   end
+  # rubocop: enable Metrics/AbcSize
 
   # rubocop: disable Metrics/AbcSize
   def compute_average_story_size

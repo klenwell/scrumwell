@@ -17,7 +17,12 @@ module ApplicationHelper
 
   def bootstrap_datepicker(form, field, opts)
     placeholder = opts.fetch(:placeholder, 'YYYY-MM-DD')
-    data = {'provide' => 'datepicker', 'date-format' => 'yyyy-mm-dd', 'date-autoclose' => 'true'}
+    data = { 'provide' => 'datepicker', 'date-format' => 'yyyy-mm-dd', 'date-autoclose' => 'true' }
     form.text_field field, class: 'form-control', placeholder: placeholder, data: data
+  end
+
+  def or_na(value, opts={})
+    alt = opts.fetch(:alt, 'Not Available')
+    value.presence || tag.span(alt, class: 'text-muted')
   end
 end

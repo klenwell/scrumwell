@@ -185,6 +185,7 @@ class ScrumBoard < ApplicationRecord
     sprints.each(&:recompute!)
   end
 
+  # rubocop: disable Metrics/AbcSize, Metrics/CyclomaticComplexity
   def average_velocity_for_sprint(sprint)
     previous_sprints_points = []
     previous_sprints_points << sprint.story_points if sprint.over?
@@ -199,6 +200,7 @@ class ScrumBoard < ApplicationRecord
     return nil if previous_sprints_points.blank?
     1.0 * previous_sprints_points.sum / previous_sprints_points.length
   end
+  # rubocop: enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
   private
 

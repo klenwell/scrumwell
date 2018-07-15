@@ -7,9 +7,9 @@
   <div class="col-sm">
     <dl class="dl-horizontal">
       <dt><strong>Trello URL</strong></dt>
-      <dd><%= link_to @scrum_board.trello_url, @scrum_board.trello_url %></dd>
+      <dd><%= trello_url_link(@scrum_board) %></dd>
       <dt><strong>Last Trello Pull</strong></dt>
-      <dd><%= @scrum_board.last_pulled_at %></dd>
+      <dd><%= or_na(@scrum_board.last_pulled_at) %></dd>
     </dl>
   </div>
   <div class="col-sm">
