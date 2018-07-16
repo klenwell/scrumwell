@@ -9,6 +9,11 @@ class ScrumSprint < ApplicationRecord
 
   before_save :set_computed_fields
 
+  validates :name, presence: true
+  validates :started_on, presence: true
+  validates :ended_on, presence: true
+  validates :story_points_completed, presence: true
+
   #
   # Class Methods
   #

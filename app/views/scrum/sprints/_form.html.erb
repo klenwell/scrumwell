@@ -2,17 +2,7 @@
               url: (scrum_sprint.new_record? ? scrum_board_sprints_path(scrum_sprint.scrum_board, scrum_sprint): scrum_sprint),
               local: true) do |form| %>
 
-  <% if scrum_sprint.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(scrum_sprint.errors.count, "error") %> prevented this sprint from being saved:</h2>
-
-      <ul>
-      <% scrum_sprint.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= bootstrap_errors_for(scrum_sprint) %>
 
   <%= form.hidden_field :scrum_board_id, value: scrum_sprint.scrum_board.id %>
 

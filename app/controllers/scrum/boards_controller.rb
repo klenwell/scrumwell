@@ -37,7 +37,7 @@ module Scrum
 
       respond_to do |format|
         if @scrum_board.save
-          format.html { redirect_to @scrum_board, notice: 'Backlog was successfully created.' }
+          format.html { redirect_to @scrum_board, notice: 'Board was successfully created.' }
           format.json { render :show, status: :created, location: @scrum_board }
         else
           format.html { render :new }

@@ -10,7 +10,11 @@ class ScrumSprintTest < ActiveSupport::TestCase
     board = scrum_boards(:scrummy)
 
     # Act
-    sprint = ScrumSprint.new(scrum_board_id: board.id)
+    sprint = ScrumSprint.new(scrum_board_id: board.id,
+                             name: 'Test 20180701',
+                             started_on: '2018-07-01',
+                             ended_on: '2018-07-15',
+                             story_points_completed: 10)
 
     # Assert
     assert sprint.valid?, sprint.errors.messages

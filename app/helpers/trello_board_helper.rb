@@ -19,7 +19,7 @@ module TrelloBoardHelper
     if board.organization_id
       link_to board.organization.display_name, board.organization.url
     else
-      'N/A'
+      tag.span('N/A', class: 'text-muted')
     end
   end
 end
