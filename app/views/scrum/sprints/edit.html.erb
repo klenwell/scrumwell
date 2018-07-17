@@ -1,0 +1,6 @@
+<h1>Edit Sprint <span class="text-primary"><%= @scrum_sprint.name %></span></h1>
+<h4>Board <span class="text-primary"><%= @scrum_sprint.scrum_board.name %></span></h4>
+
+<%= render 'form', scrum_sprint: @scrum_sprint %>
+
+<%= link_to 'Back', scrum_board_path(@scrum_sprint.board), class: "btn btn-light mt-2" %>

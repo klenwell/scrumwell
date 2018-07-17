@@ -18,13 +18,15 @@
       <label>Sprint Dates</label>
     </div>
     <div class="col-sm-2">
-      <%= bootstrap_datepicker form, :started_on, { placeholder: 'Start On' } %>
+      <%= bootstrap_datepicker form, :started_on, { aria_describedby: 'startedOnHelp' } %>
+      <small id="startedOnHelp" class="form-text text-muted">Started</small>
     </div>
     <div class="col-sm-1 text-center pt-2">
       to
     </div>
     <div class="col-sm-2">
-      <%= bootstrap_datepicker form, :ended_on, { placeholder: 'End On' } %>
+      <%= bootstrap_datepicker form, :ended_on, { aria_describedby: 'endedOnHelp' } %>
+      <small id="endedOnHelp" class="form-text text-muted">Ended</small>
     </div>
 
   </div>
@@ -36,17 +38,20 @@
     <div class="col-sm-2">
       <%= form.text_field :story_points_committed,
                           class: 'form-control',
-                          placeholder: 'Committed' %>
+                          aria_describedby: 'storyPtsCommitedHelp' %>
+      <small id="storyPtsCommitedHelp" class="form-text text-muted">Committed</small>
     </div>
     <div class="col-sm-2">
       <%= form.text_field :story_points_completed,
                           class: 'form-control',
-                          placeholder: 'Completed' %>
+                          aria_describedby: 'storyPtsCompleteHelp' %>
+      <small id="storyPtsCompleteHelp" class="form-text text-muted">Completed</small>
     </div>
     <div class="col-sm-2">
       <%= form.text_field :average_story_size,
                           class: 'form-control',
-                          placeholder: 'Average Story Size' %>
+                          aria_describedby: 'avgStorySizeHelp' %>
+      <small id="avgStorySizeHelp" class="form-text text-muted">Average Story Size</small>
     </div>
   </div>
 
@@ -57,12 +62,14 @@
     <div class="col-sm-2">
       <%= form.text_field :backlog_stories_count,
                           class: 'form-control',
-                          placeholder: 'Number' %>
+                          aria_describedby: 'backlogStoryCountHelp' %>
+      <small id="backlogStoryCountHelp" class="form-text text-muted">Number</small>
     </div>
     <div class="col-sm-2">
       <%= form.text_field :backlog_story_points,
                           class: 'form-control',
-                          placeholder: 'Points' %>
+                          aria_describedby: 'backlogStoryPtsHelp' %>
+      <small id="backlogStoryPtsHelp" class="form-text text-muted">Points</small>
     </div>
   </div>
 
@@ -73,12 +80,14 @@
     <div class="col-sm-2">
       <%= form.text_field :wish_heap_stories_count,
                           class: 'form-control',
-                          placeholder: 'Number' %>
+                          aria_describedby: 'wishHeapStoryCountHelp' %>
+        <small id="wishHeapStoryCountHelp" class="form-text text-muted">Number</small>
     </div>
     <div class="col-sm-2">
       <%= form.text_field :wish_heap_story_points,
                           class: 'form-control',
-                          placeholder: 'Points' %>
+                          aria_describedby: 'wishHeapStoryPtsHelp' %>
+        <small id="wishHeapStoryPtsHelp" class="form-text text-muted">Points</small>
     </div>
   </div>
 
