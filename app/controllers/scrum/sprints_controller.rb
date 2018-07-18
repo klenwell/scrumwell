@@ -1,7 +1,7 @@
 module Scrum
   class SprintsController < ApplicationController
     before_action :authenticate
-    before_action :set_scrum_sprint, only: [:edit, :show]
+    before_action :set_scrum_sprint, only: [:edit, :update, :show]
 
     # GET /scrum/sprints
     # GET /scrum/sprints.json
@@ -34,6 +34,25 @@ module Scrum
       end
     end
     # rubocop: enable Metrics/AbcSize
+
+    # GET /scrum/sprints/:id/edit
+    def edit; end
+
+    # PATCH/PUT /scrum/sprints/:id
+    # PATCH/PUT /scrum_boards/:id.json
+    def update
+      respond_to do |format|
+        if @scrum_sprint.update(scrum_sprint_params)
+          format.html {
+            redirect_to @scrum_sprint.board, notice: 'Sprint was successfully updated.'
+          }
+          format.json { render :show, status: :ok, location: @scrum_sprint }
+        else
+          format.html { render :edit }
+          format.json { render json: @scrum_sprint.errors, status: :unprocessable_entity }
+        end
+      end
+    end
 
     # GET /scrum/sprints/1
     # GET /scrum/sprints/1.json

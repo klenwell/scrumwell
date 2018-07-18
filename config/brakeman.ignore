@@ -21,6 +21,26 @@
       "note": ""
     },
     {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "c34f6ec9c4f120261d7757c0e13a1105be1195ed80810eb5d5af95696596b412",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/scrum/sprints_controller.rb",
+      "line": 47,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(ScrumSprint.find(params[:id]).board, :notice => \"Sprint was successfully updated.\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Scrum::SprintsController",
+        "method": "update"
+      },
+      "user_input": "ScrumSprint.find(params[:id]).board",
+      "confidence": "High",
+      "note": ""
+    },
+    {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 4,
       "fingerprint": "f6527a13ec4724d38a6470bf7b7d384ae0c112b94cf766750040e4030e518150",
@@ -40,6 +60,6 @@
       "note": ""
     }
   ],
-  "updated": "2018-07-15 17:54:02 -0700",
+  "updated": "2018-07-17 20:23:45 -0700",
   "brakeman_version": "4.3.1"
 }
