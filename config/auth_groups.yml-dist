@@ -1,0 +1,7 @@
+# Copy this file: cp -v auth_groups.yml{-dist,}
+# Define user auth groups by email here
+scrum_masters:
+  - TBA@gmail.com
+
+admins:
+  - TBA@gmail.com

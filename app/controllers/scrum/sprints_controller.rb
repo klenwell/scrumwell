@@ -1,6 +1,7 @@
 module Scrum
   class SprintsController < ApplicationController
     before_action :authenticate
+    before_action :auth_scrum_masters, only: [:new, :create, :edit, :update]
     before_action :set_scrum_sprint, only: [:edit, :update, :show]
 
     # GET /scrum/sprints

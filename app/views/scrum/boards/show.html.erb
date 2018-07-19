@@ -1,6 +1,9 @@
 <div class="page-header">
   <h2>Board for <span class="text-primary"><%= @scrum_board.name %></span></h2>
-  <p><%= link_to 'Edit', edit_scrum_board_path(@scrum_board), role: 'button', class: 'btn btn-primary' %></p>
+  <p><%= link_to 'Edit',
+                 edit_scrum_board_path(@scrum_board),
+                 role: 'button',
+                 class: 'btn btn-primary' if scrum_master? %></p>
 </div>
 
 <div class="row">
@@ -29,8 +32,10 @@
 <h3>Sprints</h3>
 
 <div class="actions">
-  <%= link_to 'Add Sprint', new_scrum_board_sprint_path(@scrum_board), role: 'button',
-              class: 'btn btn-success mb-2' %>
+  <%= link_to 'Add Sprint',
+              new_scrum_board_sprint_path(@scrum_board),
+              role: 'button',
+              class: 'btn btn-success mb-2' if scrum_master? %>
 </div>
 
 <%= render partial: "scrum/sprints/table", locals: {sprints: @scrum_board.sprints} %>

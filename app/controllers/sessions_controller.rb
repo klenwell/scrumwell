@@ -7,8 +7,7 @@ class SessionsController < ApplicationController
     google_auth = request.env["omniauth.auth"]
 
     if google_auth
-      auth_token = google_auth[:credentials][:token]
-      sign_in auth_token
+      sign_in google_auth
       flash[:success] = 'You have been signed in.'
     else
       redirect_to auth_failure_path
