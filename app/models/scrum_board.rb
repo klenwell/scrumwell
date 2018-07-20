@@ -34,6 +34,7 @@ class ScrumBoard < ApplicationRecord
                                  last_board_activity_at: trello_board.last_activity_date,
                                  last_pulled_at: Time.now.utc)
     scrum_board.save!
+    logger.info "Created trello board #{scrum_board.name}."
     scrum_board.update_queues_from_trello_board(trello_board)
     scrum_board.recompute_sprint_metrics
     scrum_board

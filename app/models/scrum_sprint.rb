@@ -39,13 +39,14 @@ class ScrumSprint < ApplicationRecord
     ends_on = Date.parse(name)
     starts_on = ends_on - ScrumBoard::DEFAULT_SPRINT_DURATION
 
-    sprint = ScrumSprint.create(scrum_board_id: scrum_board.id,
-                                trello_list_id: trello_list.id,
-                                trello_pos: trello_list.pos,
-                                name: name,
-                                started_on: starts_on,
-                                ended_on: ends_on,
-                                last_pulled_at: Time.now.utc)
+    sprint = ScrumSprint.create!(scrum_board_id: scrum_board.id,
+                                 trello_list_id: trello_list.id,
+                                 trello_pos: trello_list.pos,
+                                 name: name,
+                                 started_on: starts_on,
+                                 ended_on: ends_on,
+                                 story_points_completed: 0,
+                                 last_pulled_at: Time.now.utc)
     sprint.save_stories_from_trello_list(trello_list)
     sprint
   end

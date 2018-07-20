@@ -10,7 +10,7 @@
 SCRUMWELL_TRELLO_BOARD_ID = '5b26fe3ad86bfdbb5a8290b1'
 
 def seed_scrumwell_trello_board
-  scrumwell_board = ScrumBoard.find_by_trello_board_id(SCRUMWELL_TRELLO_BOARD_ID)
+  scrumwell_board = ScrumBoard.find_by(trello_board_id: SCRUMWELL_TRELLO_BOARD_ID)
   if scrumwell_board
     puts 'Destroying existing Scrumwell board.'
     scrumwell_board.destroy
@@ -19,7 +19,9 @@ def seed_scrumwell_trello_board
   scrumwell_trello_board = TrelloService.board(SCRUMWELL_TRELLO_BOARD_ID)
   scrumwell_board = ScrumBoard.create_from_trello_board(scrumwell_trello_board)
 
-  puts format('Created Scrumwell backlog with %s sprints', scrumwell_board.sprints.count)
+  puts format('Created board %s with %s sprints',
+              scrumwell_board.name,
+              scrumwell_board.sprints.count)
 end
 
 # Sample Non-Trello Board
