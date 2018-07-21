@@ -36,7 +36,7 @@
         <td><%= sprint.notes %></td>
         <td>
           <%= link_to show_icon, sprint %>
-          <%#= link_to material_icon.edit, edit_scrum_sprint_path(sprint) %>
+          <%= link_to edit_icon, edit_scrum_sprint_path(sprint) if scrum_master? %>
         </td>
       </tr>
     <% end %>

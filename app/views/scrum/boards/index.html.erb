@@ -1,18 +1,23 @@
 <h2>Scrum Boards</h2>
 <p><%= @scrum_boards.count %> boards listed<p>
-<p><%= link_to 'Add Scrum Backlog', new_scrum_board_path, role: 'button', class: 'btn btn-primary' %></p>
+<p>
+  <%= link_to 'Add Scrum Board',
+               new_scrum_board_path,
+               role: 'button',
+               class: 'btn btn-primary' if scrum_master? %>
+</p>
 
 <table class="table table-sm">
   <thead>
     <tr>
       <th scope="col">Name</th>
-      <th scope="col">Sprints</th>
-      <th scope="col">Avg Velocity</th>
-      <th scope="col">Total WIP Points</th>
-      <th scope="col">Backlog Stories</th>
-      <th scope="col">Wish Heap Stories</th>
-      <th scope="col">Created</th>
-      <th scope="col">Last Pull</th>
+      <th scope="col" class="text-center">Sprints</th>
+      <th scope="col" class="text-center">Avg Velocity</th>
+      <th scope="col" class="text-center">Total WIP Points</th>
+      <th scope="col" class="text-center">Backlog Stories</th>
+      <th scope="col" class="text-center">Wish Heap Stories</th>
+      <th scope="col" class="text-center">Created</th>
+      <th scope="col" class="text-center">Last Pull</th>
       <th scope="col" class="actions"></th>
     </tr>
   </thead>
@@ -20,17 +25,17 @@
     <% @scrum_boards.each do |board| %>
       <tr>
         <th scope="row"><%= board.name %></th>
-        <td><%= board.sprints.count %></td>
-        <td><%= board.average_velocity %></td>
-        <td><%= board.total_work_in_progress_points %></td>
-        <td><%= board.backlog.stories.count %></td>
-        <td><%= board.wish_heap_story_count %></td>
+        <td class="text-right"><%= board.sprints.count %></td>
+        <td class="text-right"><%= number_with_precision(board.average_velocity, precision: 1) %></td>
+        <td class="text-right"><%= board.total_work_in_progress_points %></td>
+        <td class="text-right"><%= board.backlog_story_count %></td>
+        <td class="text-right"><%= board.wish_heap_story_count %></td>
         <td><%= board.created_at.to_date %></td>
-        <td><%= board.last_pulled_at %></td>
+        <td><%= or_na(board.last_pulled_at, {alt: 'N/A'}) %></td>
         <td>
           <%= link_to show_icon, board, { title: 'view board' } %>
-          <%= link_to edit_icon, edit_scrum_board_path(board), { title: 'edit board' } %>
-          <%= link_to trello_icon, board.trello_url, { title: 'visit Trello board' } %>
+          <%= link_to edit_icon, edit_scrum_board_path(board), { title: 'edit board' } if scrum_master? %>
+          <%= link_to trello_icon, board.trello_url, { title: 'visit Trello board' } if board.trello_url %>
         </td>
       </tr>
     <% end %>

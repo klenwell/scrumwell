@@ -49,3 +49,4 @@ node_modules/
 
 # Ignore Google OAuth Credentials File
 config/google-client_id.json
+config/auth_groups.yml

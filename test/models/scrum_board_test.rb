@@ -57,19 +57,6 @@ class ScrumBoardTest < ActiveSupport::TestCase
     assert_equal scrum_board_count_before + 1, ScrumBoard.count
   end
 
-  test "expects scrum board missing trello url to be invalid" do
-    # Arrange
-    trello_board = mock_trello_board
-
-    # Act
-    scrum_board = ScrumBoard.new(trello_board_id: trello_board.id,
-                                 name: trello_board.name)
-
-    # Assert
-    assert_not scrum_board.valid?
-    assert_equal ["can't be blank"], scrum_board.errors.messages[:trello_url]
-  end
-
   test "expects scrum board with invalid trello url to be invalid" do
     # Arrange
     trello_board = mock_trello_board

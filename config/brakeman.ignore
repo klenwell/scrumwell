@@ -3,13 +3,13 @@
     {
       "warning_type": "Redirect",
       "warning_code": 18,
-      "fingerprint": "84fb0844c9dbcf8fb81e8ffab2592de1984b5dc4d4569f4692cf64a1a9b6ccbe",
+      "fingerprint": "30160e37b47a8d61019a60ffafdd2ae3fcd4974e422a6a3714d2c1c05b56ef52",
       "check_name": "Redirect",
       "message": "Possible unprotected redirect",
       "file": "app/controllers/scrum/boards_controller.rb",
-      "line": 39,
+      "line": 40,
       "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
-      "code": "redirect_to(ScrumBoard.by_trello_board_or_create(TrelloService.board(scrum_board_params[:trello_board_id])), :notice => \"Backlog was successfully created.\")",
+      "code": "redirect_to(ScrumBoard.by_trello_board_or_create(TrelloService.board(scrum_board_params[:trello_board_id])), :notice => \"Board was successfully created.\")",
       "render_path": null,
       "location": {
         "type": "method",
@@ -21,22 +21,23 @@
       "note": ""
     },
     {
-      "warning_type": "Cross-Site Scripting",
-      "warning_code": 4,
-      "fingerprint": "923566cbb27a35f8ce76fdde0e4390d220c8ce4c6cba02693126d94599977226",
-      "check_name": "LinkToHref",
-      "message": "Potentially unsafe model attribute in link_to href",
-      "file": "app/views/scrum/boards/show.html.erb",
-      "line": 10,
-      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
-      "code": "link_to(ScrumBoard.find(params[:id]).trello_url, ScrumBoard.find(params[:id]).trello_url)",
-      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"show","line":14,"file":"app/controllers/scrum/boards_controller.rb"}],
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "c34f6ec9c4f120261d7757c0e13a1105be1195ed80810eb5d5af95696596b412",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/scrum/sprints_controller.rb",
+      "line": 47,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(ScrumSprint.find(params[:id]).board, :notice => \"Sprint was successfully updated.\")",
+      "render_path": null,
       "location": {
-        "type": "template",
-        "template": "scrum/boards/show"
+        "type": "method",
+        "class": "Scrum::SprintsController",
+        "method": "update"
       },
-      "user_input": "ScrumBoard.find(params[:id]).trello_url",
-      "confidence": "Weak",
+      "user_input": "ScrumSprint.find(params[:id]).board",
+      "confidence": "High",
       "note": ""
     },
     {
@@ -49,7 +50,7 @@
       "line": 33,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
       "code": "link_to(trello_icon, ScrumBoard.new.trello_url, :title => \"visit Trello board\")",
-      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":9,"file":"app/controllers/scrum/boards_controller.rb"}],
+      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":10,"file":"app/controllers/scrum/boards_controller.rb"}],
       "location": {
         "type": "template",
         "template": "scrum/boards/index"
@@ -59,6 +60,6 @@
       "note": ""
     }
   ],
-  "updated": "2018-07-08 17:58:06 -0700",
+  "updated": "2018-07-17 20:23:45 -0700",
   "brakeman_version": "4.3.1"
 }

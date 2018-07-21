@@ -1,6 +1,7 @@
 module Scrum
   class BoardsController < ApplicationController
     before_action :authenticate
+    before_action :auth_scrum_masters, only: [:new, :create, :edit, :update]
     before_action :set_scrum_board, only: [:show, :edit, :update, :destroy]
 
     # GET /scrum_boards
@@ -37,7 +38,7 @@ module Scrum
 
       respond_to do |format|
         if @scrum_board.save
-          format.html { redirect_to @scrum_board, notice: 'Backlog was successfully created.' }
+          format.html { redirect_to @scrum_board, notice: 'Board was successfully created.' }
           format.json { render :show, status: :created, location: @scrum_board }
         else
           format.html { render :new }

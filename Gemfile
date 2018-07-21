@@ -40,6 +40,9 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'bootstrap', '~> 4.1.1'
 gem 'jquery-rails'
 
+# Bootstrap Datepicker:
+gem 'bootstrap-datepicker-rails'
+
 # Google Material Icons: https://github.com/Angelmmiguel/material_icons
 gem 'material_icons'
 
