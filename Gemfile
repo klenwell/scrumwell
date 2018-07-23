@@ -40,9 +40,6 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'bootstrap', '~> 4.1.1'
 gem 'jquery-rails'
 
-# Bootstrap Datepicker
-gem 'bootstrap-datepicker-rails'
-
 # Bootstrap Forms: https://github.com/bootstrap-ruby/bootstrap_form
 gem "bootstrap_form", ">= 4.0.0.alpha1"
 

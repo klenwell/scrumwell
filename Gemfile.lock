@@ -57,8 +57,6 @@ GEM
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
-    bootstrap-datepicker-rails (1.8.0.1)
-      railties (>= 3.0)
     bootstrap_form (4.0.0.alpha1)
       rails (>= 5.0)
     brakeman (4.3.1)
@@ -278,7 +276,6 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.1.0)
   bootstrap (~> 4.1.1)
-  bootstrap-datepicker-rails
   bootstrap_form (>= 4.0.0.alpha1)
   brakeman
   byebug
