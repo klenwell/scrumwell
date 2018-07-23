@@ -1,28 +1,6 @@
-<%= form_with(model: scrum_board, local: true) do |form| %>
-  <% if scrum_board.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(scrum_board.errors.count, "error") %> prohibited this scrum_board from being saved:</h2>
-
-      <ul>
-      <% scrum_board.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="form-group">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: 'form-control' %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :trello_url %>
-    <%= form.text_field :trello_url, class: 'form-control', aria_describedby: 'trelloUrlHelp' %>
-    <small id="trelloUrlHelp" class="form-text text-muted">Trello Board URL</small>
-  </div>
-
-  <div class="actions">
-    <%= form.submit "Update", class: "btn btn-primary ml-2" %>
-  </div>
+<%= bootstrap_form_with(model: scrum_board, local: true) do |form| %>
+  <%= form.alert_message "Please fix the errors below." %>
+  <%= form.text_field :name %>
+  <%= form.text_field :trello_url, help: "Trello Board URL" %>
+  <%= form.submit "Update", class: "btn btn-primary ml-2" %>
 <% end %>
