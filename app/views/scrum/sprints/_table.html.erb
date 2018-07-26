@@ -4,7 +4,6 @@
       <th scope="col">Name</th>
       <th scope="col">Start Date</th>
       <th scope="col">End Date</th>
-      <th scope="col">Commited</th>
       <th scope="col">Completed</th>
       <th scope="col"><%= ScrumBoard::NUM_SPRINTS_FOR_AVG_VELOCITY %>-Sprint Avg Velocity</th>
       <th scope="col">Average Story Size</th>
@@ -24,7 +23,6 @@
         <th scope="row"><%= sprint.name %></th>
         <td><%= sprint.started_on %></td>
         <td><%= sprint.ended_on %></td>
-        <td><%= sprint.story_points_committed %></td>
         <td><%= sprint.story_points_completed %></td>
         <td><%= format_avg_velocity(sprint) %></td>
         <td><%= sprint.average_story_size %></td>

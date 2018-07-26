@@ -21,11 +21,14 @@ module SessionsHelper
     session[:auth_user] if signed_in?
   end
 
+  def auth_groups
+    OpenStruct.new(YAML.load_file(Rails.root.join('config', 'auth_groups.yml')))
+  end
+
   def current_user_in_group?(group_name)
-    groups = OpenStruct.new(YAML.load_file(Rails.root.join('config', 'auth_groups.yml')))
     authorized_group = group_name.to_sym
     user_email = current_user['email']
-    groups[authorized_group].include?(user_email)
+    auth_groups[authorized_group].include?(user_email)
   end
 
   def scrum_master?

@@ -14,27 +14,3 @@ nav.navbar a.navbar.brand {
 i.material-icons {
   vertical-align: middle;
 }
-
-/* Errors */
-.field_with_errors label,
-.field_with_errors .form-control-feedback,
-.field_with_errors .form-control-label,
-.field_with_errors .col-form-label,
-.field_with_errors .form-check-label,
-.field_with_errors .custom-control {
-  color: #d9534f;
-}
-
-.field_with_errors .form-control {
-  border-color: #d9534f;
-}
-
-.field_with_errors .input-group-addon {
-  color: #d9534f;
-  border-color: #d9534f;
-  background-color: #fdf7f7;
-}
-
-.field_with_errors .form-control-danger {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23d9534f' viewBox='-2 -2 7 7'%3E%3Cpath stroke='%23d9534f' d='M0 0l3 3m0-3L0 3'/%3E%3Ccircle r='.5'/%3E%3Ccircle cx='3' r='.5'/%3E%3Ccircle cy='3' r='.5'/%3E%3Ccircle cx='3' cy='3' r='.5'/%3E%3C/svg%3E");
-}

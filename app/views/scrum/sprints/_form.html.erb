@@ -1,15 +1,17 @@
-<%= form_with(model: scrum_sprint,
-              url: (scrum_sprint.new_record? ? scrum_board_sprints_path(scrum_sprint.scrum_board, scrum_sprint): scrum_sprint),
-              local: true) do |form| %>
+<%= bootstrap_form_with(model: scrum_sprint,
+                        url: scrum_sprint_form_url(scrum_sprint),
+                        local: true) do |form| %>
 
-  <%= bootstrap_errors_for(scrum_sprint) %>
+  <%= form.alert_message "Please fix the errors below." %>
 
   <%= form.hidden_field :scrum_board_id, value: scrum_sprint.scrum_board.id %>
 
   <div class="form-group row">
-    <%= form.label :name, class: 'col-sm-2 col-form-label' %>
-    <div class="col-sm-4">
-      <%= form.text_field :name, class: 'form-control' %>
+    <div class="col-sm-2">
+      <label>Sprint Name</label>
+    </div>
+    <div class="col-sm-2">
+      <%= form.text_field :name, hide_label: true %>
     </div>
   </div>
 
@@ -17,18 +19,15 @@
     <div class="col-sm-2">
       <label>Sprint Dates</label>
     </div>
-    <div class="col-sm-2">
-      <%= bootstrap_datepicker form, :started_on, { aria_describedby: 'startedOnHelp' } %>
-      <small id="startedOnHelp" class="form-text text-muted">Started</small>
+    <div class="col-sm-3">
+      <%= form.date_field :started_on, label_as_placeholder: true, help: "Started" %>
     </div>
     <div class="col-sm-1 text-center pt-2">
       to
     </div>
-    <div class="col-sm-2">
-      <%= bootstrap_datepicker form, :ended_on, { aria_describedby: 'endedOnHelp' } %>
-      <small id="endedOnHelp" class="form-text text-muted">Ended</small>
+    <div class="col-sm-3">
+      <%= form.date_field :ended_on, label_as_placeholder: true, help: "Ended" %>
     </div>
-
   </div>
 
   <div class="form-group row">
@@ -36,22 +35,13 @@
       <label>Story Points</label>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :story_points_committed,
-                          class: 'form-control',
-                          aria_describedby: 'storyPtsCommitedHelp' %>
-      <small id="storyPtsCommitedHelp" class="form-text text-muted">Committed</small>
+      <%= form.text_field :story_points_committed, hide_label: true, help: 'Committed' %>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :story_points_completed,
-                          class: 'form-control',
-                          aria_describedby: 'storyPtsCompleteHelp' %>
-      <small id="storyPtsCompleteHelp" class="form-text text-muted">Completed</small>
+      <%= form.text_field :story_points_completed, hide_label: true, help: 'Completed' %>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :average_story_size,
-                          class: 'form-control',
-                          aria_describedby: 'avgStorySizeHelp' %>
-      <small id="avgStorySizeHelp" class="form-text text-muted">Average Story Size</small>
+      <%= form.text_field :average_story_size, hide_label: true, help: 'Average Story Size' %>
     </div>
   </div>
 
@@ -60,16 +50,10 @@
       <label>Backlog Stories</label>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :backlog_stories_count,
-                          class: 'form-control',
-                          aria_describedby: 'backlogStoryCountHelp' %>
-      <small id="backlogStoryCountHelp" class="form-text text-muted">Number</small>
+      <%= form.text_field :backlog_stories_count, hide_label: true, help: 'Number' %>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :backlog_story_points,
-                          class: 'form-control',
-                          aria_describedby: 'backlogStoryPtsHelp' %>
-      <small id="backlogStoryPtsHelp" class="form-text text-muted">Points</small>
+      <%= form.text_field :backlog_story_points, hide_label: true, help: 'Points' %>
     </div>
   </div>
 
@@ -78,23 +62,19 @@
       <label>Wish Heap Stories</label>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :wish_heap_stories_count,
-                          class: 'form-control',
-                          aria_describedby: 'wishHeapStoryCountHelp' %>
-      <small id="wishHeapStoryCountHelp" class="form-text text-muted">Number</small>
+      <%= form.text_field :wish_heap_stories_count, hide_label: true, help: 'Number' %>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :wish_heap_story_points,
-                          class: 'form-control',
-                          aria_describedby: 'wishHeapStoryPtsHelp' %>
-      <small id="wishHeapStoryPtsHelp" class="form-text text-muted">Points</small>
+      <%= form.text_field :wish_heap_story_points, hide_label: true, help: 'Points' %>
     </div>
   </div>
 
   <div class="form-group row">
-    <%= form.label :notes, class: 'col-sm-2 col-form-label' %>
-    <div class="col-sm-10">
-      <%= form.text_field :notes, class: 'form-control' %>
+    <div class="col-sm-2">
+      <label>Notes</label>
+    </div>
+    <div class="col-sm-6">
+      <%= form.text_field :notes, hide_label: true %>
     </div>
   </div>
 
