@@ -40,12 +40,8 @@
 
 <div class="chart">
   <h4>Chart</h4>
-  <%= line_chart [
-        { name: 'Completed', data: @scrum_board.sprints.reverse.collect{|s| [s.ended_on, s.story_points_completed]} },
-        { name: 'Avg Velocity', data: @scrum_board.sprints.collect{|s| [s.ended_on, s.average_velocity]} },
-        { name: 'Backlog', data: @scrum_board.sprints.collect{|s| [s.ended_on, s.backlog_story_points]} },
-        { name: 'Wish Heap', data: @scrum_board.sprints.collect{|s| [s.ended_on, s.wish_heap_story_points]} }
-      ], xtitle: "Sprint", ytitle: "Story Points", curve: false, discrete: true %>
+  <%= line_chart scrum_board_charts_path(@scrum_board), xtitle: "Sprint", ytitle: "Story Points",
+                 curve: false, discrete: true %>
 </div>
 
 <h4>Table</h4>
