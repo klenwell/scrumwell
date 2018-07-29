@@ -38,6 +38,13 @@
               class: 'btn btn-success mb-2' if scrum_master? %>
 </div>
 
+<div class="chart">
+  <h4>Chart</h4>
+  <%= line_chart scrum_board_charts_path(@scrum_board), xtitle: "Sprint", ytitle: "Story Points",
+                 curve: false, discrete: true %>
+</div>
+
+<h4>Table</h4>
 <%= render partial: "scrum/sprints/table", locals: {sprints: @scrum_board.sprints} %>
 
 <div class="actions">

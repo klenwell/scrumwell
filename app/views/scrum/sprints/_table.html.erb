@@ -2,16 +2,13 @@
   <thead>
     <tr>
       <th scope="col">Name</th>
-      <th scope="col">Start Date</th>
-      <th scope="col">End Date</th>
+      <th scope="col">Start</th>
+      <th scope="col">End</th>
       <th scope="col">Completed</th>
       <th scope="col"><%= ScrumBoard::NUM_SPRINTS_FOR_AVG_VELOCITY %>-Sprint Avg Velocity</th>
-      <th scope="col">Average Story Size</th>
-      <th scope="col">Backlog Points</th>
-      <th scope="col">Backlog Stories</th>
-      <th scope="col">Wish Heap Stories</th>
-      <th scope="col">Estimated Wish Heap Points</th>
-      <th scope="col">Last Sync'd</th>
+      <th scope="col">Avg Story Size</th>
+      <th scope="col">Backlog</th>
+      <th scope="col">Wish Heap</th>
       <th scope="col">Notes</th>
       <th scope="col" class="actions"></th>
 
@@ -26,11 +23,8 @@
         <td><%= sprint.story_points_completed %></td>
         <td><%= format_avg_velocity(sprint) %></td>
         <td><%= sprint.average_story_size %></td>
-        <td><%= sprint.backlog_story_points %></td>
-        <td><%= sprint.backlog_stories_count %></td>
-        <td><%= sprint.wish_heap_stories_count %></td>
-        <td><%= sprint.wish_heap_story_points %></td>
-        <td><%= sprint.last_pulled_at %></td>
+        <td><%= format('%s (%s)', sprint.backlog_story_points, sprint.backlog_stories_count) %></td>
+        <td><%= format('%s (%s)', sprint.wish_heap_story_points, sprint.wish_heap_stories_count) %></td>
         <td><%= sprint.notes %></td>
         <td>
           <%= link_to show_icon, sprint %>

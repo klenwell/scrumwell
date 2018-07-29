@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   get '/trello/orgs', to: 'trello#orgs_index'
   get '/trello/orgs/:id/boards', to: 'trello#orgs_boards_index', as: 'trello_orgs_boards'
 
+  # Charts Routes
+  get '/charts/scrum_board/:id', to: 'charts#scrum_board', as: 'scrum_board_charts'
+
   # Authentication
   get '/authenticate', to: 'sessions#new', as: :auth_confirm
   get '/auth/:provider/callback', to: 'sessions#create', as: :auth_callback
