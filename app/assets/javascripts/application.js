@@ -18,3 +18,7 @@
 //= require jquery3
 //= require popper
 //= require bootstrap-sprockets
+
+// https://github.com/ankane/chartkick#chartjs
+//= require Chart.bundle
+//= require chartkick
