@@ -1,8 +1,8 @@
 module Scrum
   class SprintsController < ApplicationController
     before_action :authenticate
-    before_action :auth_scrum_masters, only: [:new, :create, :edit, :update]
-    before_action :set_scrum_sprint, only: [:edit, :update, :show]
+    before_action :auth_scrum_masters, only: [:new, :create, :edit, :update, :import]
+    before_action :set_scrum_sprint, only: [:edit, :update, :show, :import]
 
     # GET /scrum/sprints
     # GET /scrum/sprints.json
@@ -58,6 +58,11 @@ module Scrum
     # GET /scrum/sprints/1
     # GET /scrum/sprints/1.json
     def show; end
+
+    # GET /scrum/sprints/:id/import
+    def import
+      render json: @scrum_sprint
+    end
 
     private
 
