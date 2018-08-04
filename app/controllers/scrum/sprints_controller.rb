@@ -61,6 +61,7 @@ module Scrum
 
     # GET /scrum/sprints/:id/import
     def import
+      @scrum_sprint.update_from_trello_list
       render json: @scrum_sprint
     end
 

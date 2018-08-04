@@ -71,6 +71,16 @@ class ScrumSprint < ApplicationRecord
   #
   # Instance Methods
   #
+  def update_from_trello_list
+    trello_list = TrelloService.list(trello_list_id)
+    return unless trello_list
+
+    self.trello_pos = trello_list.pos
+    self.last_pulled_at = Time.now.utc
+    save!
+    save_stories_from_trello_list(trello_list)
+  end
+
   def save_stories_from_trello_list(trello_list)
     trello_list.cards.each do |card|
       UserStory.update_or_create_from_trello_card(self, card) if UserStory.user_story_card?(card)

@@ -29,8 +29,8 @@ var ScrumSprint = (function() {
     console.log(event, data);
   };
 
-  var ajaxError = function(foo) {
-    console.log(foo);
+  var ajaxError = function(event) {
+    console.error(event);
   }
 
   // Module Public API
