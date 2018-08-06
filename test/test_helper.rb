@@ -7,6 +7,149 @@ require 'webmock/minitest'
 # Allow access to localhost while mocking external resources
 WebMock.disable_net_connect!(allow_localhost: true)
 
+#
+# Mock Trello Classes
+# TODO: Move into own directory
+# See https://stackoverflow.com/a/33610647/1093087
+#
+class MockTrelloBoard
+  attr_accessor :id, :name, :url, :last_activity_date, :lists
+
+  # rubocop: disable Metrics/AbcSize
+  def self.scrummy
+    # Board
+    board = MockTrelloBoard.new(name: 'Scrummy Board')
+    current_sprint_list, completed_sprint_list = board.init_current_sprint
+
+    # Sprint Lists
+    board.lists << board.init_wish_heap
+    board.lists << board.init_backlog
+    board.lists << current_sprint_list
+    board.lists << completed_sprint_list
+    board.lists << board.init_first_sprint
+    board.lists << board.init_second_sprint
+    board.lists << board.init_third_sprint
+
+    board
+  end
+  # rubocop: enable Metrics/AbcSize
+
+  def initialize(params={})
+    @name = params[:name]
+    @id = params[:id] || @name.parameterize
+    @url = format('https://trello.com/b/%s/%s', @id, @name.parameterize)
+    @last_activity_date = Time.zone.now
+    @lists = []
+    @current_sprint_end_date = Time.zone.today + 7.days
+  end
+
+  def init_wish_heap
+    wish_heap = MockTrelloList.new(name: 'Wish Heap')
+    wish_heap.add_card(name: 'Wish Heap Story 1')
+    wish_heap.add_card(name: 'Wish Heap Story 2')
+    wish_heap
+  end
+
+  def init_backlog
+    backlog = MockTrelloList.new(name: 'Backlog')
+    backlog.add_card(name: 'Backlog Story 1', points: 1)
+    backlog.add_card(name: 'Backlog Story 2', points: 2)
+    backlog
+  end
+
+  def init_current_sprint
+    # Creates Current Sprint and Completed List
+    sprint_name = ScrumSprint.name_from_date(@current_sprint_end_date)
+
+    # Lists
+    current_sprint_list = MockTrelloList.new(name: 'Current Sprint')
+    completed_sprint_list = MockTrelloList.new(name: sprint_name)
+
+    # Stories
+    current_sprint_list.add_card(name: 'Current Story 1', points: 2)
+    current_sprint_list.add_card(name: 'Current Story 2', points: 3)
+    completed_sprint_list.add_card(name: 'Completed Story 1', points: 1)
+
+    [current_sprint_list, completed_sprint_list]
+  end
+
+  def init_first_sprint
+    days_ago = ScrumBoard::DEFAULT_SPRINT_DURATION * 3
+    end_date = @current_sprint_end_date - days_ago
+    sprint_name = ScrumSprint.name_from_date(end_date)
+    sprint_list = MockTrelloList.new(name: sprint_name)
+    sprint_list.add_card(name: 'First Sprint Story 1', points: 3)
+    sprint_list.add_card(name: 'First Sprint Story 2', points: 2)
+    sprint_list
+  end
+
+  def init_second_sprint
+    days_ago = ScrumBoard::DEFAULT_SPRINT_DURATION * 2
+    end_date = @current_sprint_end_date - days_ago
+    sprint_name = ScrumSprint.name_from_date(end_date)
+    sprint_list = MockTrelloList.new(name: sprint_name)
+    sprint_list.add_card(name: 'Second Sprint Story 2', points: 5)
+    sprint_list
+  end
+
+  def init_third_sprint
+    end_date = @current_sprint_end_date - ScrumBoard::DEFAULT_SPRINT_DURATION
+    sprint_name = ScrumSprint.name_from_date(end_date)
+    sprint_list = MockTrelloList.new(name: sprint_name)
+    sprint_list.add_card(name: 'Second Sprint Story 1', points: 2)
+    sprint_list.add_card(name: 'Second Sprint Story 2', points: 5)
+    sprint_list
+  end
+end
+
+class MockTrelloList
+  attr_accessor :id, :name, :pos, :cards
+
+  def initialize(params={})
+    @name = params[:name]
+    @id = params[:id] || @name.parameterize
+    @pos = params[:pos] || rand(100_000..1_000_000)
+    @cards = []
+  end
+
+  def add_card(card_params={})
+    @cards << MockTrelloCard.new(card_params)
+  end
+end
+
+class MockTrelloCard
+  attr_accessor :id, :name, :pos, :desc, :short_url, :last_activity_date, :card_labels,
+                :plugin_data
+
+  # rubocop: disable Metrics/AbcSize
+  def initialize(params={})
+    @name = params[:name]
+    @id = params[:id] || @name.parameterize
+    @pos = params[:pos] || rand(100_000..1_000_000)
+    @desc = params[:desc]
+    @last_activity_date = Time.zone.now
+    @card_labels = []
+    @plugin_data = []
+
+    # Simulate Agile Tools plugin.
+    agile_tools_plugin = OpenStruct.new(idPlugin: agile_tools_plugin_id, value: {})
+    @plugin_data << agile_tools_plugin
+
+    # Points?
+    self.story_points = params[:points] if params[:points]
+  end
+  # rubocop: enable Metrics/AbcSize
+
+  def agile_tools_plugin_id
+    UserStory::AGILE_TOOLS_PLUGIN_ID
+  end
+
+  def story_points=(points)
+    agile_tools_plugin = @plugin_data.find { |pd| pd.idPlugin == agile_tools_plugin_id }
+    agile_tools_plugin.value['points'] = points.to_s
+  end
+end
+
 module TrelloMock
   def stub_trello_response(api_response={}, status=200)
     base_uri = Regexp.new 'https://api.trello.com/'
@@ -68,30 +211,7 @@ class ActiveSupport::TestCase
     ApplicationController.any_instance.stubs(:signed_in?).returns(false)
   end
 
-  # Add more helper methods to be used by all tests here...
-  # rubocop: disable Metrics/AbcSize
-  def mock_trello_board(params={})
-    # Optional params
-    trello_id = params[:id] || 'trello-id'
-    trello_url = params[:url] || 'https://trello.com/b/id/trello-name'
-    trello_name = params[:name] || 'Trello Board Name'
-    list_names = params[:list_names] || ['wish heap', 'backlog', 'current']
-
-    trello_board = Trello::Board.new(id: trello_id, name: trello_name)
-
-    # url is read-only
-    # https://github.com/jeremytregunna/ruby-trello/blob/master/lib/trello/board.rb#L21
-    trello_board.stubs(:url).returns(trello_url)
-
-    # Mock lists: need to stub out cards attr or will get a map error.
-    lists = list_names.map do |name|
-      list = Trello::List.new(name: name)
-      list.stubs(:cards).returns([])
-      list
-    end
-    trello_board.stubs(:lists).returns(lists)
-
-    trello_board
+  def mock_trello_board
+    MockTrelloBoard.scrummy
   end
-  # rubocop: enable Metrics/AbcSize
 end

@@ -68,6 +68,14 @@ class ScrumSprint < ApplicationRecord
     backlog
   end
 
+  def self.name_from_date(date)
+    format('Sprint %s Completed', date.strftime('%Y%m%d'))
+  end
+
+  def self.end_date_from_name(name)
+    Date.parse(name.delete("^0-9"))
+  end
+
   #
   # Instance Methods
   #

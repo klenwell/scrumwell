@@ -7,8 +7,7 @@ class ScrumBoardTest < ActiveSupport::TestCase
 
   test "expects trello board to be identified as scrummy" do
     # Arrange
-    list_names = ['wish heap', 'backlog', 'current']
-    scrummy_board = mock_trello_board(id: 'scrummy-board', list_names: list_names)
+    scrummy_board = mock_trello_board
 
     # Act
     is_scrummy = ScrumBoard.scrummy_trello_board?(scrummy_board)
@@ -19,8 +18,7 @@ class ScrumBoardTest < ActiveSupport::TestCase
 
   test "expects trello board NOT to be identified as scrummy" do
     # Arrange
-    list_names = ['Todo', 'Doing', 'Done']
-    unscrummy_board = mock_trello_board(id: 'non-scrummy-board', list_names: list_names)
+    unscrummy_board = MockTrelloBoard.new(name: 'Unscrummy Board')
 
     # Act
     is_scrummy = ScrumBoard.scrummy_trello_board?(unscrummy_board)
@@ -32,7 +30,8 @@ class ScrumBoardTest < ActiveSupport::TestCase
   test "expects to find scrum board by trello board id" do
     # Arrange
     existing_board = scrum_boards(:scrummy)
-    trello_board = mock_trello_board(id: existing_board.trello_board_id)
+    trello_board = mock_trello_board
+    trello_board.id = existing_board.trello_board_id
 
     # Act
     board = ScrumBoard.by_trello_board_or_create(trello_board)
@@ -44,8 +43,10 @@ class ScrumBoardTest < ActiveSupport::TestCase
   test "expects to create scrum board by trello board id" do
     # Arrange
     trello_board = mock_trello_board
+    TrelloService.stubs(:board).returns(trello_board)
 
     # Assume
+    assert_equal 'Scrummy Board', trello_board.name
     scrum_board_count_before = ScrumBoard.count
 
     # Act
@@ -55,6 +56,8 @@ class ScrumBoardTest < ActiveSupport::TestCase
     # Assert
     assert_equal trello_board.id, scrum_board.trello_board_id
     assert_equal scrum_board_count_before + 1, ScrumBoard.count
+    assert_equal 3, scrum_board.backlog_points
+    assert_equal 17.0 / 3, scrum_board.average_velocity
   end
 
   test "expects scrum board with invalid trello url to be invalid" do

@@ -7,9 +7,7 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
   setup do
     stub_trello_response
     @scrum_board = scrum_boards(:scrummy)
-    @trello_board = mock_trello_board(id: 'scrummy-board',
-                                      name: 'Scrummy Board',
-                                      list_names: ['wish heap', 'backlog', 'current'])
+    @trello_board = mock_trello_board
   end
 
   test "expects authenticated user to view index" do
