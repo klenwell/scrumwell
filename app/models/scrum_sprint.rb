@@ -147,12 +147,9 @@ class ScrumSprint < ApplicationRecord
   # rubocop: disable Metrics/AbcSize
   def set_computed_fields_for_completed_sprint
     return unless over?
-    saved_story_pts = story_points_completed.to_i
-    saved_avg_vel = average_velocity.to_i
-    saved_avg_story_size = average_story_size.to_i
-    self.story_points_completed = story_points unless saved_story_pts > 0
-    self.average_velocity = board.average_velocity_for_sprint(self) unless saved_avg_vel > 0
-    self.average_story_size = compute_average_story_size unless saved_avg_story_size > 0
+    self.story_points_completed = story_points
+    self.average_velocity = board.average_velocity_for_sprint(self)
+    self.average_story_size = compute_average_story_size
     self.wish_heap_story_points = compute_wish_heap_points
   end
   # rubocop: enable Metrics/AbcSize
