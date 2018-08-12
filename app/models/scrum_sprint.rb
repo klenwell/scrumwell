@@ -7,7 +7,7 @@ class ScrumSprint < ApplicationRecord
   alias_attribute :board, :scrum_board
   alias_attribute :stories, :user_stories
 
-  before_save :set_computed_fields
+  before_save :assign_computed_fields
 
   validates :name, presence: true
   validates :started_on, presence: true
@@ -129,27 +129,28 @@ class ScrumSprint < ApplicationRecord
   end
 
   def recompute!
-    # Force an update to run set_computed_fields callbacks.
+    # Force an update to run assign_computed_fields callbacks.
     update(updated_at: Time.zone.now)
   end
 
   def recompute_and_save
-    set_computed_fields(force=true)
+    force_reassignment = true
+    assign_computed_fields(force_reassignment)
     save!
   end
 
   # private
 
-  def set_computed_fields(force=false)
+  def assign_computed_fields(force=false)
     # Need to reload stories to compute points accurately.
     # Reference: https://stackoverflow.com/a/29280034/1093087
     stories.reset
-    set_computed_fields_for_completed_sprint(force)
-    set_computed_fields_for_current_sprint
+    assign_computed_fields_for_completed_sprint(force)
+    assign_computed_fields_for_current_sprint
   end
 
-  # rubocop: disable Metrics/AbcSize
-  def set_computed_fields_for_completed_sprint(force=false)
+  # rubocop: disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  def assign_computed_fields_for_completed_sprint(force=false)
     return unless over?
     self.average_velocity = board.average_velocity_for_sprint(self)
 
@@ -162,10 +163,10 @@ class ScrumSprint < ApplicationRecord
     self.average_story_size = compute_average_story_size unless saved_avg_story_size > 0
     self.wish_heap_story_points = compute_wish_heap_points unless saved_wish_heap_pts > 0
   end
-  # rubocop: enable Metrics/AbcSize
+  # rubocop: enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   # rubocop: disable Metrics/AbcSize
-  def set_computed_fields_for_current_sprint
+  def assign_computed_fields_for_current_sprint
     return unless current?
     self.story_points_committed = compute_story_points_committed
     self.story_points_completed = story_points
