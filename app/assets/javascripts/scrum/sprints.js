@@ -67,7 +67,7 @@ var ScrumSprint = (function() {
       var tdSelector = `td.${field}`;
       var $td = $row.find(tdSelector);
       var value = data[field];
-      $td.val(value);
+      $td.text(value);
       $td.fadeTo('slow', 1);
     });
 
