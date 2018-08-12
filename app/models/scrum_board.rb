@@ -1,15 +1,15 @@
 class ScrumBoard < ApplicationRecord
-  has_many :scrum_sprints, -> { order(ended_on: :desc) }, dependent: :destroy,
-                                                          inverse_of: :scrum_board
+  has_many :scrum_sprints, -> { order(ended_on: :asc) }, dependent: :destroy,
+                                                         inverse_of: :scrum_board
   has_many :wish_heaps, -> { order(trello_pos: :desc) }, dependent: :destroy,
                                                          inverse_of: :scrum_board
   has_one :scrum_backlog, dependent: :destroy
 
-  alias_attribute :sprints, :scrum_sprints
-  alias_attribute :backlog, :scrum_backlog
-
   DEFAULT_SPRINT_DURATION = 2.weeks
   NUM_SPRINTS_FOR_AVG_VELOCITY = 3
+
+  alias_attribute :sprints, :scrum_sprints
+  alias_attribute :backlog, :scrum_backlog
 
   validates :name, presence: true
   validate :trello_url_is_valid
@@ -157,9 +157,13 @@ class ScrumBoard < ApplicationRecord
     sprints.to_a.keep_if(&:over?)
   end
 
+  def recent_sprints
+    sprints.reverse
+  end
+
   # Board Metrics
   def average_velocity
-    last_sprint = completed_sprints.first
+    last_sprint = completed_sprints.last
     return nil unless last_sprint
     average_velocity_for_sprint(last_sprint)
   end
@@ -189,9 +193,9 @@ class ScrumBoard < ApplicationRecord
   # rubocop: disable Metrics/AbcSize, Metrics/CyclomaticComplexity
   def average_velocity_for_sprint(sprint)
     previous_sprints_points = []
-    previous_sprints_points << sprint.story_points if sprint.over?
+    previous_sprints_points << sprint.story_points_completed if sprint.over?
 
-    completed_sprints.each do |completed_sprint|
+    completed_sprints.reverse_each do |completed_sprint|
       next if completed_sprint == sprint || completed_sprint.ended_after?(sprint)
       story_points = completed_sprint.story_points_completed || completed_sprint.story_points
       previous_sprints_points << story_points

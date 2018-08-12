@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/scrum/sprints/:id/import', to: 'scrum/sprints#import', as: 'import_sprint'
+
   # Trello Routes
   get '/trello/boards', to: 'trello#boards_index'
   get '/trello/boards/:id', to: 'trello#boards_show', as: 'trello_boards_show'

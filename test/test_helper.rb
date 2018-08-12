@@ -1,4 +1,5 @@
 ENV['RAILS_ENV'] ||= 'test'
+Dir[Rails.root.join("test/support/**/*")].each { |f| require f }
 require_relative '../config/environment'
 require 'rails/test_help'
 require 'mocha/minitest'
@@ -68,30 +69,7 @@ class ActiveSupport::TestCase
     ApplicationController.any_instance.stubs(:signed_in?).returns(false)
   end
 
-  # Add more helper methods to be used by all tests here...
-  # rubocop: disable Metrics/AbcSize
-  def mock_trello_board(params={})
-    # Optional params
-    trello_id = params[:id] || 'trello-id'
-    trello_url = params[:url] || 'https://trello.com/b/id/trello-name'
-    trello_name = params[:name] || 'Trello Board Name'
-    list_names = params[:list_names] || ['wish heap', 'backlog', 'current']
-
-    trello_board = Trello::Board.new(id: trello_id, name: trello_name)
-
-    # url is read-only
-    # https://github.com/jeremytregunna/ruby-trello/blob/master/lib/trello/board.rb#L21
-    trello_board.stubs(:url).returns(trello_url)
-
-    # Mock lists: need to stub out cards attr or will get a map error.
-    lists = list_names.map do |name|
-      list = Trello::List.new(name: name)
-      list.stubs(:cards).returns([])
-      list
-    end
-    trello_board.stubs(:lists).returns(lists)
-
-    trello_board
+  def mock_trello_board
+    MockTrelloBoard.scrummy
   end
-  # rubocop: enable Metrics/AbcSize
 end

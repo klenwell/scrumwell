@@ -5,7 +5,7 @@ class ChartsController < ApplicationController
     board = ScrumBoard.find(params[:id])
     completed_line = {
       name: 'Completed',
-      data: board.sprints.reverse.map { |s| [s.ended_on, s.story_points_completed] }
+      data: board.sprints.map { |s| [s.ended_on, s.story_points_completed] }
     }
     velocity_line = {
       name: 'Avg Velocity',

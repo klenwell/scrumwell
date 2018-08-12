@@ -1,3 +1,5 @@
+# Wraps trello-ruby gem.
+# https://github.com/jeremytregunna/ruby-trello
 class TrelloService
   attr_reader :me
 
@@ -12,8 +14,14 @@ class TrelloService
   end
 
   def self.org(id)
-    Rails.cache.fetch("trello_board/#{id}", expires_in: 1.minute) do
+    Rails.cache.fetch("trello_org/#{id}", expires_in: 1.minute) do
       Trello::Organization.find(id)
+    end
+  end
+
+  def self.list(id)
+    Rails.cache.fetch("trello_list/#{id}", expires_in: 1.minute) do
+      Trello::List.find(id)
     end
   end
 

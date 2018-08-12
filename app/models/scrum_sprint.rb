@@ -7,7 +7,7 @@ class ScrumSprint < ApplicationRecord
   alias_attribute :board, :scrum_board
   alias_attribute :stories, :user_stories
 
-  before_save :set_computed_fields
+  before_save :assign_computed_fields
 
   validates :name, presence: true
   validates :started_on, presence: true
@@ -68,19 +68,36 @@ class ScrumSprint < ApplicationRecord
     backlog
   end
 
+  def self.name_from_date(date)
+    format('Sprint %s Completed', date.strftime('%Y%m%d'))
+  end
+
+  def self.end_date_from_name(name)
+    Date.parse(name.delete("^0-9"))
+  end
+
   #
   # Instance Methods
   #
+  def update_from_trello_list
+    trello_list = TrelloService.list(trello_list_id)
+    return unless trello_list
+
+    self.trello_pos = trello_list.pos
+    self.last_pulled_at = Time.now.utc
+    save!
+    save_stories_from_trello_list(trello_list)
+  end
+
   def save_stories_from_trello_list(trello_list)
     trello_list.cards.each do |card|
       UserStory.update_or_create_from_trello_card(self, card) if UserStory.user_story_card?(card)
     end
-    recompute!
+    recompute_and_save
   end
 
   def story_points
-    return story_points_completed if story_points_completed.to_i > 0
-    stories.sum(&:points)
+    stories ? stories.sum(&:points) : story_points_completed
   end
 
   def story_count
@@ -112,35 +129,44 @@ class ScrumSprint < ApplicationRecord
   end
 
   def recompute!
-    # Force an update to run set_computed_fields callbacks.
+    # Force an update to run assign_computed_fields callbacks.
     update(updated_at: Time.zone.now)
+  end
+
+  def recompute_and_save
+    force_reassignment = true
+    assign_computed_fields(force_reassignment)
+    save!
   end
 
   # private
 
-  def set_computed_fields
+  def assign_computed_fields(force=false)
     # Need to reload stories to compute points accurately.
     # Reference: https://stackoverflow.com/a/29280034/1093087
     stories.reset
-    set_computed_fields_for_completed_sprint
-    set_computed_fields_for_current_sprint
+    assign_computed_fields_for_completed_sprint(force)
+    assign_computed_fields_for_current_sprint
   end
 
-  # rubocop: disable Metrics/AbcSize
-  def set_computed_fields_for_completed_sprint
+  # rubocop: disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  def assign_computed_fields_for_completed_sprint(force=false)
     return unless over?
-    saved_story_pts = story_points_completed.to_i
-    saved_avg_vel = average_velocity.to_i
-    saved_avg_story_size = average_story_size.to_i
+    self.average_velocity = board.average_velocity_for_sprint(self)
+
+    # Only recompute field below when empty or forced.
+    saved_story_pts = force ? 0 : story_points_completed.to_i
+    saved_avg_story_size = force ? 0 : average_story_size.to_i
+    saved_wish_heap_pts = force ? 0 : wish_heap_story_points.to_i
+
     self.story_points_completed = story_points unless saved_story_pts > 0
-    self.average_velocity = board.average_velocity_for_sprint(self) unless saved_avg_vel > 0
     self.average_story_size = compute_average_story_size unless saved_avg_story_size > 0
-    self.wish_heap_story_points = compute_wish_heap_points
+    self.wish_heap_story_points = compute_wish_heap_points unless saved_wish_heap_pts > 0
   end
-  # rubocop: enable Metrics/AbcSize
+  # rubocop: enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   # rubocop: disable Metrics/AbcSize
-  def set_computed_fields_for_current_sprint
+  def assign_computed_fields_for_current_sprint
     return unless current?
     self.story_points_committed = compute_story_points_committed
     self.story_points_completed = story_points
