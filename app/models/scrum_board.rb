@@ -30,9 +30,8 @@ class ScrumBoard < ApplicationRecord
   def self.create_from_trello_board(trello_board)
     scrum_board = ScrumBoard.new(trello_board_id: trello_board.id,
                                  trello_url: trello_board.url,
-                                 name: trello_board.name,
-                                 last_board_activity_at: trello_board.last_activity_date,
-                                 last_pulled_at: Time.now.utc)
+                                 trello_name: trello_board.name,
+                                 last_imported_at: Time.now.utc)
     scrum_board.save!
     logger.info "Created trello board #{scrum_board.name}."
     scrum_board.update_queues_from_trello_board(trello_board)
@@ -62,6 +61,13 @@ class ScrumBoard < ApplicationRecord
 
   def self.backloggy_trello_list?(trello_list)
     trello_list.name.downcase.include? 'backlog'
+  end
+
+  #
+  # Virtual Attrs
+  #
+  def name
+    local_name || trello_name
   end
 
   #
