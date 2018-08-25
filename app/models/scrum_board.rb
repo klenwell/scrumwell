@@ -216,9 +216,9 @@ class ScrumBoard < ApplicationRecord
 
   # Custom Validators
   def name_is_valid
-    invalid = trello_name.empty? && local_name.empty?
+    valid = trello_name.present? || local_name.present?
     error_message = 'Trello name or local name must be present'
-    errors.add(:trello_url, error_message) if invalid
+    errors.add(:trello_url, error_message) unless valid
   end
 
   def trello_url_is_valid
