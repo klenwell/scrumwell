@@ -222,7 +222,7 @@ class ScrumBoard < ApplicationRecord
   end
 
   def trello_url_is_valid
-    return if trello_url.nil?
+    return if trello_url.blank?
     url_start = 'https://trello.com/b'
     error_message = 'must be valid Trello url'
     errors.add(:trello_url, error_message) unless trello_url.downcase.start_with?(url_start)
