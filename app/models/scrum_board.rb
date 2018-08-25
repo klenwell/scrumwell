@@ -14,7 +14,16 @@ class ScrumBoard < ApplicationRecord
   validate :name_is_valid
   validate :trello_url_is_valid
 
+  #
+  # Virtual Fields
+  #
+  def name
+    local_name || trello_name
+  end
+
+  #
   # Class Methods
+  #
   def self.by_trello_board_or_create(trello_board)
     scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)
 
@@ -61,13 +70,6 @@ class ScrumBoard < ApplicationRecord
 
   def self.backloggy_trello_list?(trello_list)
     trello_list.name.downcase.include? 'backlog'
-  end
-
-  #
-  # Virtual Attrs
-  #
-  def name
-    local_name || trello_name
   end
 
   #
@@ -214,11 +216,13 @@ class ScrumBoard < ApplicationRecord
 
   private
 
+  #
   # Custom Validators
+  #
   def name_is_valid
     valid = trello_name.present? || local_name.present?
-    error_message = 'Trello name or local name must be present'
-    errors.add(:trello_url, error_message) unless valid
+    error_message = 'Name must be present'
+    errors.add(:local_name, error_message) unless valid
   end
 
   def trello_url_is_valid

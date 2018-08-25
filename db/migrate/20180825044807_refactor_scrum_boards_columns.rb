@@ -1,3 +1,4 @@
+# rails g migration refactor_scrum_boards_columns
 class RefactorScrumBoardsColumns < ActiveRecord::Migration[5.2]
   def change
     rename_column :scrum_boards, :name, :trello_name

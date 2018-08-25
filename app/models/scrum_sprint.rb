@@ -6,13 +6,38 @@ class ScrumSprint < ApplicationRecord
 
   alias_attribute :board, :scrum_board
   alias_attribute :stories, :user_stories
+  alias_attribute :story_count, :user_story_count
 
   before_save :assign_computed_fields
 
-  validates :name, presence: true
   validates :started_on, presence: true
   validates :ended_on, presence: true
   validates :story_points_completed, presence: true
+  validate :name_is_valid
+  validate :story_points_are_valid
+
+  #
+  # Virtual Fields
+  #
+  def name
+    local_name || trello_name
+  end
+
+  def story_points_committed
+    local_story_points_committed || trello_story_points_committed
+  end
+
+  def story_points_completed
+    local_story_points_completed || trello_story_points_completed
+  end
+
+  def user_story_count
+    local_user_story_count || stories.count
+  end
+
+  def average_velocity
+    local_average_velocity || trello_average_velocity
+  end
 
   #
   # Class Methods
@@ -42,7 +67,8 @@ class ScrumSprint < ApplicationRecord
     sprint = ScrumSprint.create!(scrum_board_id: scrum_board.id,
                                  trello_list_id: trello_list.id,
                                  trello_pos: trello_list.pos,
-                                 name: name,
+                                 trello_name: trello_list.name,
+                                 local_name: name,
                                  started_on: starts_on,
                                  ended_on: ends_on,
                                  story_points_completed: 0,
@@ -213,4 +239,19 @@ class ScrumSprint < ApplicationRecord
     end
   end
   # rubocop: enable Metrics/AbcSize
+
+  #
+  # Custom Validators
+  #
+  def name_is_valid
+    valid = trello_name.present? || local_name.present?
+    error_message = 'Name must be present'
+    errors.add(:local_name, error_message) unless valid
+  end
+
+  def story_points_are_valid
+    valid = local_story_points_completed.present? || trello_story_points_completed.present?
+    error_message = 'Story points completed must be present'
+    errors.add(:local_story_points_completed, error_message) unless valid
+  end
 end
