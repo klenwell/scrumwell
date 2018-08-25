@@ -11,7 +11,7 @@ class ScrumBoard < ApplicationRecord
   alias_attribute :sprints, :scrum_sprints
   alias_attribute :backlog, :scrum_backlog
 
-  validates :name, presence: true
+  validate :name_is_valid
   validate :trello_url_is_valid
 
   # Class Methods
@@ -82,8 +82,7 @@ class ScrumBoard < ApplicationRecord
 
   def update_from_trello_board(board)
     update(trello_url: board.url,
-           last_board_activity_at: board.last_activity_date,
-           last_pulled_at: Time.now.utc)
+           last_imported_at: Time.now.utc)
   end
 
   def update_queues_from_trello_board(board)
@@ -216,6 +215,12 @@ class ScrumBoard < ApplicationRecord
   private
 
   # Custom Validators
+  def name_is_valid
+    invalid = trello_name.empty? && local_name.empty?
+    error_message = 'Trello name or local name must be present'
+    errors.add(:trello_url, error_message) if invalid
+  end
+
   def trello_url_is_valid
     return if trello_url.nil?
     url_start = 'https://trello.com/b'

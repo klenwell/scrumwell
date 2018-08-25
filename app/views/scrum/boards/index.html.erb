@@ -17,7 +17,7 @@
       <th scope="col" class="text-center">Backlog Stories</th>
       <th scope="col" class="text-center">Wish Heap Stories</th>
       <th scope="col" class="text-center">Created</th>
-      <th scope="col" class="text-center">Last Pull</th>
+      <th scope="col" class="text-center">Last Import</th>
       <th scope="col" class="actions"></th>
     </tr>
   </thead>
@@ -31,7 +31,7 @@
         <td class="text-right"><%= board.backlog_story_count %></td>
         <td class="text-right"><%= board.wish_heap_story_count %></td>
         <td><%= board.created_at.to_date %></td>
-        <td><%= or_na(board.last_pulled_at, {alt: 'N/A'}) %></td>
+        <td><%= or_na(board.last_imported_at, {alt: 'N/A'}) %></td>
         <td>
           <%= link_to show_icon, board, { title: 'view board' } %>
           <%= link_to edit_icon, edit_scrum_board_path(board), { title: 'edit board' } if scrum_master? %>
