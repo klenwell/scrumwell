@@ -71,8 +71,8 @@ class ScrumSprint < ApplicationRecord
                                  local_name: name,
                                  started_on: starts_on,
                                  ended_on: ends_on,
-                                 story_points_completed: 0,
-                                 last_pulled_at: Time.now.utc)
+                                 trello_story_points_completed: 0,
+                                 last_imported_at: Time.now.utc)
     sprint.save_stories_from_trello_list(trello_list)
     sprint
   end
@@ -82,8 +82,8 @@ class ScrumSprint < ApplicationRecord
     backlog = ScrumSprint.new(scrum_board_id: scrum_board.id,
                               trello_list_id: trello_list.id,
                               trello_pos: trello_list.pos,
-                              name: trello_list.name,
-                              last_pulled_at: Time.now.utc)
+                              trello_name: trello_list.name,
+                              last_imported_at: Time.now.utc)
 
     # Attach cards
     trello_list.cards.each do |card|
@@ -178,14 +178,14 @@ class ScrumSprint < ApplicationRecord
   # rubocop: disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def assign_computed_fields_for_completed_sprint(force=false)
     return unless over?
-    self.average_velocity = board.average_velocity_for_sprint(self)
+    self.trello_average_velocity = board.average_velocity_for_sprint(self)
 
     # Only recompute field below when empty or forced.
     saved_story_pts = force ? 0 : story_points_completed.to_i
     saved_avg_story_size = force ? 0 : average_story_size.to_i
     saved_wish_heap_pts = force ? 0 : wish_heap_story_points.to_i
 
-    self.story_points_completed = story_points unless saved_story_pts > 0
+    self.trello_story_points_completed = story_points unless saved_story_pts > 0
     self.average_story_size = compute_average_story_size unless saved_avg_story_size > 0
     self.wish_heap_story_points = compute_wish_heap_points unless saved_wish_heap_pts > 0
   end
@@ -194,8 +194,8 @@ class ScrumSprint < ApplicationRecord
   # rubocop: disable Metrics/AbcSize
   def assign_computed_fields_for_current_sprint
     return unless current?
-    self.story_points_committed = compute_story_points_committed
-    self.story_points_completed = story_points
+    self.trello_story_points_committed = compute_story_points_committed
+    self.trello_story_points_completed = story_points
     self.average_story_size = compute_average_story_size
     self.backlog_story_points = board.backlog.story_points
     self.backlog_stories_count = board.backlog.stories.count
