@@ -8,7 +8,7 @@ class ScrumSprint < ApplicationRecord
   alias_attribute :stories, :user_stories
   alias_attribute :story_count, :user_story_count
 
-  before_save :assign_computed_fields
+  before_save :assign_local_derived_fields
 
   validates :started_on, presence: true
   validates :ended_on, presence: true
@@ -47,10 +47,7 @@ class ScrumSprint < ApplicationRecord
 
     if sprint.present?
       sprint.scrum_board_id = scrum_board.id
-      sprint.trello_pos = trello_list.pos
-      sprint.last_pulled_at = Time.now.utc
-      sprint.save!
-      sprint.save_stories_from_trello_list(trello_list)
+      sprint.update_from_trello_list(trello_list)
     else
       sprint = ScrumSprint.create_from_trello_list(scrum_board, trello_list)
     end
@@ -59,21 +56,19 @@ class ScrumSprint < ApplicationRecord
   end
 
   def self.create_from_trello_list(scrum_board, trello_list)
-    # https://stackoverflow.com/a/12858147/1093087
-    name = trello_list.name.delete("^0-9")
-    ends_on = Date.parse(name)
+    ends_on = ScrumSprint.trello_name_to_yyyymmdd(trello_list.name)
     starts_on = ends_on - ScrumBoard::DEFAULT_SPRINT_DURATION
 
     sprint = ScrumSprint.create!(scrum_board_id: scrum_board.id,
                                  trello_list_id: trello_list.id,
                                  trello_pos: trello_list.pos,
                                  trello_name: trello_list.name,
-                                 local_name: name,
                                  started_on: starts_on,
                                  ended_on: ends_on,
                                  trello_story_points_completed: 0,
                                  last_imported_at: Time.now.utc)
-    sprint.save_stories_from_trello_list(trello_list)
+
+    sprint.update_from_trello_list(trello_list)
     sprint
   end
 
@@ -94,46 +89,43 @@ class ScrumSprint < ApplicationRecord
     backlog
   end
 
-  def self.name_from_date(date)
+  def self.date_to_trello_name(date)
     format('Sprint %s Completed', date.strftime('%Y%m%d'))
   end
 
-  def self.end_date_from_name(name)
+  def self.trello_name_to_date(name)
+    # Regex: https://stackoverflow.com/a/12858147/1093087
     Date.parse(name.delete("^0-9"))
   end
 
   #
-  # Instance Methods
+  # Trello Instance Methods
   #
-  def update_from_trello_list
-    trello_list = TrelloService.list(trello_list_id)
+  def update_from_trello_list(trello_list=nil)
+    trello_list = TrelloService.list(trello_list_id) unless trello_list
     return unless trello_list
 
     self.trello_pos = trello_list.pos
-    self.last_pulled_at = Time.now.utc
-    save!
+
     save_stories_from_trello_list(trello_list)
+
+    assign_trello_derived_fields
+    save!
   end
 
   def save_stories_from_trello_list(trello_list)
     trello_list.cards.each do |card|
       UserStory.update_or_create_from_trello_card(self, card) if UserStory.user_story_card?(card)
     end
-    recompute_and_save
   end
 
-  def story_points
-    stories ? stories.sum(&:points) : story_points_completed
+  def trello_story_count
+    stories.count
   end
 
-  def story_count
-    if stories.empty? && average_story_size && story_points_completed
-      (story_points_completed / average_story_size).round
-    else
-      stories.count
-    end
-  end
-
+  #
+  # Public Instance Methods
+  #
   def current?
     !over? && !future?
   end
@@ -154,18 +146,35 @@ class ScrumSprint < ApplicationRecord
     Time.zone.today - started_on
   end
 
-  def recompute!
-    # Force an update to run assign_computed_fields callbacks.
-    update(updated_at: Time.zone.now)
-  end
-
-  def recompute_and_save
-    force_reassignment = true
-    assign_computed_fields(force_reassignment)
-    save!
-  end
-
   # private
+
+  def assign_local_derived_fields
+    # compute story points committed if current and empty
+    # compute story points completed
+    # compute average story size
+    self.local_average_velocity = board.average_velocity_for_sprint(self)
+  end
+
+  def assign_trello_derived_fields
+    # compute story points committed if current and empty
+    # compute story points completed
+    # compute average story size
+    self.last_pulled_at = Time.now.utc
+  end
+
+  def assign_derived_fields
+    # Need to reload stories to compute points accurately.
+    # Reference: https://stackoverflow.com/a/29280034/1093087
+    stories.reset
+    assign_derived_fields_for_completed_sprint
+    assign_derived_fields_for_current_sprint
+  end
+
+  def assign_derived_fields_for_completed_sprint
+    return unless over?
+    self.trello_average_velocity = board.average_velocity_for_sprint(self)
+    self.average_story_size
+  end
 
   def assign_computed_fields(force=false)
     # Need to reload stories to compute points accurately.
