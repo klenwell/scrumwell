@@ -84,7 +84,7 @@ module Scrum
     # Never trust parameters from the scary internet, only allow the white list through.
     def scrum_board_params
       params.require(:scrum_board).permit(:trello_board_id, :trello_url, :name,
-                                          :last_board_activity_at, :last_pulled_at)
+                                          :last_board_activity_at, :last_imported_at)
     end
   end
 end

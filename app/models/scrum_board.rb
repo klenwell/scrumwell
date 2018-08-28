@@ -17,26 +17,18 @@ class ScrumBoard < ApplicationRecord
   # Class Methods
   def self.by_trello_board_or_create(trello_board)
     scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)
+    return scrum_board if scrum_board
 
-    if scrum_board
-      scrum_board.update_from_trello_board(trello_board)
-    else
-      scrum_board = ScrumBoard.create_from_trello_board(trello_board)
-    end
-
+    scrum_board = ScrumBoard.create_from_trello_board(trello_board)
     scrum_board
   end
 
   def self.create_from_trello_board(trello_board)
-    scrum_board = ScrumBoard.new(trello_board_id: trello_board.id,
-                                 trello_url: trello_board.url,
-                                 name: trello_board.name,
-                                 last_board_activity_at: trello_board.last_activity_date,
-                                 last_pulled_at: Time.now.utc)
-    scrum_board.save!
+    scrum_board = ScrumBoard.create!(trello_board_id: trello_board.id,
+                                     trello_url: trello_board.url,
+                                     name: trello_board.name)
     logger.info "Created trello board #{scrum_board.name}."
-    scrum_board.update_queues_from_trello_board(trello_board)
-    scrum_board.recompute_sprint_metrics
+    scrum_board.update_from_trello_board(trello_board)
     scrum_board
   end
 
@@ -74,10 +66,11 @@ class ScrumBoard < ApplicationRecord
     TrelloService.board(trello_board_id)
   end
 
-  def update_from_trello_board(board)
-    update(trello_url: board.url,
-           last_board_activity_at: board.last_activity_date,
-           last_pulled_at: Time.now.utc)
+  def update_from_trello_board(trello_board)
+    update(trello_url: trello_board.url,
+           last_imported_at: Time.now.utc)
+    update_queues_from_trello_board(trello_board)
+    recompute_sprint_metrics
   end
 
   def update_queues_from_trello_board(board)

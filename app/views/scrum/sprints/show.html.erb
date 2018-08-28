@@ -13,7 +13,7 @@
       <dt><strong><%= @scrum_sprint.over? ? 'Ended' : 'Ends' %></strong></dt>
       <dd><%= @scrum_sprint.ended_on %></dd>
       <dt><strong>Last Trello Pull</strong></dt>
-      <dd><%= @scrum_sprint.last_pulled_at %></dd>
+      <dd><%= @scrum_sprint.last_imported_at %></dd>
       <dt><strong>Notes</strong></dt>
       <dd><%= @scrum_sprint.notes || '(no notes)' %></dd>
     </dl>

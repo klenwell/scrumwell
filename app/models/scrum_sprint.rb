@@ -22,10 +22,7 @@ class ScrumSprint < ApplicationRecord
 
     if sprint.present?
       sprint.scrum_board_id = scrum_board.id
-      sprint.trello_pos = trello_list.pos
-      sprint.last_pulled_at = Time.now.utc
-      sprint.save!
-      sprint.save_stories_from_trello_list(trello_list)
+      update_from_trello_list(trello_list)
     else
       sprint = ScrumSprint.create_from_trello_list(scrum_board, trello_list)
     end
@@ -34,7 +31,7 @@ class ScrumSprint < ApplicationRecord
   end
 
   def self.create_from_trello_list(scrum_board, trello_list)
-    # https://stackoverflow.com/a/12858147/1093087
+    # Regex: https://stackoverflow.com/a/12858147/1093087
     name = trello_list.name.delete("^0-9")
     ends_on = Date.parse(name)
     starts_on = ends_on - ScrumBoard::DEFAULT_SPRINT_DURATION
@@ -46,7 +43,7 @@ class ScrumSprint < ApplicationRecord
                                  started_on: starts_on,
                                  ended_on: ends_on,
                                  story_points_completed: 0,
-                                 last_pulled_at: Time.now.utc)
+                                 last_imported_at: Time.now.utc)
     sprint.save_stories_from_trello_list(trello_list)
     sprint
   end
@@ -57,7 +54,7 @@ class ScrumSprint < ApplicationRecord
                               trello_list_id: trello_list.id,
                               trello_pos: trello_list.pos,
                               name: trello_list.name,
-                              last_pulled_at: Time.now.utc)
+                              last_imported_at: Time.now.utc)
 
     # Attach cards
     trello_list.cards.each do |card|
@@ -79,13 +76,14 @@ class ScrumSprint < ApplicationRecord
   #
   # Instance Methods
   #
-  def update_from_trello_list
-    trello_list = TrelloService.list(trello_list_id)
+  def update_from_trello_list(trello_list=nil)
+    trello_list = TrelloService.list(trello_list_id) unless trello_list
     return unless trello_list
 
     self.trello_pos = trello_list.pos
-    self.last_pulled_at = Time.now.utc
+    self.last_imported_at = Time.now.utc
     save!
+
     save_stories_from_trello_list(trello_list)
   end
 

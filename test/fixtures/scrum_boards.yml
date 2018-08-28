@@ -4,12 +4,10 @@ scrummy:
   trello_board_id: vmyLroUQ
   trello_url: https://trello.com/b/vmyLroUQ
   name: Scrum Board
-  last_board_activity_at: 2018-06-25 19:20:24
-  last_pulled_at: 2018-06-25 19:20:24
+  last_imported_at: 2018-06-25 19:20:24
 
 non_scrummy:
   trello_board_id: 1ROiESlt
   trello_url: https://trello.com/b/1ROiESlt
   name: Non-Scrum Board
-  last_board_activity_at: 2018-06-25 19:20:24
-  last_pulled_at: 2018-06-25 19:20:24
+  last_imported_at: 2018-06-25 19:20:24

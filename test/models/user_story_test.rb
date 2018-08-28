@@ -9,8 +9,7 @@ class UserStoryTest < ActiveSupport::TestCase
                               description: 'This is the first user story.',
                               points: 1,
                               completed_at: Time.zone.now - 1.hour,
-                              last_activity_at: Time.zone.now - 1.hour,
-                              last_pulled_at: Time.zone.now - 1.hour)
+                              last_imported_at: Time.zone.now - 1.hour)
 
     assert_equal 1, story.points
   end

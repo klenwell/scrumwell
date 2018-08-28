@@ -18,7 +18,7 @@ class WishHeap < ApplicationRecord
                                 trello_list_id: trello_list.id,
                                 trello_pos: trello_list.pos,
                                 name: trello_list.name,
-                                last_pulled_at: Time.now.utc)
+                                last_imported_at: Time.now.utc)
     wish_heap.save_stories_from_trello_list(trello_list)
     wish_heap
   end
@@ -30,7 +30,7 @@ class WishHeap < ApplicationRecord
       wish_heap.scrum_board_id = scrum_board.id
       wish_heap.name = trello_list.name
       wish_heap.trello_pos = trello_list.pos
-      wish_heap.last_pulled_at = Time.now.utc
+      wish_heap.last_imported_at = Time.now.utc
       wish_heap.save!
       wish_heap.save_stories_from_trello_list(trello_list)
     else

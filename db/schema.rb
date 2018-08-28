@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_08_015906) do
+ActiveRecord::Schema.define(version: 2018_08_28_020316) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 2018_07_08_015906) do
     t.string "trello_list_id"
     t.string "trello_pos"
     t.string "name"
-    t.datetime "last_pulled_at"
+    t.datetime "last_imported_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["scrum_board_id"], name: "index_scrum_backlogs_on_scrum_board_id"
@@ -31,8 +31,7 @@ ActiveRecord::Schema.define(version: 2018_07_08_015906) do
     t.string "trello_board_id"
     t.string "trello_url"
     t.string "name"
-    t.datetime "last_board_activity_at"
-    t.datetime "last_pulled_at"
+    t.datetime "last_imported_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -44,7 +43,7 @@ ActiveRecord::Schema.define(version: 2018_07_08_015906) do
     t.string "name"
     t.date "started_on"
     t.date "ended_on"
-    t.datetime "last_pulled_at"
+    t.datetime "last_imported_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "story_points_committed"
@@ -69,7 +68,7 @@ ActiveRecord::Schema.define(version: 2018_07_08_015906) do
     t.integer "points"
     t.datetime "completed_at"
     t.datetime "last_activity_at"
-    t.datetime "last_pulled_at"
+    t.datetime "last_imported_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "trello_pos"
@@ -82,7 +81,7 @@ ActiveRecord::Schema.define(version: 2018_07_08_015906) do
     t.string "trello_list_id"
     t.integer "trello_pos"
     t.string "name"
-    t.datetime "last_pulled_at"
+    t.datetime "last_imported_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["scrum_board_id"], name: "index_wish_heaps_on_scrum_board_id"

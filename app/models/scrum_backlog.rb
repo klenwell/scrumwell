@@ -28,7 +28,7 @@ class ScrumBacklog < ApplicationRecord
                                   trello_list_id: trello_list.id,
                                   trello_pos: trello_list.pos,
                                   name: trello_list.name,
-                                  last_pulled_at: Time.now.utc)
+                                  last_imported_at: Time.now.utc)
     backlog.save_stories_from_trello_list(trello_list)
     backlog
   end
@@ -40,7 +40,7 @@ class ScrumBacklog < ApplicationRecord
     update(scrum_board_id: scrum_board.id,
            name: trello_list.name,
            trello_pos: trello_list.pos,
-           last_pulled_at: Time.now.utc)
+           last_imported_at: Time.now.utc)
   end
 
   def save_stories_from_trello_list(trello_list)
