@@ -32,16 +32,16 @@
 
   <div class="form-group row">
     <div class="col-sm-2">
-      <label>Story Points</label>
+      <label>User Stories</label>
+    </div>
+    <div class="col-sm-2">
+      <%= form.text_field :stories_count, hide_label: true, help: 'Number' %>
     </div>
     <div class="col-sm-2">
       <%= form.text_field :story_points_committed, hide_label: true, help: 'Committed' %>
     </div>
     <div class="col-sm-2">
       <%= form.text_field :story_points_completed, hide_label: true, help: 'Completed' %>
-    </div>
-    <div class="col-sm-2">
-      <%= form.text_field :average_story_size, hide_label: true, help: 'Average Story Size' %>
     </div>
   </div>
 

@@ -94,16 +94,13 @@ class ScrumSprint < ApplicationRecord
     recompute_and_save
   end
 
-  def story_points
-    stories ? stories.sum(&:points) : story_points_completed
+  def average_story_size
+    return nil unless stories_count
+    1.0 * story_points_completed / stories_count
   end
 
-  def story_count
-    if stories.empty? && average_story_size && story_points_completed
-      (story_points_completed / average_story_size).round
-    else
-      stories.count
-    end
+  def story_points
+    stories ? stories.sum(&:points) : story_points_completed
   end
 
   def current?
@@ -158,7 +155,6 @@ class ScrumSprint < ApplicationRecord
     saved_wish_heap_pts = force ? 0 : wish_heap_story_points.to_i
 
     self.story_points_completed = story_points unless saved_story_pts > 0
-    self.average_story_size = compute_average_story_size unless saved_avg_story_size > 0
     self.wish_heap_story_points = compute_wish_heap_points unless saved_wish_heap_pts > 0
   end
   # rubocop: enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -168,7 +164,6 @@ class ScrumSprint < ApplicationRecord
     return unless current?
     self.story_points_committed = compute_story_points_committed
     self.story_points_completed = story_points
-    self.average_story_size = compute_average_story_size
     self.backlog_story_points = board.backlog.story_points
     self.backlog_stories_count = board.backlog.stories.count
     self.wish_heap_stories_count = board.wish_heap.stories.count
@@ -197,18 +192,6 @@ class ScrumSprint < ApplicationRecord
 
     # If we're current, let the board try to compute
     board.estimate_wish_heap_points if current?
-  end
-  # rubocop: enable Metrics/AbcSize
-
-  # rubocop: disable Metrics/AbcSize
-  def compute_average_story_size
-    return nil unless story_count > 0
-
-    if current? && board.current_sprint.stories.present?
-      board.current_sprint.story_points / board.current_sprint.stories.length
-    else
-      story_points / story_count
-    end
   end
   # rubocop: enable Metrics/AbcSize
 end
