@@ -4,15 +4,19 @@ class ScrumSprint < ApplicationRecord
                                                           dependent: :destroy,
                                                           inverse_of: :queue
 
+  attr_accessor :imported_from_trello
+
   alias_attribute :board, :scrum_board
   alias_attribute :stories, :user_stories
 
+  before_save :reset_trello_fields, if: :imported_from_trello?
   before_save :assign_computed_fields
 
   validates :name, presence: true
   validates :started_on, presence: true
   validates :ended_on, presence: true
   validates :story_points_completed, presence: true
+  validates :stories_count, presence: true
 
   #
   # Class Methods
@@ -21,6 +25,7 @@ class ScrumSprint < ApplicationRecord
     sprint = ScrumSprint.find_by(trello_list_id: trello_list.id)
 
     if sprint.present?
+      sprint.imported_from_trello = true
       sprint.scrum_board_id = scrum_board.id
       update_from_trello_list(trello_list)
     else
@@ -42,8 +47,10 @@ class ScrumSprint < ApplicationRecord
                                  name: name,
                                  started_on: starts_on,
                                  ended_on: ends_on,
+                                 stories_count: 0,
                                  story_points_completed: 0,
                                  last_imported_at: Time.now.utc)
+    sprint.imported_from_trello = true
     sprint.save_stories_from_trello_list(trello_list)
     sprint
   end
@@ -80,10 +87,14 @@ class ScrumSprint < ApplicationRecord
     trello_list = TrelloService.list(trello_list_id) unless trello_list
     return unless trello_list
 
+    self.imported_from_trello = true
     self.trello_pos = trello_list.pos
     self.last_imported_at = Time.now.utc
+    self.story_points_completed = 0
+    self.stories_count = 0
     save!
 
+    stories.destroy_all
     save_stories_from_trello_list(trello_list)
   end
 
@@ -91,7 +102,7 @@ class ScrumSprint < ApplicationRecord
     trello_list.cards.each do |card|
       UserStory.update_or_create_from_trello_card(self, card) if UserStory.user_story_card?(card)
     end
-    recompute_and_save
+    save!
   end
 
   def average_story_size
@@ -128,42 +139,33 @@ class ScrumSprint < ApplicationRecord
     update(updated_at: Time.zone.now)
   end
 
-  def recompute_and_save
-    force_reassignment = true
-    assign_computed_fields(force_reassignment)
-    save!
-  end
-
   # private
 
-  def assign_computed_fields(force=false)
+  def imported_from_trello?
+    @imported_from_trello == true
+  end
+
+  def reset_trello_fields
     # Need to reload stories to compute points accurately.
     # Reference: https://stackoverflow.com/a/29280034/1093087
     stories.reset
-    assign_computed_fields_for_completed_sprint(force)
-    assign_computed_fields_for_current_sprint
+    self.stories_count = stories.length
+    self.story_points_completed = stories.sum(&:points)
+    self.wish_heap_story_points = compute_wish_heap_points
   end
 
-  # rubocop: disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-  def assign_computed_fields_for_completed_sprint(force=false)
-    return unless over?
+  def assign_computed_fields
+    assign_computed_fields_for_completed_sprint if over?
+    assign_computed_fields_for_current_sprint if current?
+  end
+
+  def assign_computed_fields_for_completed_sprint
     self.average_velocity = board.average_velocity_for_sprint(self)
-
-    # Only recompute field below when empty or forced.
-    saved_story_pts = force ? 0 : story_points_completed.to_i
-    saved_avg_story_size = force ? 0 : average_story_size.to_i
-    saved_wish_heap_pts = force ? 0 : wish_heap_story_points.to_i
-
-    self.story_points_completed = story_points unless saved_story_pts > 0
-    self.wish_heap_story_points = compute_wish_heap_points unless saved_wish_heap_pts > 0
   end
-  # rubocop: enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   # rubocop: disable Metrics/AbcSize
   def assign_computed_fields_for_current_sprint
-    return unless current?
     self.story_points_committed = compute_story_points_committed
-    self.story_points_completed = story_points
     self.backlog_story_points = board.backlog.story_points
     self.backlog_stories_count = board.backlog.stories.count
     self.wish_heap_stories_count = board.wish_heap.stories.count

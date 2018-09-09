@@ -170,7 +170,7 @@ class ScrumBoard < ApplicationRecord
 
     sprints.each do |sprint|
       total_story_points += sprint.story_points
-      user_story_count += sprint.story_count
+      user_story_count += sprint.stories_count
       sprint_count += 1
       break if sprint_count >= NUM_SPRINTS_FOR_AVG_VELOCITY + 1
     end

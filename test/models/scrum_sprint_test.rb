@@ -5,6 +5,26 @@ class ScrumSprintTest < ActiveSupport::TestCase
     stub_trello_response
   end
 
+  test "expects sprint to be updated from trello list" do
+    # Arrange
+    sprint = scrum_sprints(:most_recent)
+    trello_list = MockTrelloBoard.scrummy.lists.last
+    trello_list_story_points = trello_list.cards.sum{ |c| UserStory.story_points_from_card(c) }
+
+    # Assume
+    assert_not sprint.imported_from_trello?
+    assert_not_equal trello_list_story_points, sprint.story_points_completed
+    assert_not_equal trello_list.cards.length, sprint.stories_count
+
+    # Act
+    sprint.update_from_trello_list(trello_list)
+
+    # Assert
+    assert sprint.imported_from_trello?
+    assert_equal trello_list.cards.length, sprint.stories_count
+    assert_equal trello_list_story_points, sprint.story_points_completed
+  end
+
   test "expects sprint to be valid" do
     # Arrange
     board = scrum_boards(:scrummy)
@@ -14,11 +34,13 @@ class ScrumSprintTest < ActiveSupport::TestCase
                              name: 'Test 20180701',
                              started_on: '2018-07-01',
                              ended_on: '2018-07-15',
-                             story_points_completed: 10)
+                             story_points_completed: 10,
+                             stories_count: 3)
 
     # Assert
     assert sprint.valid?, sprint.errors.messages
     assert_equal board, sprint.board
+    assert_in_delta 3.333, sprint.average_story_size
   end
 
   test "expects sprint to be current" do

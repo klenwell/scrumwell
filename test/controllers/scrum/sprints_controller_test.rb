@@ -23,14 +23,14 @@ class Scrum::SprintsControllerTest < ActionDispatch::IntegrationTest
     stories_count = 3
 
     # Assume
-    assert @scrum_sprint.stories_count.nil?
+    assert_not_equal stories_count, @scrum_sprint.stories_count
+
+    # Act
     params = {
       id: @scrum_sprint.id,
       stories_count: stories_count,
       story_points_completed: @scrum_sprint.story_points
     }
-
-    # Act
     patch scrum_sprint_url(@scrum_sprint), params: { scrum_sprint: params }
 
     # Assert

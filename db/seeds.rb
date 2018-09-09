@@ -29,14 +29,14 @@ def seed_sample_non_trello_board
   board_name = 'Sample Non-Trello Board'
   sprint_data = [
     # [:name, :started_on, :ended_on, :story_points_committed, :story_points_completed,
-    #  :average_story_size, :backlog_story_points, :backlog_stories_count,
+    #  :story_count, :backlog_story_points, :backlog_stories_count,
     #  :wish_heap_stories_count, :notes]
-    ['20180314', '2/28/2018',' 3/14/2018', 10, 10, 3.3, 54, 30, 30, 'First sprint.'],
-    ['20180328', '3/14/2018', '3/28/2018', 12, 8, 1.6, 52, 30, 30, ''],
-    ['20180411', '3/28/2018', '4/11/2018', 20, 21, 2.6, 63, 30, 37, ''],
-    ['20180425', '4/11/2018',	'4/25/2018', 14, 14, 1.3, 64, 28, 47, ''],
-    ['20180509', '4/25/2018',	'5/9/2018', 14, 12, 1.0, 61, 27, 54, ''],
-    ['20180523', '5/9/2018',	'5/23/2018', 16, 13, 2.6, 59, 27, 60, '']
+    ['20180314', '2/28/2018',' 3/14/2018', 10, 10, 3, 54, 30, 30, 'First sprint.'],
+    ['20180328', '3/14/2018', '3/28/2018', 12, 8, 5, 52, 30, 30, ''],
+    ['20180411', '3/28/2018', '4/11/2018', 20, 21, 8, 63, 30, 37, ''],
+    ['20180425', '4/11/2018',	'4/25/2018', 14, 14, 11, 64, 28, 47, ''],
+    ['20180509', '4/25/2018',	'5/9/2018', 14, 12, 12, 61, 27, 54, ''],
+    ['20180523', '5/9/2018',	'5/23/2018', 16, 13, 5, 59, 27, 60, '']
   ]
 
   existing_board = ScrumBoard.find_by(name: board_name)
@@ -56,7 +56,7 @@ def seed_sample_non_trello_board
                              ended_on: Date.new(end_y.to_i, end_m.to_i, end_d.to_i),
                              story_points_committed: row[3],
                              story_points_completed: row[4],
-                             average_story_size: row[5],
+                             stories_count: row[5],
                              backlog_story_points: row[6],
                              backlog_stories_count: row[7],
                              wish_heap_stories_count: row[8],
