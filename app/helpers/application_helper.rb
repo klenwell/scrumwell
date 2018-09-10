@@ -25,6 +25,11 @@ module ApplicationHelper
     form.text_field field, class: 'form-control', placeholder: placeholder, data: data
   end
 
+  def as_decimal(value, opts={})
+    value = format('%.1f', value) unless value.nil?
+    or_na(value, opts)
+  end
+
   def or_na(value, opts={})
     alt = opts.fetch(:alt, 'Not Available')
     value.presence || tag.span(alt, class: 'text-muted')

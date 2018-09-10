@@ -11,7 +11,7 @@ complete:
   points: 2
   completed_at: 2018-07-03 18:20:50
   last_activity_at: 2018-07-03 18:20:50
-  last_pulled_at: 2018-07-03 18:20:50
+  last_imported_at: 2018-07-03 18:20:50
 
 incomplete:
   queue: most_recent (ScrumSprint)
@@ -24,4 +24,4 @@ incomplete:
   points: 3
   completed_at:
   last_activity_at: 2018-07-03 18:20:50
-  last_pulled_at: 2018-07-03 18:20:50
+  last_imported_at: 2018-07-03 18:20:50

@@ -14,7 +14,7 @@ class UserStory < ApplicationRecord
       story.trello_name = trello_card.name
       story.description = trello_card.desc
       story.points = UserStory.story_points_from_card(trello_card)
-      story.last_pulled_at = Time.now.utc
+      story.last_imported_at = Time.now.utc
       story.save!
     else
       story = UserStory.create_from_trello_card(queue, trello_card)
@@ -31,7 +31,7 @@ class UserStory < ApplicationRecord
                   description: trello_card.desc,
                   points: UserStory.story_points_from_card(trello_card),
                   last_activity_at: trello_card.last_activity_date,
-                  last_pulled_at: Time.zone.now)
+                  last_imported_at: Time.zone.now)
   end
 
   def self.create_from_trello_card(queue, trello_card)

@@ -76,7 +76,7 @@ module Scrum
     def scrum_sprint_params
       params.require(:scrum_sprint).permit(
         :scrum_board_id, :name, :started_on, :ended_on, :story_points_committed,
-        :story_points_completed, :average_story_size, :backlog_story_points,
+        :story_points_completed, :stories_count, :backlog_story_points,
         :backlog_stories_count, :wish_heap_stories_count, :notes
       )
     end
