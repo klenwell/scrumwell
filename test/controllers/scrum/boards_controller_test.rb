@@ -117,12 +117,12 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
     # Arrange
     login_as(email: 'testing@gmail.com', scrum_master: true)
     params = {
-      name: 'Updated Name',
+      local_name: 'Updated Name',
       trello_url: @scrum_board.trello_url
     }
 
     # Assume
-    assert_not_equal params[:name], @scrum_board.name
+    assert_not_equal params[:local_name], @scrum_board.name
 
     # Act
     patch scrum_board_url(@scrum_board), params: { scrum_board: params }
@@ -130,7 +130,7 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
 
     # Assert
     assert_redirected_to scrum_board_url(@scrum_board)
-    assert_equal params[:name], @scrum_board.name
+    assert_equal params[:local_name], @scrum_board.name
   end
 
   test "expects update to fail with invalid Trello URL" do

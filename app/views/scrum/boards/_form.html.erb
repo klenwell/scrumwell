@@ -1,6 +1,6 @@
 <%= bootstrap_form_with(model: scrum_board, local: true) do |form| %>
   <%= form.alert_message "Please fix the errors below." %>
-  <%= form.text_field :name %>
+  <%= form.text_field :local_name, label: 'Name', value: scrum_board.name, required: true %>
   <%= form.text_field :trello_url, help: "Trello Board URL" %>
   <%= form.submit "Update", class: "btn btn-primary ml-2" %>
 <% end %>

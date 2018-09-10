@@ -11,10 +11,19 @@ class ScrumBoard < ApplicationRecord
   alias_attribute :sprints, :scrum_sprints
   alias_attribute :backlog, :scrum_backlog
 
-  validates :name, presence: true
+  validate :name_is_valid
   validate :trello_url_is_valid
 
+  #
+  # Virtual Fields
+  #
+  def name
+    local_name || trello_name
+  end
+
+  #
   # Class Methods
+  #
   def self.by_trello_board_or_create(trello_board)
     scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)
 
@@ -30,9 +39,8 @@ class ScrumBoard < ApplicationRecord
   def self.create_from_trello_board(trello_board)
     scrum_board = ScrumBoard.new(trello_board_id: trello_board.id,
                                  trello_url: trello_board.url,
-                                 name: trello_board.name,
-                                 last_board_activity_at: trello_board.last_activity_date,
-                                 last_pulled_at: Time.now.utc)
+                                 trello_name: trello_board.name,
+                                 last_imported_at: Time.now.utc)
     scrum_board.save!
     logger.info "Created trello board #{scrum_board.name}."
     scrum_board.update_queues_from_trello_board(trello_board)
@@ -76,8 +84,7 @@ class ScrumBoard < ApplicationRecord
 
   def update_from_trello_board(board)
     update(trello_url: board.url,
-           last_board_activity_at: board.last_activity_date,
-           last_pulled_at: Time.now.utc)
+           last_imported_at: Time.now.utc)
   end
 
   def update_queues_from_trello_board(board)
@@ -209,9 +216,17 @@ class ScrumBoard < ApplicationRecord
 
   private
 
+  #
   # Custom Validators
+  #
+  def name_is_valid
+    valid = trello_name.present? || local_name.present?
+    error_message = 'Name must be present'
+    errors.add(:local_name, error_message) unless valid
+  end
+
   def trello_url_is_valid
-    return if trello_url.nil?
+    return if trello_url.blank?
     url_start = 'https://trello.com/b'
     error_message = 'must be valid Trello url'
     errors.add(:trello_url, error_message) unless trello_url.downcase.start_with?(url_start)

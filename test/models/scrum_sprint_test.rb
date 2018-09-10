@@ -11,14 +11,15 @@ class ScrumSprintTest < ActiveSupport::TestCase
 
     # Act
     sprint = ScrumSprint.new(scrum_board_id: board.id,
-                             name: 'Test 20180701',
+                             local_name: 'Test 20180701',
                              started_on: '2018-07-01',
                              ended_on: '2018-07-15',
-                             story_points_completed: 10)
+                             local_story_points_completed: 10)
 
     # Assert
     assert sprint.valid?, sprint.errors.messages
     assert_equal board, sprint.board
+    assert_equal sprint.local_name, sprint.name
   end
 
   test "expects sprint to be current" do

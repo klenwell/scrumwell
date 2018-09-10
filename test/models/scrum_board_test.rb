@@ -72,7 +72,7 @@ class ScrumBoardTest < ActiveSupport::TestCase
 
     # Act
     scrum_board = ScrumBoard.new(trello_board_id: trello_board.id,
-                                 name: trello_board.name,
+                                 trello_name: trello_board.name,
                                  trello_url: 'https://asana.com/scrummy-board')
 
     # Assert

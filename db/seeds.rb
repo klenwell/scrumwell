@@ -39,23 +39,23 @@ def seed_sample_non_trello_board
     ['20180523', '5/9/2018',	'5/23/2018', 16, 13, 2.6, 59, 27, 60, '']
   ]
 
-  existing_board = ScrumBoard.find_by(name: board_name)
+  existing_board = ScrumBoard.find_by(local_name: board_name)
   if existing_board
     puts "Destroying existing #{board_name} board."
     existing_board.destroy
   end
 
-  board = ScrumBoard.create!(name: board_name)
+  board = ScrumBoard.create!(local_name: board_name)
 
   sprint_data.each do |row|
     start_m, start_d, start_y = row[1].split('/')
     end_m, end_d, end_y = row[2].split('/')
     sprint = ScrumSprint.new(scrum_board_id: board.id,
-                             name: row[0],
+                             local_name: row[0],
                              started_on: Date.new(start_y.to_i, start_m.to_i, start_d.to_i),
                              ended_on: Date.new(end_y.to_i, end_m.to_i, end_d.to_i),
-                             story_points_committed: row[3],
-                             story_points_completed: row[4],
+                             local_story_points_committed: row[3],
+                             local_story_points_completed: row[4],
                              average_story_size: row[5],
                              backlog_story_points: row[6],
                              backlog_stories_count: row[7],

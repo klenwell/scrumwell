@@ -11,7 +11,7 @@
       <label>Sprint Name</label>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :name, hide_label: true %>
+      <%= form.text_field :local_name, hide_label: true %>
     </div>
   </div>
 
@@ -32,16 +32,19 @@
 
   <div class="form-group row">
     <div class="col-sm-2">
-      <label>Story Points</label>
+      <label>User Stories</label>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :story_points_committed, hide_label: true, help: 'Committed' %>
+      <%= form.text_field :local_user_story_count, value: scrum_sprint.story_count,
+                          required: true, hide_label: true, help: 'Number' %>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :story_points_completed, hide_label: true, help: 'Completed' %>
+      <%= form.text_field :local_story_points_committed, required: true, hide_label: true,
+                          help: 'Committed Points' %>
     </div>
     <div class="col-sm-2">
-      <%= form.text_field :average_story_size, hide_label: true, help: 'Average Story Size' %>
+      <%= form.text_field :local_story_points_completed, required: true, hide_label: true,
+                          help: 'Completed Points' %>
     </div>
   </div>
 

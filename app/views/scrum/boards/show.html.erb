@@ -11,8 +11,8 @@
     <dl class="dl-horizontal">
       <dt><strong>Trello URL</strong></dt>
       <dd><%= trello_url_link(@scrum_board) %></dd>
-      <dt><strong>Last Trello Pull</strong></dt>
-      <dd><%= or_na(@scrum_board.last_pulled_at) %></dd>
+      <dt><strong>Last Trello Import</strong></dt>
+      <dd><%= or_na(@scrum_board.last_imported_at) %></dd>
     </dl>
   </div>
   <div class="col-sm">

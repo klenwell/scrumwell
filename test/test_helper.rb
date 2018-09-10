@@ -1,5 +1,5 @@
 ENV['RAILS_ENV'] ||= 'test'
-Dir[Rails.root.join("test/support/**/*")].each { |f| require f }
+Dir[Rails.root.join('test', 'support', '**', '*')].each { |f| require f }
 require_relative '../config/environment'
 require 'rails/test_help'
 require 'mocha/minitest'
