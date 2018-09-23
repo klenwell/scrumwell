@@ -169,3 +169,7 @@ Style/ClassAndModuleChildren:
 # Don't require alphabetical ordering.
 Bundler/OrderedGems:
   Enabled: false
+
+# Guard clauses rule but don't need the extra line.
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false

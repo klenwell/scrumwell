@@ -9,7 +9,7 @@ class ScrumSprintTest < ActiveSupport::TestCase
     # Arrange
     sprint = scrum_sprints(:most_recent)
     trello_list = MockTrelloBoard.scrummy.lists.last
-    trello_list_story_points = trello_list.cards.sum{ |c| UserStory.story_points_from_card(c) }
+    trello_list_story_points = trello_list.cards.sum { |c| UserStory.story_points_from_card(c) }
 
     # Assume
     assert_not sprint.imported_from_trello?
