@@ -62,7 +62,16 @@ module Scrum
     # GET /scrum/sprints/:id/import
     def import
       @scrum_sprint.update_from_trello_list
-      render json: @scrum_sprint
+      # disable caching for debugging: https://stackoverflow.com/a/5523411/1093087
+      headers['Last-Modified'] = Time.now.httpdate
+
+      respond_to do |format|
+        format.js {
+          render partial: 'table_row', layout: false, content_type: 'text/html',
+                 locals: { sprint: @scrum_sprint }
+        }
+        format.json { render json: @scrum_sprint }
+      end
     end
 
     private

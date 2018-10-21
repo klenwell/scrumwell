@@ -84,7 +84,7 @@ class ScrumSprint < ApplicationRecord
   # Instance Methods
   #
   def update_from_trello_list(trello_list=nil)
-    trello_list = TrelloService.list(trello_list_id) unless trello_list
+    trello_list ||= TrelloService.list(trello_list_id)
     return unless trello_list
 
     self.imported_from_trello = true
@@ -163,7 +163,6 @@ class ScrumSprint < ApplicationRecord
     self.average_velocity = board.average_velocity_for_sprint(self)
   end
 
-  # rubocop: disable Metrics/AbcSize
   def assign_computed_fields_for_current_sprint
     self.story_points_committed = compute_story_points_committed
     self.backlog_story_points = board.backlog.story_points
@@ -171,7 +170,6 @@ class ScrumSprint < ApplicationRecord
     self.wish_heap_stories_count = board.wish_heap.stories.count
     self.wish_heap_story_points = compute_wish_heap_points
   end
-  # rubocop: enable Metrics/AbcSize
 
   def compute_story_points_committed
     # Commited story points should only be set programmatically at the beginning of

@@ -1,0 +1,16 @@
+<tr>
+  <th scope="row"><%= sprint.name %></th>
+  <td><%= sprint.started_on %></td>
+  <td><%= sprint.ended_on %></td>
+  <td class="story_points_completed"><%= sprint.story_points_completed %></td>
+  <td class="average_velocity"><%= format_avg_velocity(sprint) %></td>
+  <td class="average_story_size"><%= as_decimal(sprint.average_story_size, alt: 'N/A') %></td>
+  <td class="backlog_story_points"><%= sprint.backlog_story_points %></td>
+  <td class="wish_heap_story_points"><%= sprint.wish_heap_story_points %></td>
+  <td class="notes"><%= sprint.notes %></td>
+  <td class="actions">
+    <%= link_to show_icon, sprint %>
+    <%= link_to edit_icon, edit_scrum_sprint_path(sprint) if scrum_master? %>
+    <%= import_completed_sprint_button(sprint) if scrum_master? %>
+  </td>
+</tr>

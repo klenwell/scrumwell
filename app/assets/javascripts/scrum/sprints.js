@@ -60,19 +60,17 @@ var ScrumSprint = (function() {
     var $row = $importButton.closest('tr');
     var data = event.detail[0], status = event.detail[1], xhr = event.detail[2];
 
-    $importButton.fadeTo('slow', 1.0, function() { $importButton.css('color', 'green') });
+    // The html itself needs to be pulled from the XHR.
+    var $html = $(xhr.response);
 
-    // Update fields
-    $.each(TABLE_ROW_FIELDS, function(i, field) {
-      var tdSelector = `td.${field}`;
-      var $td = $row.find(tdSelector);
-      var value = data[field];
-      $td.text(value);
-      $td.fadeTo('slow', 1);
-    });
+    // $importButton will get replaced with the row, so we need to grab the new one
+    // for any visual effects. Will also need to rebind import event if it needs
+    // to be functional.
+    var $newButton = $html.find('a.import-sprint');
 
-    console.log(data);
-  };
+    $newButton.fadeTo('slow', 1.0, function() { $(this).css('color', 'green') });
+    $row.replaceWith($html);
+  }
 
   // Module Public API
   return {
