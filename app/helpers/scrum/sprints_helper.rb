@@ -16,6 +16,6 @@ module Scrum::SprintsHelper
   def import_completed_sprint_button(sprint)
     return '' unless sprint.over?
     link_to import_icon, import_sprint_path(sprint), remote: true, data: { type: :html },
-            class: 'import-sprint'
+                                                     class: 'import-sprint'
   end
 end

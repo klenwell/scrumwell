@@ -66,8 +66,10 @@ module Scrum
       headers['Last-Modified'] = Time.now.httpdate
 
       respond_to do |format|
-        format.js { render partial: 'table_row', layout: false, content_type: 'text/html',
-                    locals: { sprint: @scrum_sprint } }
+        format.js {
+          render partial: 'table_row', layout: false, content_type: 'text/html',
+                 locals: { sprint: @scrum_sprint }
+        }
         format.json { render json: @scrum_sprint }
       end
     end
