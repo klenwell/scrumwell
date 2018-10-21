@@ -5,7 +5,7 @@ class Scrum::SprintsControllerTest < ActionDispatch::IntegrationTest
     @scrum_sprint = scrum_sprints(:most_recent)
   end
 
-  test "expect scrum master can edit board" do
+  test "expects scrum master can edit board" do
     # Arrange
     login_as(email: 'testing@gmail.com', scrum_master: true)
 
