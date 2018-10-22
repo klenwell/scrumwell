@@ -1,6 +1,23 @@
 # Scrumwell
 
-Rails project that integrates Trello for scrum management that's hopefully smarter than the average sprint.
+Rails project that integrates with Trello to provide work-in-progress (WIP) analytics for improved scrum management.
+
+
+## Conventions
+
+In the spirit of Rails's conventions-over-configuration ethos, this application requires a Trello board to adopt a few conventions before it can be compatible.
+
+- Set up the following lists to track stories in progress:
+  - Wish Heap
+  - Backlog
+  - Current Sprint
+- To track completed stories, add a list for each sprint with this name format (YYYYMMDD will be the date the sprint ends):
+  - Sprint YYYYMMDD completed
+- Install plugin Agile Tools by Corrello and use it to record card user story sizes.
+
+For an example, see this project's own Trello board:
+
+- https://trello.com/b/vmyLroUQ/scrumwell
 
 
 ## Installation
