@@ -15,6 +15,10 @@ In the spirit of Rails's conventions-over-configuration ethos, this application 
   - Sprint YYYYMMDD completed
 - Install plugin Agile Tools by Corrello and use it to record card user story sizes.
 
+For an example, see this project's own Trello board:
+
+- https://trello.com/b/vmyLroUQ/scrumwell
+
 
 ## Installation
 
