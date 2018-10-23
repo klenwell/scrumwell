@@ -3,6 +3,8 @@ class ScrumBoard < ApplicationRecord
                                                          inverse_of: :scrum_board
   has_many :wish_heaps, -> { order(trello_pos: :desc) }, dependent: :destroy,
                                                          inverse_of: :scrum_board
+  has_many :scrum_events, -> { order(occurred_at: :desc) }, dependent: :destroy,
+                                                            inverse_of: :scrum_board
   has_one :scrum_backlog, dependent: :destroy
 
   DEFAULT_SPRINT_DURATION = 2.weeks
@@ -10,11 +12,20 @@ class ScrumBoard < ApplicationRecord
 
   alias_attribute :sprints, :scrum_sprints
   alias_attribute :backlog, :scrum_backlog
+  alias_attribute :events, :scrum_events
 
   validates :name, presence: true
   validate :trello_url_is_valid
 
   # Class Methods
+  def self.reconstruct_from_trello_board_actions(trello_board)
+    scrum_board = ScrumBoard.create!(trello_board_id: trello_board.id,
+                                     trello_url: trello_board.url,
+                                     name: trello_board.name)
+
+    scrum_board.import_latest_trello_actions
+  end
+
   def self.by_trello_board_or_create(trello_board)
     scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)
     return scrum_board if scrum_board
@@ -59,6 +70,59 @@ class ScrumBoard < ApplicationRecord
   #
   # Instance Methods
   #
+  def import_latest_trello_actions
+    # Processes latest board actions to update sprints and board WIP.
+    events = []
+
+    latest_trello_actions.each do |trello_action|
+      event = ScrumEvent.from_trello_board_event(trello_board, trello_action)
+      events << digest_latest_event(event)
+    end
+
+    events
+  end
+
+  def digest_latest_event(scrum_event)
+    if scrum_event.creates_queue?
+      create_queue_from_event(scrum_event)
+    elsif scrum_event.creates_story?
+      create_story_from_event(scrum_event)
+    elsif scrum_event.moves_story?
+      move_story_per_event(scrum_event)
+    elsif scrum_event.changes_story_status?
+      change_story_status_per_event(scrum_event)
+    end
+  end
+
+  def latest_trello_actions
+    latest_actions = []
+    limit = 1000
+    since_id = last_imported_action_id
+    before_id = nil
+    more = true
+    calls = 0
+    max_calls = 25
+
+    while more
+      # Rate limits: https://developers.trello.com/docs/rate-limits
+      raise "Too many calls: #{calls}" if calls > max_calls
+
+      actions = trello_board.actions(limit: limit, since: since_id, before: before_id)
+      actions.each { |action| latest_actions << action }
+
+      before_id = actions.last.id
+      more = actions.length == limit
+      calls += 1
+    end
+
+    # Actions come in reverse chronological order per https://stackoverflow.com/a/51817635/1093087
+    latest_actions.reverse
+  end
+
+  def last_imported_action_id
+    events.present? ? events.last.action.id : nil
+  end
+
   # Trello Methods
   # Live board data from Trello API
   def trello_board
