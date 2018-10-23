@@ -1,6 +1,8 @@
 class ScrumBoard < ApplicationRecord
   has_many :scrum_sprints, -> { order(ended_on: :asc) }, dependent: :destroy,
                                                          inverse_of: :scrum_board
+  has_many :scrum_queues, -> { order(ended_on: :asc) }, dependent: :destroy,
+                                                        inverse_of: :scrum_board
   has_many :wish_heaps, -> { order(trello_pos: :desc) }, dependent: :destroy,
                                                          inverse_of: :scrum_board
   has_many :scrum_events, -> { order(occurred_at: :desc) }, dependent: :destroy,
@@ -94,6 +96,7 @@ class ScrumBoard < ApplicationRecord
     end
   end
 
+  # rubocop: disable Metrics/AbcSize
   def latest_trello_actions
     latest_actions = []
     limit = 1000
@@ -118,6 +121,7 @@ class ScrumBoard < ApplicationRecord
     # Actions come in reverse chronological order per https://stackoverflow.com/a/51817635/1093087
     latest_actions.reverse
   end
+  # rubocop: enable Metrics/AbcSize
 
   def last_imported_action_id
     events.present? ? events.last.action.id : nil

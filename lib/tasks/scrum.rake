@@ -1,4 +1,3 @@
-# rubocop: disable Metrics/BlockLength
 namespace :scrum do
   # rake scrum:reconstruct_board[5b26fe3ad86bfdbb5a8290b1]
   desc "Reconstructs scrum board's full history from Trello board's actions"
@@ -9,4 +8,3 @@ namespace :scrum do
     ScrumBoard.reconstruct_from_trello_board_actions(trello_board)
   end
 end
-# rubocop: enable Metrics/BlockLength

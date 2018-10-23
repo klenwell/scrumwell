@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_22_165446) do
+ActiveRecord::Schema.define(version: 2018_10_23_181758) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,18 @@ ActiveRecord::Schema.define(version: 2018_10_22_165446) do
     t.datetime "updated_at", null: false
     t.index ["eventable_type", "eventable_id"], name: "index_scrum_events_on_eventable_type_and_eventable_id"
     t.index ["scrum_board_id"], name: "index_scrum_events_on_scrum_board_id"
+  end
+
+  create_table "scrum_queues", force: :cascade do |t|
+    t.bigint "scrum_board_id"
+    t.string "trello_list_id"
+    t.integer "trello_pos"
+    t.string "name"
+    t.date "started_on"
+    t.date "ended_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["scrum_board_id"], name: "index_scrum_queues_on_scrum_board_id"
   end
 
   create_table "scrum_sprints", force: :cascade do |t|
@@ -105,6 +117,7 @@ ActiveRecord::Schema.define(version: 2018_10_22_165446) do
 
   add_foreign_key "scrum_backlogs", "scrum_boards"
   add_foreign_key "scrum_events", "scrum_boards"
+  add_foreign_key "scrum_queues", "scrum_boards"
   add_foreign_key "scrum_sprints", "scrum_boards"
   add_foreign_key "wish_heaps", "scrum_boards"
 end
