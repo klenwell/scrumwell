@@ -1,0 +1,4 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+creates_card:
+  action: created
