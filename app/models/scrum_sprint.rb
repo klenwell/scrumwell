@@ -167,7 +167,7 @@ class ScrumSprint < ApplicationRecord
     self.story_points_committed = compute_story_points_committed
     self.backlog_story_points = board.backlog.story_points
     self.backlog_stories_count = board.backlog.stories.count
-    self.wish_heap_stories_count = board.wish_heap.stories.count
+    self.wish_heap_stories_count = board.deprecated_wish_heap.stories.count
     self.wish_heap_story_points = compute_wish_heap_points
   end
 

@@ -18,7 +18,7 @@ sprint_backlog:
   trello_pos: 3
   name: Sprint Backlog
 
-sprint_active:
+active_sprint:
   scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
   trello_list_id: active-sprint
   trello_pos: 4
@@ -26,7 +26,7 @@ sprint_active:
   started_on: <%= Time.zone.today - 7.days %>
   ended_on: <%= Time.zone.today + 7.days %>
 
-sprint_completed:
+completed_sprint:
   scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
   trello_list_id: most-recent
   trello_pos: 5

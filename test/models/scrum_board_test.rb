@@ -1,3 +1,6 @@
+#
+# rake test TEST=test/models/scrum_board_test.rb
+#
 require 'test_helper'
 
 class ScrumBoardTest < ActiveSupport::TestCase
@@ -78,5 +81,22 @@ class ScrumBoardTest < ActiveSupport::TestCase
     # Assert
     assert_not scrum_board.valid?
     assert_equal ["must be valid Trello url"], scrum_board.errors.messages[:trello_url]
+  end
+
+  test "expects to identify queues" do
+    # Arrange
+    wish_heap_queue = scrum_queues(:wish_heap)
+    project_backlog_queue = scrum_queues(:project_backlog)
+    sprint_backlog_queue = scrum_queues(:sprint_backlog)
+    active_sprint_queue = scrum_queues(:active_sprint)
+
+    # Act
+    scrum_board = scrum_boards(:scrummy)
+
+    # Assert
+    assert_equal wish_heap_queue, scrum_board.wish_heap
+    assert_equal project_backlog_queue, scrum_board.project_backlog
+    assert_equal sprint_backlog_queue, scrum_board.sprint_backlog
+    assert_equal active_sprint_queue, scrum_board.active_sprint
   end
 end

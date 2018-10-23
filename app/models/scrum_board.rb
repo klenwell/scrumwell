@@ -12,9 +12,12 @@ class ScrumBoard < ApplicationRecord
   DEFAULT_SPRINT_DURATION = 2.weeks
   NUM_SPRINTS_FOR_AVG_VELOCITY = 3
 
+  alias_attribute :queues, :scrum_queues
+  alias_attribute :events, :scrum_events
+
+  # TODO: Remove
   alias_attribute :sprints, :scrum_sprints
   alias_attribute :backlog, :scrum_backlog
-  alias_attribute :events, :scrum_events
 
   validates :name, presence: true
   validate :trello_url_is_valid
@@ -67,6 +70,25 @@ class ScrumBoard < ApplicationRecord
 
   def self.backloggy_trello_list?(trello_list)
     trello_list.name.downcase.include? 'backlog'
+  end
+
+  #
+  # Associations
+  #
+  def wish_heap
+    queues.find(&:wish_heap?)
+  end
+
+  def project_backlog
+    queues.find(&:project_backlog?)
+  end
+
+  def sprint_backlog
+    queues.find(&:sprint_backlog?)
+  end
+
+  def active_sprint
+    queues.find(&:active_sprint?)
   end
 
   #
@@ -154,7 +176,7 @@ class ScrumBoard < ApplicationRecord
   end
 
   # Wish Heap Methods
-  def wish_heap
+  def deprecated_wish_heap
     wish_heaps.first
   end
 
@@ -164,10 +186,10 @@ class ScrumBoard < ApplicationRecord
 
   def estimate_wish_heap_points
     # Avg Pts per Story * Num Wish Stories
-    return nil if wish_heap.nil?
+    return nil if deprecated_wish_heap.nil?
     avg_pts_story = average_points_per_story
-    return nil if avg_pts_story.nil? || wish_heap.stories.empty?
-    (avg_pts_story * wish_heap.stories.length).round
+    return nil if avg_pts_story.nil? || deprecated_wish_heap.stories.empty?
+    (avg_pts_story * deprecated_wish_heap.stories.length).round
   end
 
   def total_work_in_progress_points
@@ -186,7 +208,7 @@ class ScrumBoard < ApplicationRecord
   end
 
   # Sprint Backlog Methods
-  def sprint_backlog
+  def deprecated_sprint_backlog
     # This is the "current sprint" list in Trello Board.
     return nil unless trello_board
     needle = 'current'

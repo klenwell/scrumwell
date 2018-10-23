@@ -19,7 +19,7 @@ class ScrumQueueTest < ActiveSupport::TestCase
 
   test "expects queue to be active sprint" do
     # Arrange
-    queue = scrum_queues(:sprint_active)
+    queue = scrum_queues(:active_sprint)
 
     # Act
     is_active_sprint = queue.active_sprint?
