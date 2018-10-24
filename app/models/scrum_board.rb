@@ -99,7 +99,8 @@ class ScrumBoard < ApplicationRecord
     events = []
 
     latest_trello_actions.each do |trello_action|
-      event = ScrumEvent.from_trello_board_event(trello_board, trello_action)
+      puts format('[%s] (%s) %s', trello_action.date, name, trello_action.type)
+      event = ScrumEvent.create_from_trello_board_event(self, trello_action)
       events << digest_latest_event(event)
     end
 
@@ -108,14 +109,16 @@ class ScrumBoard < ApplicationRecord
 
   def digest_latest_event(scrum_event)
     if scrum_event.creates_queue?
-      create_queue_from_event(scrum_event)
+      ScrumQueue.create_from_board_event(self, scrum_event)
     elsif scrum_event.creates_story?
-      create_story_from_event(scrum_event)
+      nil
     elsif scrum_event.moves_story?
-      move_story_per_event(scrum_event)
+      nil
     elsif scrum_event.changes_story_status?
-      change_story_status_per_event(scrum_event)
+      nil
     end
+
+    scrum_event.reload
   end
 
   # rubocop: disable Metrics/AbcSize
