@@ -1,7 +1,10 @@
 class ScrumQueue < ApplicationRecord
   ## Associations
   belongs_to :scrum_board
+
+  # rubocop: disable Rails/InverseOf
   has_many :scrum_events, -> { order(occurred_at: :desc) }, as: :eventable
+  # rubocop: enable Rails/InverseOf
 
   ## Aliases
   alias_attribute :events, :scrum_events
@@ -57,10 +60,12 @@ class ScrumQueue < ApplicationRecord
     name.downcase.include?('current')
   end
 
+  # rubocop: disable Style/RescueModifier
   def completed_sprint_queue?
     name.downcase.include?('completed') &&
       (date_from_name.present? rescue false)
   end
+  # rubocop: enable Style/RescueModifier
 
   def active_sprint?
     completed_sprint_queue? &&
@@ -74,9 +79,8 @@ class ScrumQueue < ApplicationRecord
   private
 
   def set_start_end_dates
-    if completed_sprint_queue?
-      self.ended_on = date_from_name
-      self.started_on = self.ended_on - ScrumBoard::DEFAULT_SPRINT_DURATION
-    end
+    return unless completed_sprint_queue?
+    self.ended_on = date_from_name
+    self.started_on = ended_on - ScrumBoard::DEFAULT_SPRINT_DURATION
   end
 end

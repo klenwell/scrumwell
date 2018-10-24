@@ -29,7 +29,7 @@ class ScrumEvent < ApplicationRecord
 
   def old_data?(key)
     return false if trello_data['old'].nil?
-    trello_data['old'].has_key? key
+    trello_data['old'].key? key
   end
 
   def creates_queue?
@@ -92,6 +92,7 @@ class ScrumEvent < ApplicationRecord
     nil
   end
 
+  # rubocop: disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def categorize_action
     card_creation_actions = ['convertToCardFromCheckItem', 'copyCard', 'createCard']
 
@@ -118,4 +119,5 @@ class ScrumEvent < ApplicationRecord
 
     nil
   end
+  # rubocop: enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 end
