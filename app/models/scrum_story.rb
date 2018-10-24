@@ -45,6 +45,22 @@ class ScrumStory < ApplicationRecord
     TrelloService.card(trello_card_id)
   end
 
+  def last_activity_at
+    trello_data['last_activity_date']
+  end
+
+  def change_queue(queue, **options)
+    event = options[:event]
+    updated = update!(scrum_queue: queue)
+
+    return updated unless event
+
+    if event.occurred_at > last_activity_at
+      set_card_data
+      save!
+    end
+  end
+
   private
 
   def set_card_data

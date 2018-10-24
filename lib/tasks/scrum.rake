@@ -5,13 +5,17 @@ namespace :scrum do
     ScrumBoard.destroy_all
     ScrumEvent.destroy_all
 
+    `rake log:clear` if Rails.env.development?
+
     trello_board = TrelloService.board(args[:board_id])
     puts format("Importing board: %s", trello_board.name)
 
     ScrumBoard.reconstruct_from_trello_board_actions(trello_board)
 
+    trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
     puts format("Created %s queues.", ScrumQueue.count)
     puts format("Created %s events.", ScrumEvent.count)
+    puts format("Trello API calls: %s", trello_api_calls)
     byebug
   end
 

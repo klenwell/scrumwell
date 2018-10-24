@@ -114,12 +114,11 @@ class ScrumBoard < ApplicationRecord
   def digest_latest_event(scrum_event)
     if scrum_event.creates_queue?
       ScrumQueue.create_from_board_event(self, scrum_event)
-      puts format("> Created queue: %s", scrum_event)
     elsif scrum_event.creates_story?
       ScrumStory.create_from_board_event(self, scrum_event)
-      puts format("> Created story: %s", scrum_event)
     elsif scrum_event.moves_story?
-      nil
+      scrum_event.move_story
+      puts format("> Moved story: %s", scrum_event)
     elsif scrum_event.changes_story_status?
       nil
     end
