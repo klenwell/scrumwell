@@ -1,13 +1,17 @@
 class ScrumBoard < ApplicationRecord
-  has_many :scrum_sprints, -> { order(ended_on: :asc) }, dependent: :destroy,
-                                                         inverse_of: :scrum_board
   has_many :scrum_queues, -> { order(ended_on: :asc) }, dependent: :destroy,
                                                         inverse_of: :scrum_board
-  has_many :wish_heaps, -> { order(trello_pos: :desc) }, dependent: :destroy,
-                                                         inverse_of: :scrum_board
+  has_many :scrum_stories, -> { order(created_at: :asc) }, dependent: :destroy,
+                                                           inverse_of: :scrum_board
   has_many :scrum_events, -> { order(occurred_at: :desc) }, dependent: :destroy,
                                                             inverse_of: :scrum_board
+
+  # DEPRECATED
   has_one :scrum_backlog, dependent: :destroy
+  has_many :wish_heaps, -> { order(trello_pos: :desc) }, dependent: :destroy,
+                                                         inverse_of: :scrum_board
+  has_many :scrum_sprints, -> { order(ended_on: :asc) }, dependent: :destroy,
+                                                         inverse_of: :scrum_board
 
   DEFAULT_SPRINT_DURATION = 2.weeks
   NUM_SPRINTS_FOR_AVG_VELOCITY = 3
@@ -110,8 +114,10 @@ class ScrumBoard < ApplicationRecord
   def digest_latest_event(scrum_event)
     if scrum_event.creates_queue?
       ScrumQueue.create_from_board_event(self, scrum_event)
+      puts format("> Created queue: %s", scrum_event)
     elsif scrum_event.creates_story?
-      nil
+      ScrumStory.create_from_board_event(self, scrum_event)
+      puts format("> Created story: %s", scrum_event)
     elsif scrum_event.moves_story?
       nil
     elsif scrum_event.changes_story_status?
@@ -152,13 +158,19 @@ class ScrumBoard < ApplicationRecord
     events.present? ? events.last.action.id : nil
   end
 
-  # Trello Methods
-  # Live board data from Trello API
   def trello_board
     return nil unless trello_board_id
     TrelloService.board(trello_board_id)
   end
 
+  def queue_by_trello_id(trello_list_id)
+    queues.find { |q| q.trello_list_id == trello_list_id }
+  end
+
+  #### DEPRECATED
+
+  # Trello Methods
+  # Live board data from Trello API
   def update_from_trello_board(trello_board)
     update(trello_url: trello_board.url,
            last_imported_at: Time.now.utc)

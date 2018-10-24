@@ -1,13 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 complete:
-  queue: completed_sprint (ScrumQueue)
+  scrum_queue: completed_sprint (ScrumQueue)
   trello_card_id: scrum-story-1
   title: As a user, I want a story.
   points: 2
 
 incomplete:
-  queue: active_sprint (ScrumQueue)
+  scrum_queue: active_sprint (ScrumQueue)
   trello_card_id: scrum-story-2
   title: As a user, I want another story.
   points: 3

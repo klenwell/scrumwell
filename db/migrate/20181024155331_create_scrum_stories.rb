@@ -1,6 +1,7 @@
 class CreateScrumStories < ActiveRecord::Migration[5.2]
   def change
     create_table :scrum_stories do |t|
+      t.belongs_to :scrum_board, foreign_key: true
       t.belongs_to :scrum_queue, foreign_key: true
 
       t.string :trello_card_id

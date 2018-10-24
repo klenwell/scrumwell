@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 2018_10_24_155331) do
   end
 
   create_table "scrum_stories", force: :cascade do |t|
+    t.bigint "scrum_board_id"
     t.bigint "scrum_queue_id"
     t.string "trello_card_id"
     t.text "title"
@@ -94,6 +95,7 @@ ActiveRecord::Schema.define(version: 2018_10_24_155331) do
     t.json "trello_data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["scrum_board_id"], name: "index_scrum_stories_on_scrum_board_id"
     t.index ["scrum_queue_id"], name: "index_scrum_stories_on_scrum_queue_id"
   end
 
@@ -130,6 +132,7 @@ ActiveRecord::Schema.define(version: 2018_10_24_155331) do
   add_foreign_key "scrum_events", "scrum_boards"
   add_foreign_key "scrum_queues", "scrum_boards"
   add_foreign_key "scrum_sprints", "scrum_boards"
+  add_foreign_key "scrum_stories", "scrum_boards"
   add_foreign_key "scrum_stories", "scrum_queues"
   add_foreign_key "wish_heaps", "scrum_boards"
 end

@@ -22,14 +22,18 @@ class ScrumEvent < ApplicationRecord
   #
   # Instance Methods
   #
-  def old_data(key)
-    return nil unless old_data?(key)
-    trello_data['old'][key]
+  def trello_data?(key)
+    trello_data.key? key
   end
 
   def old_data?(key)
-    return false if trello_data['old'].nil?
+    return false unless trello_data?('old')
     trello_data['old'].key? key
+  end
+
+  def old_data(key)
+    return nil unless old_data?(key)
+    trello_data['old'][key]
   end
 
   def creates_queue?
@@ -61,9 +65,24 @@ class ScrumEvent < ApplicationRecord
   end
 
   def trello_object_id
-    return trello_data['card']['id'] if card?
-    return trello_data['board']['id'] if board?
-    return trello_data['list']['id'] if list?
+    return trello_board_id if board?
+    return trello_card_id if card?
+    return trello_list_id if list?
+  end
+
+  def trello_board_id
+    return nil unless trello_data?('board')
+    trello_data['board']['id']
+  end
+
+  def trello_list_id
+    return nil unless trello_data?('list')
+    trello_data['list']['id']
+  end
+
+  def trello_card_id
+    return nil unless trello_data?('card')
+    trello_data['card']['id']
   end
 
   private
