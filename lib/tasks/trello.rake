@@ -14,12 +14,14 @@ namespace :trello do
     puts format("Board %s Wish Heap stories: %d", board.name, board.wish_heap.stories.length)
   end
 
+  # rake trello:backlog
   desc "Counts story points in backlog info for given board"
   task :backlog, [:board_id] => :environment do |_, args|
     args.with_defaults(board_id: scrumwell_board_id)
 
     board = TrelloService.board(args[:board_id])
     backlog = board.lists.find { |list| list.name.downcase.include? 'backlog' }
+    byebug
 
     abort "Backlog list not found for board #{board.name}." unless backlog
 

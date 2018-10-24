@@ -14,4 +14,16 @@ namespace :scrum do
     puts format("Created %s events.", ScrumEvent.count)
     byebug
   end
+
+  # rake scrum:save_card_test
+  desc "Test saving a trello card's raw data to a scrum story"
+  task save_card_test: :environment do |_|
+    card_id = '5b5dfe72d8fe85b05c24e906'
+    trello_card = TrelloService.card(card_id)
+
+    story = ScrumStory.new(trello_data: trello_card)
+    story.save!
+
+    byebug
+  end
 end

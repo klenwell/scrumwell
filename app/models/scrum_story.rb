@@ -1,0 +1,2 @@
+class ScrumStory < ApplicationRecord
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_23_181758) do
+ActiveRecord::Schema.define(version: 2018_10_24_155331) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,6 +86,17 @@ ActiveRecord::Schema.define(version: 2018_10_23_181758) do
     t.index ["scrum_board_id"], name: "index_scrum_sprints_on_scrum_board_id"
   end
 
+  create_table "scrum_stories", force: :cascade do |t|
+    t.bigint "scrum_queue_id"
+    t.string "trello_card_id"
+    t.text "title"
+    t.integer "points"
+    t.json "trello_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["scrum_queue_id"], name: "index_scrum_stories_on_scrum_queue_id"
+  end
+
   create_table "user_stories", force: :cascade do |t|
     t.bigint "queue_id"
     t.string "trello_card_id"
@@ -119,5 +130,6 @@ ActiveRecord::Schema.define(version: 2018_10_23_181758) do
   add_foreign_key "scrum_events", "scrum_boards"
   add_foreign_key "scrum_queues", "scrum_boards"
   add_foreign_key "scrum_sprints", "scrum_boards"
+  add_foreign_key "scrum_stories", "scrum_queues"
   add_foreign_key "wish_heaps", "scrum_boards"
 end
