@@ -33,6 +33,7 @@ class ScrumBoard < ApplicationRecord
                                      name: trello_board.name)
 
     scrum_board.import_latest_trello_actions
+    scrum_board
   end
 
   def self.by_trello_board_or_create(trello_board)
@@ -118,9 +119,8 @@ class ScrumBoard < ApplicationRecord
       ScrumStory.create_from_board_event(self, scrum_event)
     elsif scrum_event.moves_story?
       scrum_event.move_story
-      puts format("> Moved story: %s", scrum_event)
     elsif scrum_event.changes_story_status?
-      nil
+      scrum_event.update_story_status
     end
 
     scrum_event.reload

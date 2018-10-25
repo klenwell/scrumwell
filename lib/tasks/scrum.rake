@@ -10,18 +10,19 @@ namespace :scrum do
     trello_board = TrelloService.board(args[:board_id])
     puts format("Importing board: %s", trello_board.name)
 
-    ScrumBoard.reconstruct_from_trello_board_actions(trello_board)
+    board = ScrumBoard.reconstruct_from_trello_board_actions(trello_board)
 
     trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
     puts format("Created %s queues.", ScrumQueue.count)
     puts format("Created %s events.", ScrumEvent.count)
     puts format("Trello API calls: %s", trello_api_calls)
-    byebug
+
+    byebug if board
   end
 
-  # rake scrum:save_card_test
+  # rake scrum:sandbox
   desc "Test saving a trello card's raw data to a scrum story"
-  task save_card_test: :environment do |_|
+  task sandbox: :environment do |_|
     card_id = '5b5dfe72d8fe85b05c24e906'
     trello_card = TrelloService.card(card_id)
 

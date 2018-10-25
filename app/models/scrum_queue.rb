@@ -9,6 +9,7 @@ class ScrumQueue < ApplicationRecord
   # rubocop: enable Rails/InverseOf
 
   ## Aliases
+  alias_attribute :stories, :scrum_stories
   alias_attribute :events, :scrum_events
 
   ## Callbacks
@@ -34,6 +35,14 @@ class ScrumQueue < ApplicationRecord
   #
   # Instance Methods
   #
+  def groomed_stories
+    stories.select { |story| story.points.present? }
+  end
+
+  def points
+    groomed_stories.sum(&:points)
+  end
+
   def trello_list
     TrelloService.list(trello_list_id)
   end

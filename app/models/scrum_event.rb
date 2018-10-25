@@ -49,7 +49,8 @@ class ScrumEvent < ApplicationRecord
   end
 
   def changes_story_status?
-    return false unless card?
+    status_actions = ['deleted', 'closed', 'reopened']
+    card? && status_actions.include?(action)
   end
 
   def card?
@@ -93,6 +94,21 @@ class ScrumEvent < ApplicationRecord
     story = ScrumStory.find_by(trello_card_id: trello_card_id)
     new_queue = ScrumQueue.find_by(trello_list_id: list_id)
     story.change_queue(new_queue, event: self)
+
+    update!(eventable: story)
+    story
+  end
+
+  def update_story_status
+    story = ScrumStory.find_by(trello_card_id: trello_card_id)
+
+    return nil unless story
+
+    if ['closed', 'deleted'].include? action
+      story.close
+    elsif action == 'reopened'
+      story.reopen(event: self)
+    end
 
     update!(eventable: story)
     story

@@ -3,7 +3,7 @@ class ScrumStory < ApplicationRecord
 
   ## Associations
   belongs_to :scrum_board
-  belongs_to :scrum_queue
+  belongs_to :scrum_queue, optional: true
 
   # rubocop: disable Rails/InverseOf
   has_many :scrum_events, -> { order(occurred_at: :desc) }, as: :eventable
@@ -45,6 +45,12 @@ class ScrumStory < ApplicationRecord
     TrelloService.card(trello_card_id)
   end
 
+  def completed_on
+    return nil unless trello_data['due_complete']
+    return nil unless trello_data['due']
+    trello_data['due'].to_date
+  end
+
   def last_activity_at
     trello_data['last_activity_date']
   end
@@ -53,12 +59,30 @@ class ScrumStory < ApplicationRecord
     event = options[:event]
     updated = update!(scrum_queue: queue)
 
-    return updated unless event
+    update_story = event.present? && event.occurred_at > last_activity_at
+    return updated unless update_story
 
-    if event.occurred_at > last_activity_at
-      set_card_data
-      save!
-    end
+    set_card_data
+    save!
+  end
+
+  def close
+    update!(scrum_queue: nil)
+  end
+
+  def reopen(**options)
+    event = options[:event]
+    return nil unless event
+
+    trello_list_id = event.trello_data.dig('list', 'id')
+    return nil unless trello_list_id
+
+    queue = ScrumQueue.find_by(trello_list_id: trello_list_id)
+    update!(scrum_queue: queue)
+  end
+
+  def closed?
+    trello_data['closed']
   end
 
   private
