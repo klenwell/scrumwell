@@ -5,6 +5,14 @@ Rails.application.routes.draw do
   namespace :scrum do
     # Nested Resources: https://stackoverflow.com/a/10661690/1093087
     resources :boards, shallow: true do
+      resources :queues, shallow: true do
+        resources :stories
+      end
+    end
+
+    # DEPRECATED
+    # Nested Resources: https://stackoverflow.com/a/10661690/1093087
+    resources :boards, shallow: true do
       resources :sprints, shallow: true do
         resources :user_stories
       end

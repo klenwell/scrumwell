@@ -1,0 +1,14 @@
+<tr>
+  <th scope="row"><%= queue.name %></th>
+  <td><%= queue.started_on %></td>
+  <td><%= queue.ended_on %></td>
+  <td class="story_points_completed"><%= queue.points %></td>
+  <td class="average_velocity">TBA</td>
+  <td class="average_story_size">TBA</td>
+  <td class="backlog_story_points">TBA</td>
+  <td class="wish_heap_story_points">TBA</td>
+  <td class="actions">
+    <%= link_to show_icon, queue %>
+    <%= link_to edit_icon, edit_scrum_queue_path(queue) if scrum_master? %>
+  </td>
+</tr>

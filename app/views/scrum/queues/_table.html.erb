@@ -1,0 +1,20 @@
+<table class="sprints table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Start</th>
+      <th scope="col">End</th>
+      <th scope="col">Completed</th>
+      <th scope="col"><%= ScrumBoard::NUM_SPRINTS_FOR_AVG_VELOCITY %>-Sprint Avg Velocity</th>
+      <th scope="col">Avg Story Size</th>
+      <th scope="col">Backlog</th>
+      <th scope="col">Wish Heap</th>
+      <th scope="col">Notes</th>
+      <th scope="col" class="actions"></th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <%= render partial: 'scrum/queues/table_row', collection: queues, as: :queue %>
+  </tbody>
+</table>

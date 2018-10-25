@@ -11,6 +11,8 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "expects authenticated user to view index" do
+    skip('TODO')
+
     # Arrange
     login_as(email: 'testing@gmail.com')
 

@@ -12,7 +12,7 @@
       <dt><strong>Trello URL</strong></dt>
       <dd><%= trello_url_link(@scrum_board) %></dd>
       <dt><strong>Last Trello Import</strong></dt>
-      <dd><%= or_na(@scrum_board.last_imported_at) %></dd>
+      <dd><%= or_na(@scrum_board.updated_at) %></dd>
     </dl>
   </div>
   <div class="col-sm">
@@ -23,7 +23,7 @@
       <%#= f.submit "Pull from Trello", class: "btn btn-warning ml-2" %>
     <%# end %>
     <h4>
-      <span class="badge badge-pill badge-primary"><%= @scrum_board.wish_heap_story_count %></span>
+      <span class="badge badge-pill badge-primary"><%= @scrum_board.wish_heap.stories.length %></span>
       Stories in Wish Heap
     </h4>
   </div>
@@ -45,7 +45,7 @@
 </div>
 
 <h4>Table</h4>
-<%= render partial: "scrum/sprints/table", locals: {sprints: @scrum_board.recent_sprints} %>
+<%= render partial: "scrum/queues/table", locals: {queues: @scrum_board.queues} %>
 
 <div class="actions">
   <%= link_to 'Index', scrum_boards_path, role: 'button', class: 'btn btn-light mt-2' %>

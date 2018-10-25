@@ -25,11 +25,11 @@
     <% @scrum_boards.each do |board| %>
       <tr>
         <th scope="row"><%= board.name %></th>
-        <td class="text-right"><%= board.sprints.count %></td>
-        <td class="text-right"><%= number_with_precision(board.average_velocity, precision: 1) %></td>
-        <td class="text-right"><%= board.total_work_in_progress_points %></td>
-        <td class="text-right"><%= board.backlog_story_count %></td>
-        <td class="text-right"><%= board.wish_heap_story_count %></td>
+        <td class="text-right"><%= board.queues.count %></td>
+        <td class="text-right">TBA</td>
+        <td class="text-right">TBA</td>
+        <td class="text-right"><%= board.project_backlog.stories.length %></td>
+        <td class="text-right"><%= board.wish_heap.stories.length %></td>
         <td><%= board.created_at.to_date %></td>
         <td><%= or_na(board.last_imported_at, {alt: 'N/A'}) %></td>
         <td>
