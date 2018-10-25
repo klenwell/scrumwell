@@ -18,28 +18,16 @@ class ScrumQueue < ApplicationRecord
   #
   # Class Methods
   #
-  def self.create_from_board_event(board, scrum_event)
-    queue = ScrumQueue.new(
-      scrum_board: board,
-      trello_list_id: scrum_event.trello_data['list']['id']
-    )
-
-    # Use current name rather than original as a key (WIP) queue could have been renamed.
-    queue.name = queue.trello_list.name
-    queue.save!
-
-    scrum_event.update!(eventable: queue)
-    queue
-  end
 
   #
   # Instance Methods
   #
   def groomed_stories
-    stories.select { |story| story.points.present? }
+    stories.select(&:groomed?)
   end
 
   def points
+    return stories.sum(&:estimated_points) if wish_heap?
     groomed_stories.sum(&:points)
   end
 

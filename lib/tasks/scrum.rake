@@ -12,6 +12,10 @@ namespace :scrum do
 
     board = ScrumBoard.reconstruct_from_trello_board_actions(trello_board)
 
+    board.queues.each do |queue|
+      puts format("Queue %s: %s points", queue.name, queue.points)
+    end
+
     trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
     puts format("Created %s queues.", ScrumQueue.count)
     puts format("Created %s events.", ScrumEvent.count)

@@ -33,7 +33,7 @@ class ScrumBoard < ApplicationRecord
                                      name: trello_board.name)
 
     scrum_board.import_latest_trello_actions
-    scrum_board
+    scrum_board.reload
   end
 
   def self.by_trello_board_or_create(trello_board)
@@ -114,9 +114,9 @@ class ScrumBoard < ApplicationRecord
 
   def digest_latest_event(scrum_event)
     if scrum_event.creates_queue?
-      ScrumQueue.create_from_board_event(self, scrum_event)
+      scrum_event.create_queue_for_board(self)
     elsif scrum_event.creates_story?
-      ScrumStory.create_from_board_event(self, scrum_event)
+      scrum_event.create_story_for_board(self)
     elsif scrum_event.moves_story?
       scrum_event.move_story
     elsif scrum_event.changes_story_status?

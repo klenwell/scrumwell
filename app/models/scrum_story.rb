@@ -9,6 +9,9 @@ class ScrumStory < ApplicationRecord
   has_many :scrum_events, -> { order(occurred_at: :desc) }, as: :eventable
   # rubocop: enable Rails/InverseOf
 
+  ## Aliases
+  alias_attribute :scrum_events, :events
+
   ## Validations
   validates :trello_card_id, presence: true
   validates :title, presence: true
@@ -19,20 +22,6 @@ class ScrumStory < ApplicationRecord
   #
   # Class Methods
   #
-  def self.create_from_board_event(board, scrum_event)
-    queue = board.queue_by_trello_id(scrum_event.trello_list_id)
-
-    story = ScrumStory.create!(
-      scrum_board: board,
-      scrum_queue: queue,
-      trello_card_id: scrum_event.trello_card_id,
-      title: scrum_event.trello_data.dig('card', 'name')
-    )
-
-    scrum_event.update!(eventable: story)
-    story
-  end
-
   def self.points_from_card(trello_card)
     agile_plugin = trello_card.plugin_data.find { |pd| pd.idPlugin == AGILE_TOOLS_PLUGIN_ID }
     agile_plugin.present? ? agile_plugin.value['points'].to_i : nil
@@ -41,6 +30,11 @@ class ScrumStory < ApplicationRecord
   #
   # Instance Methods
   #
+  def estimated_points
+    # TODO: take average from board (where last 20 and size > 0)
+    sized? ? points : 0
+  end
+
   def trello_card
     TrelloService.card(trello_card_id)
   end
@@ -79,6 +73,14 @@ class ScrumStory < ApplicationRecord
 
     queue = ScrumQueue.find_by(trello_list_id: trello_list_id)
     update!(scrum_queue: queue)
+  end
+
+  def groomed?
+    scrum_queue.present? && !scrum_queue.wish_heap? && sized?
+  end
+
+  def sized?
+    points.present? && points > 0
   end
 
   def closed?

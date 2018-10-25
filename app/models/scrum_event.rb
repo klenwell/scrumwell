@@ -87,6 +87,35 @@ class ScrumEvent < ApplicationRecord
   end
 
   ## WIP events
+  def create_queue_for_board(board)
+    queue = ScrumQueue.new(
+      scrum_board: board,
+      trello_list_id: trello_list_id
+    )
+
+    # Use current Trello list name rather than original event name as queue could have
+    # been renamed.
+    queue.name = queue.trello_list.name
+    queue.save!
+
+    update!(eventable: queue)
+    queue
+  end
+
+  def create_story_for_board(board)
+    queue = board.queue_by_trello_id(trello_list_id)
+
+    story = ScrumStory.create!(
+      scrum_board: board,
+      scrum_queue: queue,
+      trello_card_id: trello_card_id,
+      title: trello_data.dig('card', 'name')
+    )
+
+    update!(eventable: story)
+    story
+  end
+
   def move_story
     list_id = trello_data['listAfter']['id']
     raise 'listAfter id not found' unless list_id
