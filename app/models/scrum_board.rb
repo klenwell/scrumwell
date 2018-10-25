@@ -1,4 +1,5 @@
 class ScrumBoard < ApplicationRecord
+  ## Associations
   has_many :scrum_queues, -> { order(ended_on: :asc) }, dependent: :destroy,
                                                         inverse_of: :scrum_board
   has_many :scrum_stories, -> { order(created_at: :asc) }, dependent: :destroy,
@@ -17,6 +18,7 @@ class ScrumBoard < ApplicationRecord
   NUM_SPRINTS_FOR_AVG_VELOCITY = 3
 
   alias_attribute :queues, :scrum_queues
+  alias_attribute :stories, :scrum_stories
   alias_attribute :events, :scrum_events
 
   # TODO: Remove
@@ -96,6 +98,10 @@ class ScrumBoard < ApplicationRecord
     queues.find(&:active_sprint?)
   end
 
+  def recent_sized_stories
+    stories.where('points > 0').order(created_at: :desc)
+  end
+
   #
   # Instance Methods
   #
@@ -164,6 +170,12 @@ class ScrumBoard < ApplicationRecord
 
   def queue_by_trello_id(trello_list_id)
     queues.find { |q| q.trello_list_id == trello_list_id }
+  end
+
+  def sampled_story_size
+    sample_size = 20
+    sample = recent_sized_stories.limit(sample_size)
+    (sample.sum(&:points).to_d / sample.length).ceil
   end
 
   #### DEPRECATED

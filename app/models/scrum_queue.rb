@@ -45,7 +45,7 @@ class ScrumQueue < ApplicationRecord
 
   def project_backlog?
     # Preferred version:
-    return true if name.downcase.include?('project backlog')
+    return true if name.downcase.include?('groom')
 
     # Legacy version:
     name.downcase.include?('backlog')

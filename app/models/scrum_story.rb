@@ -31,8 +31,7 @@ class ScrumStory < ApplicationRecord
   # Instance Methods
   #
   def estimated_points
-    # TODO: take average from board (where last 20 and size > 0)
-    sized? ? points : 0
+    sized? ? points : scrum_board.sampled_story_size
   end
 
   def trello_card
