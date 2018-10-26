@@ -2,6 +2,7 @@ class ScrumEvent < ApplicationRecord
   ## Associations
   belongs_to :eventable, polymorphic: true, optional: true
   belongs_to :scrum_board
+  has_one :wip_log
 
   ## Callbacks
   before_create :categorize

@@ -48,7 +48,7 @@ class ScrumQueue < ApplicationRecord
     return true if name.downcase.include?('groom')
 
     # Legacy version:
-    name.downcase.include?('backlog')
+    name.downcase.include?('backlog') && !name.downcase.include?('current')
   end
 
   def sprint_backlog?

@@ -10,7 +10,6 @@ class ScrumStory < ApplicationRecord
   # rubocop: enable Rails/InverseOf
 
   ## Aliases
-  alias_attribute :scrum_events, :events
 
   ## Validations
   validates :trello_card_id, presence: true

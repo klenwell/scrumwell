@@ -120,9 +120,11 @@ ActiveRecord::Schema.define(version: 2018_10_26_020759) do
   create_table "wip_logs", force: :cascade do |t|
     t.bigint "scrum_board_id"
     t.bigint "scrum_event_id"
-    t.integer "point_change"
+    t.integer "points_completed"
+    t.json "wip_changes"
     t.json "wip"
     t.json "daily_velocity"
+    t.datetime "occurred_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["scrum_board_id"], name: "index_wip_logs_on_scrum_board_id"

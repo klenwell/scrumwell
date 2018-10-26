@@ -34,11 +34,11 @@ namespace :scrum do
     board = ScrumBoard.find_by(name: args[:board_name])
     puts format("Rebuilding WipLog for board: %s", board.name)
 
-    last_wip_log = board.build_wip_log_from_scratch
+    wip_logs = board.build_wip_log_from_scratch
     board.reload
 
     puts format("WIP logs for board %s: %s", board.name, board.wip_logs.count)
-    puts format("Last WIP log: %s", last_wip_log)
+    puts format("Last WIP log: %s", wip_logs.last)
 
     byebug
   end
