@@ -105,6 +105,23 @@ class ScrumBoard < ApplicationRecord
   #
   # Instance Methods
   #
+  def build_wip_log_from_scratch
+    wip_logs = []
+    events.reverse_each do |event|
+      next unless event.wip?
+      wip_log = WipLog.new(event: event)
+      wip_logs << wip_log
+      points = event.eventable.try(:estimated_points)
+      puts format(
+        "[%s] %s:%s %s -> %s (%s)",
+        event.occurred_at, event.trello_object, event.action, wip_log.old_queue.try(:name),
+        wip_log.new_queue.try(:name), wip_log.point_change
+      )
+      byebug if points.nil?
+    end
+    wip_logs
+  end
+
   def import_latest_trello_actions
     # Processes latest board actions to update sprints and board WIP.
     events = []

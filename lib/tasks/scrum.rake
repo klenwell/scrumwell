@@ -24,6 +24,25 @@ namespace :scrum do
     byebug if board
   end
 
+  # rake scrum:rebuild_wip_log[Scrumwell]
+  desc "Rebuild scrum board's Work-in-Progress from scratch using events."
+  task :rebuild_wip_log, [:board_name] => :environment do |_, args|
+    WipLog.destroy_all
+
+    `rake log:clear` if Rails.env.development?
+
+    board = ScrumBoard.find_by(name: args[:board_name])
+    puts format("Rebuilding WipLog for board: %s", board.name)
+
+    last_wip_log = board.build_wip_log_from_scratch
+    board.reload
+
+    puts format("WIP logs for board %s: %s", board.name, board.wip_logs.count)
+    puts format("Last WIP log: %s", last_wip_log)
+
+    byebug
+  end
+
   # rake scrum:sandbox
   desc "Test saving a trello card's raw data to a scrum story"
   task sandbox: :environment do |_|

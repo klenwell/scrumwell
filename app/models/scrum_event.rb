@@ -22,6 +22,11 @@ class ScrumEvent < ApplicationRecord
   #
   # Instance Methods
   #
+  def wip?
+    return false if card? && deletes_story?
+    creates_story? || moves_story? || changes_story_status?
+  end
+
   def trello_data?(key)
     trello_data.key? key
   end
@@ -46,6 +51,19 @@ class ScrumEvent < ApplicationRecord
 
   def moves_story?
     action == 'changed_queue' && card?
+  end
+
+  def reopens_story?
+    action == 'reopened' && card?
+  end
+
+  def closes_story?
+    close_actions = ['deleted', 'closed']
+    card? && close_actions.include?(action)
+  end
+
+  def deletes_story?
+    action == 'deleted' && card?
   end
 
   def changes_story_status?
