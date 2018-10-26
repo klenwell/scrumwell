@@ -19,64 +19,6 @@ class WipLog < ApplicationRecord
                    occurred_at: scrum_event.occurred_at)
   end
 
-  def compute_wip_fields
-    self.points_completed = points_change_for_queue(:completed_sprint_queue?)
-    self.wip_changes = compute_wip_changes
-    self.wip = compute_wip
-    self.daily_velocity = compute_daily_velocities
-  end
-
-  def points_change_for_queue(queue_key)
-    is_old_queue = old_queue.try(queue_key)
-    is_new_queue = new_queue.try(queue_key)
-    gain = !is_old_queue && is_new_queue
-    loss = is_old_queue && !is_new_queue
-
-    # Need to determine which queue because we only want to estimate for wish heap
-    queue = is_old_queue ? old_queue : new_queue
-    points = story_points(queue)
-
-    return points if gain
-    return points * -1 if loss
-    0
-  end
-
-  def compute_wip_changes
-    {
-      wish_heap: points_change_for_queue(:wish_heap?),
-      project_backlog: points_change_for_queue(:project_backlog?),
-      sprint_backlog: points_change_for_queue(:sprint_backlog?)
-    }
-  end
-
-  def compute_wip
-    last_wip_log = WipLog.order(:id).last
-    last_wip = last_wip_log.present? ? last_wip_log.wip : {}
-    this_wip = wip_changes
-
-    wish_heap = last_wip.fetch('wish_heap', 0) + this_wip['wish_heap']
-    project_backlog = last_wip.fetch('project_backlog', 0) + this_wip['project_backlog']
-    sprint_backlog = last_wip.fetch('sprint_backlog', 0) + this_wip['sprint_backlog']
-    total = wish_heap + project_backlog + sprint_backlog
-
-    {
-      wish_heap: wish_heap,
-      project_backlog: project_backlog,
-      sprint_backlog: sprint_backlog,
-      total: total
-    }
-  end
-
-  def compute_daily_velocities
-    {
-      d7: 0,
-      d14: 0,
-      d28: 0,
-      d42: 0,
-      all: 0
-    }
-  end
-
   #
   # Instance Methods
   #
@@ -120,10 +62,79 @@ class WipLog < ApplicationRecord
   end
 
   def story_points(queue=nil)
-    return 0 unless story.present?
+    return 0 if story.blank?
     in_wish_heap = queue.try('wish_heap?')
     points = story.try(:points) || 0
     estimated_points = story.try(:estimated_points) || 0
     in_wish_heap ? estimated_points : points
+  end
+
+  ## Special Methods
+  def summary
+    f = '[%s] %s:%s :: %s -> %s %s'
+    format(f, occurred_at, event.trello_object, event.action, old_queue.try(:name),
+           new_queue.try(:name), wip)
+  end
+
+  private
+
+  def compute_wip_fields
+    self.points_completed = points_change_for_queue(:completed_sprint_queue?)
+    self.wip_changes = compute_wip_changes
+    self.wip = compute_wip
+    self.daily_velocity = compute_daily_velocities
+  end
+
+  def points_change_for_queue(queue_key)
+    is_old_queue = old_queue.try(queue_key)
+    is_new_queue = new_queue.try(queue_key)
+    gain = !is_old_queue && is_new_queue
+    loss = is_old_queue && !is_new_queue
+
+    # Need to determine which queue because we only want to estimate for wish heap
+    queue = is_old_queue ? old_queue : new_queue
+    points = story_points(queue)
+
+    return points if gain
+    return points * -1 if loss
+    0
+  end
+
+  def compute_wip_changes
+    {
+      wish_heap: points_change_for_queue(:wish_heap?),
+      project_backlog: points_change_for_queue(:project_backlog?),
+      sprint_backlog: points_change_for_queue(:sprint_backlog?)
+    }
+  end
+
+  # rubocop: disable Metrics/AbcSize
+  def compute_wip
+    last_wip_log = WipLog.order(:id).last
+    last_wip = last_wip_log.present? ? last_wip_log.wip : {}
+    this_wip = wip_changes
+
+    wish_heap = last_wip.fetch('wish_heap', 0) + this_wip['wish_heap']
+    project_backlog = last_wip.fetch('project_backlog', 0) + this_wip['project_backlog']
+    sprint_backlog = last_wip.fetch('sprint_backlog', 0) + this_wip['sprint_backlog']
+    total = wish_heap + project_backlog + sprint_backlog
+
+    {
+      wish_heap: wish_heap,
+      project_backlog: project_backlog,
+      sprint_backlog: sprint_backlog,
+      total: total
+    }
+  end
+  # rubocop: enable Metrics/AbcSize
+
+  def compute_daily_velocities
+    {
+      d7: 0,
+      d14: 0,
+      d28: 0,
+      d42: 0,
+      all: 0
+    }
   end
 end

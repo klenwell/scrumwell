@@ -113,12 +113,8 @@ class ScrumBoard < ApplicationRecord
       next unless event.wip?
       wip_log = WipLog.create_from_event(event)
       wip_logs << wip_log
-      puts format('[%s] %s:%s :: %s -> %s (%s)', wip_log.occurred_at, event.trello_object,
-                  event.action, wip_log.old_queue.try(:name), wip_log.new_queue.try(:name),
-                  event.eventable.try(:points))
-      puts wip_log.attributes
-      puts
-      #byebug
+      puts wip_log.summary
+      # byebug
     end
     wip_logs
   end
