@@ -1,8 +1,8 @@
 module Scrum
   class QueuesController < ApplicationController
     before_action :authenticate
-    before_action :auth_scrum_masters, only: [:new, :create, :edit, :update, :import]
-    before_action :set_queue, only: [:edit, :update, :show, :import]
+    before_action :auth_scrum_masters, only: [:new, :create, :edit, :update]
+    before_action :set_queue, only: [:edit, :update, :show]
 
     # GET /scrum/sprints
     # GET /scrum/sprints.json
