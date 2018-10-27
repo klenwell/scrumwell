@@ -9,14 +9,6 @@ Rails.application.routes.draw do
         resources :stories
       end
     end
-
-    # DEPRECATED
-    # Nested Resources: https://stackoverflow.com/a/10661690/1093087
-    resources :boards, shallow: true do
-      resources :sprints, shallow: true do
-        resources :user_stories
-      end
-    end
   end
 
   get '/scrum/sprints/:id/import', to: 'scrum/sprints#import', as: 'import_sprint'

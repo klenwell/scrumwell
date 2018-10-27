@@ -22,6 +22,11 @@ class ScrumQueue < ApplicationRecord
   #
   # Instance Methods
   #
+  def notes
+    # TODO: add table column
+    '(coming soon)'
+  end
+
   def groomed_stories
     stories.select(&:groomed?)
   end
@@ -89,6 +94,10 @@ class ScrumQueue < ApplicationRecord
 
   def backlog_points
     scrum_board.wish_heap_points_on(ended_on)
+  end
+
+  def over?
+    ended_on < Time.zone.today
   end
 
   private
