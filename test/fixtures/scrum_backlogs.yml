@@ -1,8 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-backlog:
-  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
-  trello_list_id: tba
-  trello_pos: tba
-  name: Backlog
-  last_imported_at: 2018-07-07 15:16:30

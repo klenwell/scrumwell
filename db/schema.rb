@@ -10,22 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_26_020759) do
+ActiveRecord::Schema.define(version: 2018_10_27_174514) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "scrum_backlogs", force: :cascade do |t|
-    t.bigint "scrum_board_id"
-    t.string "trello_list_id"
-    t.string "trello_pos"
-    t.string "name"
-    t.datetime "last_imported_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["scrum_board_id"], name: "index_scrum_backlogs_on_scrum_board_id"
-    t.index ["trello_list_id"], name: "index_scrum_backlogs_on_trello_list_id"
-  end
 
   create_table "scrum_boards", force: :cascade do |t|
     t.string "trello_board_id"
@@ -62,28 +50,6 @@ ActiveRecord::Schema.define(version: 2018_10_26_020759) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["scrum_board_id"], name: "index_scrum_queues_on_scrum_board_id"
-  end
-
-  create_table "scrum_sprints", force: :cascade do |t|
-    t.bigint "scrum_board_id"
-    t.string "trello_list_id"
-    t.integer "trello_pos"
-    t.string "name"
-    t.date "started_on"
-    t.date "ended_on"
-    t.datetime "last_imported_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "story_points_committed"
-    t.integer "story_points_completed"
-    t.decimal "average_velocity"
-    t.integer "backlog_story_points"
-    t.integer "backlog_stories_count"
-    t.integer "wish_heap_stories_count"
-    t.integer "wish_heap_story_points"
-    t.text "notes"
-    t.integer "stories_count"
-    t.index ["scrum_board_id"], name: "index_scrum_sprints_on_scrum_board_id"
   end
 
   create_table "scrum_stories", force: :cascade do |t|
@@ -131,24 +97,10 @@ ActiveRecord::Schema.define(version: 2018_10_26_020759) do
     t.index ["scrum_event_id"], name: "index_wip_logs_on_scrum_event_id"
   end
 
-  create_table "wish_heaps", force: :cascade do |t|
-    t.bigint "scrum_board_id"
-    t.string "trello_list_id"
-    t.integer "trello_pos"
-    t.string "name"
-    t.datetime "last_imported_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["scrum_board_id"], name: "index_wish_heaps_on_scrum_board_id"
-  end
-
-  add_foreign_key "scrum_backlogs", "scrum_boards"
   add_foreign_key "scrum_events", "scrum_boards"
   add_foreign_key "scrum_queues", "scrum_boards"
-  add_foreign_key "scrum_sprints", "scrum_boards"
   add_foreign_key "scrum_stories", "scrum_boards"
   add_foreign_key "scrum_stories", "scrum_queues"
   add_foreign_key "wip_logs", "scrum_boards"
   add_foreign_key "wip_logs", "scrum_events"
-  add_foreign_key "wish_heaps", "scrum_boards"
 end
