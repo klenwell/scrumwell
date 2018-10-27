@@ -114,7 +114,7 @@ class ScrumBoard < ApplicationRecord
   def current_velocity
     # Averaged over last 3 sprints
     period = DEFAULT_SPRINT_DURATION * 3
-    days_in_sprint = ScrumBoard::DEFAULT_SPRINT_DURATION.to_i / 86000
+    days_in_sprint = ScrumBoard::DEFAULT_SPRINT_DURATION.to_i / 1.day.to_i
 
     end_at = Time.zone.now
     start_at = end_at - period

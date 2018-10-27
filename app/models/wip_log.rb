@@ -22,6 +22,7 @@ class WipLog < ApplicationRecord
                    occurred_at: scrum_event.occurred_at)
   end
 
+  # rubocop: disable Metrics/AbcSize
   def self.daily_velocity_between(board, start_at, end_at)
     project_started_at = board.completed_queues.first.started_on.beginning_of_day
     start_at = [project_started_at, start_at].max
@@ -36,6 +37,7 @@ class WipLog < ApplicationRecord
     days = (end_at - start_at) / 1.day
     (points / days).to_d
   end
+  # rubocop: enable Metrics/AbcSize
 
   #
   # Instance Methods
@@ -88,11 +90,13 @@ class WipLog < ApplicationRecord
   end
 
   ## Special Methods
+  # rubocop: disable Metrics/AbcSize
   def summary
     f = '[%s] %s :: %s -> %s %s ((dv: %s)) --> av: %s'
     format(f, occurred_at, event.action, old_queue.try(:name),
            new_queue.try(:name), wip, daily_velocity, (daily_velocity['d42'].to_d * 42 / 3).round)
   end
+  # rubocop: enable Metrics/AbcSize
 
   private
 
