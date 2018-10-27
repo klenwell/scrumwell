@@ -104,9 +104,25 @@ class ScrumBoard < ApplicationRecord
     stories.where('points > 0').order(created_at: :desc)
   end
 
+  def completed_queues
+    queues.select(&:completed_sprint_queue?).sort_by(&:started_on)
+  end
+
   #
   # Instance Methods
   #
+  def current_velocity
+    # Averaged over last 3 sprints
+    period = DEFAULT_SPRINT_DURATION * 3
+    days_in_sprint = ScrumBoard::DEFAULT_SPRINT_DURATION.to_i / 86000
+
+    end_at = Time.zone.now
+    start_at = end_at - period
+    daily_velocity = WipLog.daily_velocity_between(self, start_at, end_at)
+
+    (daily_velocity * days_in_sprint).round(1)
+  end
+
   def build_wip_log_from_scratch
     wip_logs = []
     events.reverse_each do |event|

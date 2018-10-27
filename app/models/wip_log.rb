@@ -8,7 +8,10 @@ class WipLog < ApplicationRecord
   alias_attribute :event, :scrum_event
 
   ## Callbacks
-  before_validation :compute_wip_fields
+  before_create :compute_wip_fields
+  after_create :update_daily_velocity
+
+  ## Validations
 
   #
   # Class Methods
@@ -17,6 +20,21 @@ class WipLog < ApplicationRecord
     WipLog.create!(event: scrum_event,
                    board: scrum_event.scrum_board,
                    occurred_at: scrum_event.occurred_at)
+  end
+
+  def self.daily_velocity_between(board, start_at, end_at)
+    project_started_at = board.completed_queues.first.started_on.beginning_of_day
+    start_at = [project_started_at, start_at].max
+    end_at = [project_started_at, end_at].max
+    range = start_at..end_at
+
+    wip_logs = WipLog.where(board: board, occurred_at: range).order(occurred_at: 'asc')
+
+    return 0 unless wip_logs.count > 0
+
+    points = wip_logs.pluck(:points_completed).sum
+    days = (end_at - start_at) / 1.day
+    (points / days).to_d
   end
 
   #
@@ -71,9 +89,9 @@ class WipLog < ApplicationRecord
 
   ## Special Methods
   def summary
-    f = '[%s] %s:%s :: %s -> %s %s'
-    format(f, occurred_at, event.trello_object, event.action, old_queue.try(:name),
-           new_queue.try(:name), wip)
+    f = '[%s] %s :: %s -> %s %s ((dv: %s)) --> av: %s'
+    format(f, occurred_at, event.action, old_queue.try(:name),
+           new_queue.try(:name), wip, daily_velocity, (daily_velocity['d42'].to_d * 42 / 3).round)
   end
 
   private
@@ -82,7 +100,14 @@ class WipLog < ApplicationRecord
     self.points_completed = points_change_for_queue(:completed_sprint_queue?)
     self.wip_changes = compute_wip_changes
     self.wip = compute_wip
+  end
+
+  def update_daily_velocity
+    # This needs to query the last event log after its saved. To avoid the infinite
+    # loop in using in callback: https://stackoverflow.com/a/23147994/1093087
+    return false unless daily_velocity.nil?
     self.daily_velocity = compute_daily_velocities
+    save!
   end
 
   def points_change_for_queue(queue_key)
@@ -130,11 +155,25 @@ class WipLog < ApplicationRecord
 
   def compute_daily_velocities
     {
-      d7: 0,
-      d14: 0,
-      d28: 0,
-      d42: 0,
-      all: 0
+      d7: daily_velocity_over_range(7),
+      d14: daily_velocity_over_range(14),
+      d28: daily_velocity_over_range(28),
+      d42: daily_velocity_over_range(42),
+      all: all_time_daily_velocity
     }
+  end
+
+  def project_started_at
+    board.completed_queues.first.started_on.beginning_of_day
+  end
+
+  def all_time_daily_velocity
+    WipLog.daily_velocity_between(board, project_started_at, occurred_at)
+  end
+
+  def daily_velocity_over_range(days)
+    end_at = occurred_at
+    start_at = end_at - days.days
+    WipLog.daily_velocity_between(board, start_at, end_at)
   end
 end

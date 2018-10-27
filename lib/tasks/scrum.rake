@@ -39,9 +39,8 @@ namespace :scrum do
     board.reload
 
     puts format("WIP logs for board %s: %s", board.name, board.wip_logs.count)
-    puts format("Last WIP log: %s", wip_logs.last)
-
-    byebug
+    puts format("Last WIP log: %s", wip_logs.last.summary)
+    puts format("Current Board Velocity: %s", board.current_velocity)
   end
 
   # rake scrum:sandbox
