@@ -22,7 +22,7 @@ class MockTrelloCard
   # rubocop: enable Metrics/AbcSize
 
   def agile_tools_plugin_id
-    UserStory::AGILE_TOOLS_PLUGIN_ID
+    ScrumStory::AGILE_TOOLS_PLUGIN_ID
   end
 
   def story_points=(points)

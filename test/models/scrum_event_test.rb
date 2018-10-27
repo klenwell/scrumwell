@@ -3,7 +3,7 @@ require 'test_helper'
 class ScrumEventTest < ActiveSupport::TestCase
   test "creates new event" do
     # Arrange
-    eventable = user_stories(:complete)
+    eventable = scrum_stories(:complete)
     params = {
       eventable_id: eventable.id,
       eventable_type: eventable

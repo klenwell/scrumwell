@@ -12,7 +12,7 @@
     <tr>
       <th scope="col">Name</th>
       <th scope="col" class="text-center">Sprints</th>
-      <th scope="col" class="text-center">Avg Velocity</th>
+      <th scope="col" class="text-center">Current Velocity</th>
       <th scope="col" class="text-center">Total WIP Points</th>
       <th scope="col" class="text-center">Backlog Stories</th>
       <th scope="col" class="text-center">Wish Heap Stories</th>
@@ -26,8 +26,8 @@
       <tr>
         <th scope="row"><%= board.name %></th>
         <td class="text-right"><%= board.queues.count %></td>
-        <td class="text-right">TBA</td>
-        <td class="text-right">TBA</td>
+        <td class="text-right"><%= board.current_velocity %></td>
+        <td class="text-right"><%= board.wip_logs.first.wip['total'] %></td></td>
         <td class="text-right"><%= board.project_backlog.stories.length %></td>
         <td class="text-right"><%= board.wish_heap.stories.length %></td>
         <td><%= board.created_at.to_date %></td>
