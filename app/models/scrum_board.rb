@@ -104,6 +104,11 @@ class ScrumBoard < ApplicationRecord
     stories.where('points > 0').order(created_at: :desc)
   end
 
+  def sized_stories_before(date)
+    sized_stories = stories.where('points > 0').select{ |s| s.last_activity_at < date.end_of_day }
+    sized_stories.sort_by(&:last_activity_at).reverse
+  end
+
   def completed_queues
     queues.select(&:completed_sprint_queue?).sort_by(&:started_on)
   end
@@ -111,16 +116,36 @@ class ScrumBoard < ApplicationRecord
   #
   # Instance Methods
   #
-  def current_velocity
+  def average_velocity_on(date)
     # Averaged over last 3 sprints
     period = DEFAULT_SPRINT_DURATION * 3
     days_in_sprint = ScrumBoard::DEFAULT_SPRINT_DURATION.to_i / 1.day.to_i
 
-    end_at = Time.zone.now
+    end_at = date.end_of_day
     start_at = end_at - period
     daily_velocity = WipLog.daily_velocity_between(self, start_at, end_at)
 
     (daily_velocity * days_in_sprint).round(1)
+  end
+
+  def current_velocity
+    average_velocity_on(Time.zone.today)
+  end
+
+  def average_story_size_on(date)
+    sample_size = 20
+    sample = sized_stories_before(date).slice(0,sample_size)
+    (sample.sum(&:points).to_d / sample.length).round(1)
+  end
+
+  def backlog_points_on(date)
+    logs = wip_logs.where('occurred_at <= ?', date.end_of_day).order(occurred_at: :desc).limit(1)
+    logs.count > 0 ? logs.first.wip['sprint_backlog'] : nil
+  end
+
+  def wish_heap_points_on(date)
+    logs = wip_logs.where('occurred_at <= ?', date.end_of_day).order(occurred_at: :desc).limit(1)
+    logs.count > 0 ? logs.first.wip['wish_heap'] : nil
   end
 
   def build_wip_log_from_scratch

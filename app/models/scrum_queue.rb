@@ -75,6 +75,22 @@ class ScrumQueue < ApplicationRecord
     Date.parse(name.delete("^0-9"))
   end
 
+  def average_velocity
+    scrum_board.average_velocity_on(ended_on)
+  end
+
+  def average_story_size
+    scrum_board.average_story_size_on(ended_on)
+  end
+
+  def wish_heap_points
+    scrum_board.backlog_points_on(ended_on)
+  end
+
+  def backlog_points
+    scrum_board.wish_heap_points_on(ended_on)
+  end
+
   private
 
   def set_start_end_dates
