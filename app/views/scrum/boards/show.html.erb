@@ -43,6 +43,9 @@
 <h4>Completed</h4>
 <%= render partial: "scrum/queues/table", locals: {queues: @scrum_board.completed_queues.reverse} %>
 
+<h3>Events</h3>
+<%= render partial: "scrum/events/board_table", locals: {events: @scrum_board.wip_events} %>
+
 <div class="actions">
   <%= link_to 'Index', scrum_boards_path, role: 'button', class: 'btn btn-light mt-2' %>
 </div>

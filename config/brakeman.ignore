@@ -7,7 +7,7 @@
       "check_name": "Redirect",
       "message": "Possible unprotected redirect",
       "file": "app/controllers/scrum/boards_controller.rb",
-      "line": 40,
+      "line": 41,
       "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
       "code": "redirect_to(ScrumBoard.by_trello_board_or_create(TrelloService.board(scrum_board_params[:trello_board_id])), :notice => \"Board was successfully created.\")",
       "render_path": null,
@@ -21,23 +21,22 @@
       "note": ""
     },
     {
-      "warning_type": "Redirect",
-      "warning_code": 18,
-      "fingerprint": "c34f6ec9c4f120261d7757c0e13a1105be1195ed80810eb5d5af95696596b412",
-      "check_name": "Redirect",
-      "message": "Possible unprotected redirect",
-      "file": "app/controllers/scrum/sprints_controller.rb",
-      "line": 47,
-      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
-      "code": "redirect_to(ScrumSprint.find(params[:id]).board, :notice => \"Sprint was successfully updated.\")",
-      "render_path": null,
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "c3061ea08b55ad3114c2e9eeb4b01931197a8c15db46e99bc1dde9365e4e6a3b",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in link_to href",
+      "file": "app/views/scrum/stories/show.html.erb",
+      "line": 14,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(ScrumStory.find(params[:id]).trello_short_url, ScrumStory.find(params[:id]).trello_short_url)",
+      "render_path": [{"type":"controller","class":"Scrum::StoriesController","method":"show","line":9,"file":"app/controllers/scrum/stories_controller.rb"}],
       "location": {
-        "type": "method",
-        "class": "Scrum::SprintsController",
-        "method": "update"
+        "type": "template",
+        "template": "scrum/stories/show"
       },
-      "user_input": "ScrumSprint.find(params[:id]).board",
-      "confidence": "High",
+      "user_input": "ScrumStory.find(params[:id]).trello_short_url",
+      "confidence": "Weak",
       "note": ""
     },
     {
@@ -47,10 +46,10 @@
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in link_to href",
       "file": "app/views/scrum/boards/index.html.erb",
-      "line": 33,
+      "line": 38,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
       "code": "link_to(trello_icon, ScrumBoard.new.trello_url, :title => \"visit Trello board\")",
-      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":10,"file":"app/controllers/scrum/boards_controller.rb"}],
+      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":11,"file":"app/controllers/scrum/boards_controller.rb"}],
       "location": {
         "type": "template",
         "template": "scrum/boards/index"
@@ -60,6 +59,6 @@
       "note": ""
     }
   ],
-  "updated": "2018-07-17 20:23:45 -0700",
+  "updated": "2018-10-27 22:12:37 -0700",
   "brakeman_version": "4.3.1"
 }

@@ -90,6 +90,11 @@ class ScrumBoard < ApplicationRecord
     queues.select(&:completed_sprint_queue?).sort_by(&:started_on)
   end
 
+  def wip_events(options={})
+    limit = options.fetch(:limit, 10)
+    events.select(&:wip?).slice(0, limit)
+  end
+
   #
   # Instance Methods
   #
