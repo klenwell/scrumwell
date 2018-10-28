@@ -100,6 +100,11 @@ class ScrumQueue < ApplicationRecord
     ended_on < Time.zone.today
   end
 
+  def to_stdout
+    f = '#<ScrumQueue name=%s board=%s points=%s stories=%s, started_on=%s ended_on=%s>'
+    format(f, name, scrum_board.name, points, stories.count, started_on, ended_on)
+  end
+
   private
 
   def set_start_end_dates

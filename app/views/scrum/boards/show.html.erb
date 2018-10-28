@@ -16,12 +16,6 @@
     </dl>
   </div>
   <div class="col-sm">
-    <%# TODO: Future story. Need scrum_board_pull_trello_path %>
-    <%#= form_for @scrum_board, url: scrum_board_path(@scrum_board), method: :put, html: { class: "form-inline" } do |f| %>
-
-      <%#= f.hidden_field :id, value: @scrum_board.id %>
-      <%#= f.submit "Pull from Trello", class: "btn btn-warning ml-2" %>
-    <%# end %>
     <h4>
       <span class="badge badge-pill badge-primary"><%= @scrum_board.wish_heap.stories.length %></span>
       Stories in Wish Heap

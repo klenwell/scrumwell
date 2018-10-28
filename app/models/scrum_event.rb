@@ -192,6 +192,11 @@ class ScrumEvent < ApplicationRecord
     ScrumQueue.find_by(trello_list_id: list_after_id)
   end
 
+  def to_stdout
+    f = '#<ScrumEvent id=%s trello_type=%s action=%s queues:%s->%s occurred_at=%s>'
+    format(f, id, trello_type, action, old_queue.try(:name), new_queue.try(:name), occurred_at)
+  end
+
   private
 
   def categorize

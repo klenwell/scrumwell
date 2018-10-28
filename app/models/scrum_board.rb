@@ -148,6 +148,7 @@ class ScrumBoard < ApplicationRecord
     latest_trello_actions.each do |trello_action|
       event = ScrumEvent.create_from_trello_board_event(self, trello_action)
       events << digest_latest_event(event)
+      puts event.to_stdout
     end
 
     events
