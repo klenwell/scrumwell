@@ -10,7 +10,7 @@ module Scrum
     private
 
     # Use callbacks to share common setup or constraints between actions.
-    def set_user_story
+    def set_story
       @story = ScrumStory.find(params[:id])
     end
   end

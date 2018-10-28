@@ -51,36 +51,6 @@ class WipLog < ApplicationRecord
     event.eventable
   end
 
-  def queue
-    list_id = event.trello_data.dig('list', 'id')
-    return nil unless list_id
-    ScrumQueue.find_by(trello_list_id: list_id)
-  end
-
-  def new_queue
-    return queue if event.creates_story? || event.reopens_story?
-    return after_queue if event.moves_story?
-    nil if event.closes_story?
-  end
-
-  def old_queue
-    return nil if event.creates_story? || event.reopens_story?
-    return before_queue if event.moves_story?
-    queue if event.closes_story?
-  end
-
-  def before_queue
-    list_before_id = event.trello_data.dig('listBefore', 'id')
-    return nil unless list_before_id
-    ScrumQueue.find_by(trello_list_id: list_before_id)
-  end
-
-  def after_queue
-    list_after_id = event.trello_data.dig('listAfter', 'id')
-    return nil unless list_after_id
-    ScrumQueue.find_by(trello_list_id: list_after_id)
-  end
-
   def story_points(queue=nil)
     return 0 if story.blank?
     in_wish_heap = queue.try('wish_heap?')
@@ -90,13 +60,10 @@ class WipLog < ApplicationRecord
   end
 
   ## Special Methods
-  # rubocop: disable Metrics/AbcSize
-  def summary
-    f = '[%s] %s :: %s -> %s %s ((dv: %s)) --> av: %s'
-    format(f, occurred_at, event.action, old_queue.try(:name),
-           new_queue.try(:name), wip, daily_velocity, (daily_velocity['d42'].to_d * 42 / 3).round)
+  def to_stdout
+    f = '#<WipLog [%s] board=%s event_id=%s points_completed=%s, wip_changes=%s>'
+    format(f, occurred_at, board.name, event.id, points_completed, wip_changes)
   end
-  # rubocop: enable Metrics/AbcSize
 
   private
 
@@ -114,20 +81,22 @@ class WipLog < ApplicationRecord
     save!
   end
 
+  # rubocop: disable Metrics/AbcSize
   def points_change_for_queue(queue_key)
-    is_old_queue = old_queue.try(queue_key)
-    is_new_queue = new_queue.try(queue_key)
+    is_old_queue = event.old_queue.try(queue_key)
+    is_new_queue = event.new_queue.try(queue_key)
     gain = !is_old_queue && is_new_queue
     loss = is_old_queue && !is_new_queue
 
     # Need to determine which queue because we only want to estimate for wish heap
-    queue = is_old_queue ? old_queue : new_queue
+    queue = is_old_queue ? event.old_queue : event.new_queue
     points = story_points(queue)
 
     return points if gain
     return points * -1 if loss
     0
   end
+  # rubocop: enable Metrics/AbcSize
 
   def compute_wip_changes
     {

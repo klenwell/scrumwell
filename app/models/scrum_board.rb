@@ -93,6 +93,17 @@ class ScrumBoard < ApplicationRecord
   #
   # Instance Methods
   #
+  def build_wip_log_from_scratch
+    wip_logs = []
+    events.reverse_each do |event|
+      next unless event.wip?
+      wip_log = WipLog.create_from_event(event)
+      puts wip_log.to_stdout if Rails.env.development? # rubocop: disable Rails/Output
+      wip_logs << wip_log
+    end
+    wip_logs
+  end
+
   def average_velocity_on(date)
     # Averaged over last 3 sprints
     period = DEFAULT_SPRINT_DURATION * NUM_SPRINTS_FOR_AVG_VELOCITY
@@ -123,16 +134,6 @@ class ScrumBoard < ApplicationRecord
   def wish_heap_points_on(date)
     logs = wip_logs.where('occurred_at <= ?', date.end_of_day).order(occurred_at: :desc).limit(1)
     logs.count > 0 ? logs.first.wip['wish_heap'] : nil
-  end
-
-  def build_wip_log_from_scratch
-    wip_logs = []
-    events.reverse_each do |event|
-      next unless event.wip?
-      wip_log = WipLog.create_from_event(event)
-      wip_logs << wip_log
-    end
-    wip_logs
   end
 
   def import_latest_trello_actions

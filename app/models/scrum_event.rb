@@ -162,6 +162,36 @@ class ScrumEvent < ApplicationRecord
     story
   end
 
+  def queue
+    list_id = trello_data.dig('list', 'id')
+    return nil unless list_id
+    ScrumQueue.find_by(trello_list_id: list_id)
+  end
+
+  def new_queue
+    return queue if creates_story? || reopens_story?
+    return after_queue if moves_story?
+    nil if closes_story?
+  end
+
+  def old_queue
+    return nil if creates_story? || reopens_story?
+    return before_queue if moves_story?
+    queue if closes_story?
+  end
+
+  def before_queue
+    list_before_id = trello_data.dig('listBefore', 'id')
+    return nil unless list_before_id
+    ScrumQueue.find_by(trello_list_id: list_before_id)
+  end
+
+  def after_queue
+    list_after_id = trello_data.dig('listAfter', 'id')
+    return nil unless list_after_id
+    ScrumQueue.find_by(trello_list_id: list_after_id)
+  end
+
   private
 
   def categorize

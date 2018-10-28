@@ -8,6 +8,8 @@ Rails.application.routes.draw do
       resources :queues, shallow: true do
         resources :stories
       end
+
+      resources :events
     end
   end
 

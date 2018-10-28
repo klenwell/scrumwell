@@ -6,14 +6,12 @@
 <div class="row">
   <div class="col-sm">
     <dl class="dl-horizontal">
-      <dt><strong>Trello Position</strong></dt>
-      <dd><%= @queue.trello_pos %></dd>
       <dt><strong>Started</strong></dt>
       <dd><%= @queue.started_on %></dd>
       <dt><strong><%= @queue.over? ? 'Ended' : 'Ends' %></strong></dt>
       <dd><%= @queue.ended_on %></dd>
       <dt><strong>Last Trello Pull</strong></dt>
-      <dd><%= @queue.events.last.occurred_at %></dd>
+      <dd><%= @queue.events.last.created_at %></dd>
       <dt><strong>Notes</strong></dt>
       <dd><%= @queue.notes || '(no notes)' %></dd>
     </dl>
@@ -39,7 +37,7 @@
 </div>
 
 <h3>User Stories</h3>
-<%= render partial: "scrum/stories/table", locals: {stories: @queue.stories} %>
+<%= render partial: "scrum/stories/table", locals: {stories: @queue.groomed_stories} %>
 
 <div class="actions">
   <%= link_to 'Scrum Board', scrum_board_path(@queue.scrum_board), role: 'button', class: 'btn btn-info ml-2' %>

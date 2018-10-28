@@ -37,6 +37,10 @@ class ScrumStory < ApplicationRecord
     TrelloService.card(trello_card_id)
   end
 
+  def trello_short_url
+    trello_data['short_url']
+  end
+
   def completed_on
     return nil unless trello_data['due_complete']
     return nil unless trello_data['due']
