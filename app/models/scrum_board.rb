@@ -131,6 +131,15 @@ class ScrumBoard < ApplicationRecord
     (sample.sum(&:points).to_d / sample.length).round(1)
   end
 
+  def current_average_story_size
+    average_story_size_on(Time.zone.today)
+  end
+
+  def current_wip
+    return nil if wip_logs.blank?
+    wip_logs.first.wip['total']
+  end
+
   def backlog_points_on(date)
     logs = wip_logs.where('occurred_at <= ?', date.end_of_day).order(occurred_at: :desc).limit(1)
     logs.count > 0 ? logs.first.wip['sprint_backlog'] : nil
@@ -148,7 +157,7 @@ class ScrumBoard < ApplicationRecord
     latest_trello_actions.each do |trello_action|
       event = ScrumEvent.create_from_trello_board_event(self, trello_action)
       events << digest_latest_event(event)
-      puts event.to_stdout
+      puts event.to_stdout if Rails.env.development? # rubocop: disable Rails/Output
     end
 
     events

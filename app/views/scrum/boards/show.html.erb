@@ -1,9 +1,5 @@
 <div class="page-header">
   <h1>Board for <span class="text-primary"><%= @scrum_board.name %></span></h1>
-  <p><%= link_to 'Edit',
-                 edit_scrum_board_path(@scrum_board),
-                 role: 'button',
-                 class: 'btn btn-primary' if scrum_master? %></p>
 </div>
 
 <div class="row">
@@ -17,8 +13,16 @@
   </div>
   <div class="col-sm">
     <h4>
-      <span class="badge badge-pill badge-primary"><%= @scrum_board.wish_heap.stories.length %></span>
-      Stories in Wish Heap
+      <span class="badge badge-pill badge-danger"><%= @scrum_board.current_wip %></span>
+      Work-in-Progress (WIP)
+    </h4>
+    <h4>
+      <span class="badge badge-pill badge-success"><%= @scrum_board.current_velocity %></span>
+      Daily Velocity
+    </h4>
+    <h4>
+      <span class="badge badge-pill badge-primary"><%= @scrum_board.current_average_story_size %></span>
+      Average Story Size
     </h4>
   </div>
 </div>
