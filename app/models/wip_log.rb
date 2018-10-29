@@ -108,7 +108,7 @@ class WipLog < ApplicationRecord
 
   # rubocop: disable Metrics/AbcSize
   def compute_wip
-    last_wip_log = WipLog.order(:id).last
+    last_wip_log = WipLog.where(scrum_board_id: scrum_board_id).order(:id).last
     last_wip = last_wip_log.present? ? last_wip_log.wip : {}
     this_wip = wip_changes
 
