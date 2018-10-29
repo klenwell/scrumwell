@@ -107,15 +107,10 @@ class ScrumEvent < ApplicationRecord
 
   ## WIP events
   def create_queue_for_board(board)
-    queue = ScrumQueue.new(
-      scrum_board: board,
-      trello_list_id: trello_list_id
-    )
+    trello_list = TrelloService.list(trello_list_id)
 
-    # Use current Trello list name rather than original event name as queue could have
-    # been renamed.
-    queue.name = queue.trello_list.name
-    queue.save!
+    # Queue may already exist. See ScrumBoard.reconstruct_from_trello_board_actions.
+    queue = ScrumQueue.find_or_create_from_trello_list(board, trello_list)
 
     update!(eventable: queue)
     queue

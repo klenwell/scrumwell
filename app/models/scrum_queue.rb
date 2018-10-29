@@ -18,6 +18,20 @@ class ScrumQueue < ApplicationRecord
   #
   # Class Methods
   #
+  def self.create_from_trello_list(board, trello_list)
+    ScrumQueue.create!(
+      scrum_board: board,
+      trello_list_id: trello_list.id,
+      name: trello_list.name
+    )
+  end
+
+  def self.find_or_create_from_trello_list(board, trello_list)
+    queue = ScrumQueue.find_by(trello_list_id: trello_list.id)
+    return queue if queue.present?
+
+    ScrumQueue.create_from_trello_list(board, trello_list)
+  end
 
   #
   # Instance Methods
@@ -88,11 +102,11 @@ class ScrumQueue < ApplicationRecord
     scrum_board.average_story_size_on(ended_on)
   end
 
-  def wish_heap_points
+  def backlog_points
     scrum_board.backlog_points_on(ended_on)
   end
 
-  def backlog_points
+  def wish_heap_points
     scrum_board.wish_heap_points_on(ended_on)
   end
 

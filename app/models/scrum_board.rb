@@ -30,6 +30,7 @@ class ScrumBoard < ApplicationRecord
                                      trello_url: trello_board.url,
                                      name: trello_board.name)
 
+    scrum_board.import_trello_lists
     scrum_board.import_latest_trello_actions
     scrum_board.reload
   end
@@ -142,7 +143,7 @@ class ScrumBoard < ApplicationRecord
 
   def backlog_points_on(date)
     logs = wip_logs.where('occurred_at <= ?', date.end_of_day).order(occurred_at: :desc).limit(1)
-    logs.count > 0 ? logs.first.wip['sprint_backlog'] : nil
+    logs.count > 0 ? logs.first.wip['project_backlog'] : nil
   end
 
   def wish_heap_points_on(date)
@@ -194,6 +195,13 @@ class ScrumBoard < ApplicationRecord
       actions = trello_board.actions(limit: limit, since: since_id, before: before_id)
       actions.each { |action| latest_actions << action }
 
+      # rubocop: disable Rails/Output
+      if Rails.env.development?
+        f = 'Fetched %s (%s) Trello board actions from API.'
+        puts format(f, actions.length, latest_actions.length)
+      end
+      # rubocop: enable Rails/Output
+
       before_id = actions.last.id
       more = actions.length == limit
       calls += 1
@@ -221,6 +229,17 @@ class ScrumBoard < ApplicationRecord
     sample_size = 20
     sample = recent_sized_stories.limit(sample_size)
     (sample.sum(&:points).to_d / sample.length).ceil
+  end
+
+  def import_trello_lists
+    queues = []
+
+    trello_board.lists.each do |trello_list|
+      queue = ScrumQueue.find_or_create_from_trello_list(self, trello_list)
+      queues << queue
+    end
+
+    queues
   end
 
   private
