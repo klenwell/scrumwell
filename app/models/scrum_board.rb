@@ -79,7 +79,8 @@ class ScrumBoard < ApplicationRecord
   end
 
   def recent_sized_stories
-    stories.where('points > 0').order(created_at: :desc)
+    # On reorder: https://stackoverflow.com/a/4202448/1093087
+    stories.where('points > 0').reorder(created_at: :desc)
   end
 
   def sized_stories_before(date)
