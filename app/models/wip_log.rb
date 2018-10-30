@@ -61,8 +61,8 @@ class WipLog < ApplicationRecord
 
   ## Special Methods
   def to_stdout
-    f = '#<WipLog [%s] board=%s event_id=%s points_completed=%s, wip_changes=%s>'
-    format(f, occurred_at, board.name, event.id, points_completed, wip_changes)
+    f = '#<WipLog [%s] board=%s event_id=%s points_completed=%s, wip=%s, wip_changes=%s>'
+    format(f, occurred_at, board.name, event.id, points_completed, wip, wip_changes)
   end
 
   private
