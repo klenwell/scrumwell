@@ -19,8 +19,6 @@ namespace :scrum do
     board.build_wip_log_from_scratch
 
     # Stdout
-
-    puts board
     board.queues.each { |q| puts q.to_stdout }
     puts format("Created %s events.", board.events.count)
     puts format("Created %s wip_logs.", board.wip_logs.count)
