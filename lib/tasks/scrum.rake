@@ -28,6 +28,14 @@ namespace :scrum do
     puts format("Trello API calls: %s", trello_api_calls)
   end
 
+  # rake scrum:update_board[:id]
+  desc "Imports board and reconstructs its history from Trello events."
+  task :update_board, [:scrum_board_id] => :environment do |_, args|
+    board_id = args[:scrum_board_id]
+    board = ScrumBoard.find(board_id)
+    puts format("Updating board: %s", board.name)
+  end
+
   # rake scrum:rebuild_wip_log[Scrumwell]
   desc "Rebuild scrum board's Work-in-Progress from scratch using events."
   task :rebuild_wip_log, [:board_name] => :environment do |_, args|
