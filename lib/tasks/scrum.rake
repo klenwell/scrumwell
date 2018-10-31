@@ -19,7 +19,7 @@ namespace :scrum do
     board.build_wip_log_from_scratch
 
     # Stdout
-    trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
+
     puts board
     board.queues.each { |q| puts q.to_stdout }
     puts format("Created %s events.", board.events.count)
@@ -31,9 +31,24 @@ namespace :scrum do
   # rake scrum:update_board[:id]
   desc "Imports board and reconstructs its history from Trello events."
   task :update_board, [:scrum_board_id] => :environment do |_, args|
+    # Arrange
     board_id = args[:scrum_board_id]
     board = ScrumBoard.find(board_id)
-    puts format("Updating board: %s", board.name)
+    puts format("Updating board %s (last update: %s)", board.name, board.last_event.occurred_at)
+    `rake log:clear` if Rails.env.development?
+
+    # Act
+    events = board.import_latest_trello_actions
+    wip_logs = board.build_wip_log_from_scratch if events.present?
+
+    # Report
+    trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
+    board.reload
+    puts format("Imported %s events from %s to %s.", events.length,
+                events.first.occurred_at, events.last.occurred_at) if events.present?
+    puts format("Created %s wip_logs.", wip_logs.length) if events.present?
+    puts format("Current Board Velocity: %s", board.current_velocity)
+    puts format("Trello API calls: %s", trello_api_calls)
   end
 
   # rake scrum:rebuild_wip_log[Scrumwell]
