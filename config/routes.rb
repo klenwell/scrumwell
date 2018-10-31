@@ -5,13 +5,13 @@ Rails.application.routes.draw do
   namespace :scrum do
     # Nested Resources: https://stackoverflow.com/a/10661690/1093087
     resources :boards, shallow: true do
-      resources :sprints, shallow: true do
-        resources :user_stories
+      resources :queues, shallow: true do
+        resources :stories
       end
+
+      resources :events
     end
   end
-
-  get '/scrum/sprints/:id/import', to: 'scrum/sprints#import', as: 'import_sprint'
 
   # Trello Routes
   get '/trello/boards', to: 'trello#boards_index'

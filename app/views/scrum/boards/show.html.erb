@@ -1,9 +1,5 @@
 <div class="page-header">
   <h1>Board for <span class="text-primary"><%= @scrum_board.name %></span></h1>
-  <p><%= link_to 'Edit',
-                 edit_scrum_board_path(@scrum_board),
-                 role: 'button',
-                 class: 'btn btn-primary' if scrum_master? %></p>
 </div>
 
 <div class="row">
@@ -12,19 +8,21 @@
       <dt><strong>Trello URL</strong></dt>
       <dd><%= trello_url_link(@scrum_board) %></dd>
       <dt><strong>Last Trello Import</strong></dt>
-      <dd><%= or_na(@scrum_board.last_imported_at) %></dd>
+      <dd><%= or_na(@scrum_board.updated_at) %></dd>
     </dl>
   </div>
   <div class="col-sm">
-    <%# TODO: Future story. Need scrum_board_pull_trello_path %>
-    <%#= form_for @scrum_board, url: scrum_board_path(@scrum_board), method: :put, html: { class: "form-inline" } do |f| %>
-
-      <%#= f.hidden_field :id, value: @scrum_board.id %>
-      <%#= f.submit "Pull from Trello", class: "btn btn-warning ml-2" %>
-    <%# end %>
     <h4>
-      <span class="badge badge-pill badge-primary"><%= @scrum_board.wish_heap_story_count %></span>
-      Stories in Wish Heap
+      <span class="badge badge-pill badge-danger"><%= @scrum_board.current_wip %></span>
+      Work-in-Progress (WIP)
+    </h4>
+    <h4>
+      <span class="badge badge-pill badge-success"><%= @scrum_board.current_velocity %></span>
+      Daily Velocity
+    </h4>
+    <h4>
+      <span class="badge badge-pill badge-primary"><%= @scrum_board.current_average_story_size %></span>
+      Average Story Size
     </h4>
   </div>
 </div>
@@ -32,10 +30,6 @@
 <h3>Sprints</h3>
 
 <div class="actions">
-  <%= link_to 'Add Sprint',
-              new_scrum_board_sprint_path(@scrum_board),
-              role: 'button',
-              class: 'btn btn-success mb-2' if scrum_master? %>
 </div>
 
 <div class="chart">
@@ -44,8 +38,11 @@
                  curve: false, discrete: true %>
 </div>
 
-<h4>Table</h4>
-<%= render partial: "scrum/sprints/table", locals: {sprints: @scrum_board.recent_sprints} %>
+<h4>Completed</h4>
+<%= render partial: "scrum/queues/table", locals: {queues: @scrum_board.completed_queues.reverse} %>
+
+<h3>Events</h3>
+<%= render partial: "scrum/events/board_table", locals: {events: @scrum_board.wip_events} %>
 
 <div class="actions">
   <%= link_to 'Index', scrum_boards_path, role: 'button', class: 'btn btn-light mt-2' %>

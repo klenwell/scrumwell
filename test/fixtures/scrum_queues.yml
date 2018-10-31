@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+wish_heap:
+  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
+  trello_list_id: wish-heap
+  trello_pos: 1
+  name: Wish Heap
+
+project_backlog:
+  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
+  trello_list_id: project-backlog
+  trello_pos: 2
+  name: Project Backlog
+
+sprint_backlog:
+  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
+  trello_list_id: sprint-backlog-or-current-sprint
+  trello_pos: 3
+  name: Sprint Backlog
+
+active_sprint:
+  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
+  trello_list_id: active-sprint
+  trello_pos: 4
+  name: <%= format('Sprint %s Completed', (Time.zone.today + 7.days).strftime('%Y%m%d')) %>
+  started_on: <%= Time.zone.today - 7.days %>
+  ended_on: <%= Time.zone.today + 7.days %>
+
+completed_sprint:
+  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
+  trello_list_id: most-recent
+  trello_pos: 5
+  name: Sprint 20180701 Completed
+  started_on: 2018-06-17
+  ended_on: 2018-07-01

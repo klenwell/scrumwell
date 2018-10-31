@@ -1,7 +1,7 @@
 module Scrum
-  class UserStoriesController < ApplicationController
+  class StoriesController < ApplicationController
     before_action :authenticate
-    before_action :set_user_story, only: [:show]
+    before_action :set_story, only: [:show]
 
     # GET /scrum/user_stories/1
     # GET /scrum/user_stories/1.json
@@ -10,8 +10,8 @@ module Scrum
     private
 
     # Use callbacks to share common setup or constraints between actions.
-    def set_user_story
-      @user_story = UserStory.find(params[:id])
+    def set_story
+      @story = ScrumStory.find(params[:id])
     end
   end
 end

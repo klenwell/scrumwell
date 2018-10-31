@@ -1,0 +1,44 @@
+<div class="page-header">
+  <h2>Sprint <span class="text-primary"><%= @queue.date_from_name.strftime('%Y%m%d') %></span></h2>
+  <p><%#= link_to 'Edit', edit_scrum_sprint_path(@scrum_sprint), role: 'button', class: 'btn btn-primary' %></p>
+</div>
+
+<div class="row">
+  <div class="col-sm">
+    <dl class="dl-horizontal">
+      <dt><strong>Started</strong></dt>
+      <dd><%= @queue.started_on %></dd>
+      <dt><strong><%= @queue.over? ? 'Ended' : 'Ends' %></strong></dt>
+      <dd><%= @queue.ended_on %></dd>
+      <dt><strong>Last Trello Pull</strong></dt>
+      <dd><%= @queue.events.last.created_at %></dd>
+      <dt><strong>Notes</strong></dt>
+      <dd><%= @queue.notes || '(no notes)' %></dd>
+    </dl>
+  </div>
+  <div class="col-sm">
+    <%# TODO: Button to pull info from Trello %>
+    <h4><span class="badge badge-pill badge-light">
+      <%= 'N/A' %></span> Story Points Committed
+    </h4>
+    <h4><span class="badge badge-pill badge-success">
+      <%= @queue.points %></span> Story Points Completed
+    </h4>
+    <% unless @queue.active_sprint? %>
+      <h4><span class="badge badge-pill badge-info">
+        <%= @queue.average_velocity %></span>
+        <%= ScrumBoard::NUM_SPRINTS_FOR_AVG_VELOCITY %>-Sprint Avg Velocity
+      </h4>
+    <% end %>
+    <h4><span class="badge badge-pill badge-info">
+      <%= @queue.average_story_size %></span> Average Story Size
+    </h4>
+  </div>
+</div>
+
+<h3>User Stories</h3>
+<%= render partial: "scrum/stories/table", locals: {stories: @queue.groomed_stories} %>
+
+<div class="actions">
+  <%= link_to 'Scrum Board', scrum_board_path(@queue.scrum_board), role: 'button', class: 'btn btn-info ml-2' %>
+</div>

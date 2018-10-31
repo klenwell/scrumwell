@@ -1,18 +1,12 @@
 <h1>Scrum Boards</h1>
 <h4><%= @scrum_boards.count %> boards listed</h4>
-<p>
-  <%= link_to 'Add Scrum Board',
-               new_scrum_board_path,
-               role: 'button',
-               class: 'btn btn-primary' if scrum_master? %>
-</p>
 
 <table class="table table-sm">
   <thead>
     <tr>
       <th scope="col">Name</th>
       <th scope="col" class="text-center">Sprints</th>
-      <th scope="col" class="text-center">Avg Velocity</th>
+      <th scope="col" class="text-center">Current Velocity</th>
       <th scope="col" class="text-center">Total WIP Points</th>
       <th scope="col" class="text-center">Backlog Stories</th>
       <th scope="col" class="text-center">Wish Heap Stories</th>
@@ -25,16 +19,15 @@
     <% @scrum_boards.each do |board| %>
       <tr>
         <th scope="row"><%= board.name %></th>
-        <td class="text-right"><%= board.sprints.count %></td>
-        <td class="text-right"><%= number_with_precision(board.average_velocity, precision: 1) %></td>
-        <td class="text-right"><%= board.total_work_in_progress_points %></td>
-        <td class="text-right"><%= board.backlog_story_count %></td>
-        <td class="text-right"><%= board.wish_heap_story_count %></td>
+        <td class="text-right"><%= board.queues.count %></td>
+        <td class="text-right"><%= board.current_velocity %></td>
+        <td class="text-right"><%= board.wip_logs.first.wip['total'] %></td></td>
+        <td class="text-right"><%= board.project_backlog.stories.length %></td>
+        <td class="text-right"><%= board.wish_heap.stories.length %></td>
         <td><%= board.created_at.to_date %></td>
         <td><%= or_na(board.last_imported_at, {alt: 'N/A'}) %></td>
         <td>
           <%= link_to show_icon, board, { title: 'view board' } %>
-          <%= link_to edit_icon, edit_scrum_board_path(board), { title: 'edit board' } if scrum_master? %>
           <%= link_to trello_icon, board.trello_url, { title: 'visit Trello board' } if board.trello_url %>
         </td>
       </tr>

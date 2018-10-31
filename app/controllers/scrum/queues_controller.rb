@@ -1,8 +1,8 @@
 module Scrum
-  class SprintsController < ApplicationController
+  class QueuesController < ApplicationController
     before_action :authenticate
-    before_action :auth_scrum_masters, only: [:new, :create, :edit, :update, :import]
-    before_action :set_scrum_sprint, only: [:edit, :update, :show, :import]
+    before_action :auth_scrum_masters, only: [:new, :create, :edit, :update]
+    before_action :set_queue, only: [:edit, :update, :show]
 
     # GET /scrum/sprints
     # GET /scrum/sprints.json
@@ -55,38 +55,21 @@ module Scrum
       end
     end
 
-    # GET /scrum/sprints/1
-    # GET /scrum/sprints/1.json
+    # GET /scrum/queues/1
+    # GET /scrum/queues/1.json
     def show; end
-
-    # GET /scrum/sprints/:id/import
-    def import
-      @scrum_sprint.update_from_trello_list
-      # disable caching for debugging: https://stackoverflow.com/a/5523411/1093087
-      headers['Last-Modified'] = Time.now.httpdate
-
-      respond_to do |format|
-        format.js {
-          render partial: 'table_row', layout: false, content_type: 'text/html',
-                 locals: { sprint: @scrum_sprint }
-        }
-        format.json { render json: @scrum_sprint }
-      end
-    end
 
     private
 
     # Use callbacks to share common setup or constraints between actions.
-    def set_scrum_sprint
-      @scrum_sprint = ScrumSprint.find(params[:id])
+    def set_queue
+      @queue = ScrumQueue.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def scrum_sprint_params
       params.require(:scrum_sprint).permit(
-        :scrum_board_id, :name, :started_on, :ended_on, :story_points_committed,
-        :story_points_completed, :stories_count, :backlog_story_points,
-        :backlog_stories_count, :wish_heap_stories_count, :notes
+        :scrum_board_id, :name, :started_on, :ended_on, :notes
       )
     end
   end

@@ -49,7 +49,7 @@ class MockTrelloBoard
 
   def init_current_sprint
     # Creates Current Sprint and Completed List
-    sprint_name = ScrumSprint.name_from_date(@current_sprint_end_date)
+    sprint_name = format('Sprint %s Completed', @current_sprint_end_date)
 
     # Lists
     current_sprint_list = MockTrelloList.new(name: 'Current Sprint')
@@ -66,7 +66,7 @@ class MockTrelloBoard
   def init_first_sprint
     days_ago = ScrumBoard::DEFAULT_SPRINT_DURATION * 3
     end_date = @current_sprint_end_date - days_ago
-    sprint_name = ScrumSprint.name_from_date(end_date)
+    sprint_name = format('Sprint %s Completed', end_date)
     sprint_list = MockTrelloList.new(name: sprint_name)
     sprint_list.add_card(name: 'First Sprint Story 1', points: 3)
     sprint_list.add_card(name: 'First Sprint Story 2', points: 2)
@@ -76,7 +76,7 @@ class MockTrelloBoard
   def init_second_sprint
     days_ago = ScrumBoard::DEFAULT_SPRINT_DURATION * 2
     end_date = @current_sprint_end_date - days_ago
-    sprint_name = ScrumSprint.name_from_date(end_date)
+    sprint_name = format('Sprint %s Completed', end_date)
     sprint_list = MockTrelloList.new(name: sprint_name)
     sprint_list.add_card(name: 'Second Sprint Story 2', points: 5)
     sprint_list
@@ -84,7 +84,7 @@ class MockTrelloBoard
 
   def init_third_sprint
     end_date = @current_sprint_end_date - ScrumBoard::DEFAULT_SPRINT_DURATION
-    sprint_name = ScrumSprint.name_from_date(end_date)
+    sprint_name = format('Sprint %s Completed', end_date)
     sprint_list = MockTrelloList.new(name: sprint_name)
     sprint_list.add_card(name: 'Second Sprint Story 1', points: 2)
     sprint_list.add_card(name: 'Second Sprint Story 2', points: 5)

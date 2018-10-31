@@ -9,8 +9,8 @@ In the spirit of Rails's conventions-over-configuration ethos, this application 
 
 - Set up the following lists to track stories in progress:
   - Wish Heap
-  - Backlog
-  - Current Sprint
+  - Groomed Backlog
+  - Current Sprint Backlog
 - To track completed stories, add a list for each sprint with this name format (YYYYMMDD will be the date the sprint ends):
   - Sprint YYYYMMDD completed
 - Install plugin Agile Tools by Corrello and use it to record card user story sizes.

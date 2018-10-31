@@ -1,3 +1,6 @@
+#
+# rake test TEST=test/models/scrum_board_test.rb
+#
 require 'test_helper'
 
 class ScrumBoardTest < ActiveSupport::TestCase
@@ -34,36 +37,10 @@ class ScrumBoardTest < ActiveSupport::TestCase
     trello_board.id = existing_board.trello_board_id
 
     # Act
-    board = ScrumBoard.by_trello_board_or_create(trello_board)
+    board = ScrumBoard.find_by(trello_board_id: trello_board.id)
 
     # Assert
     assert_equal existing_board, board
-  end
-
-  test "expects to create scrum board by trello board id" do
-    # Arrange
-    trello_board = mock_trello_board
-    TrelloService.stubs(:board).returns(trello_board)
-
-    # Assume
-    assert_equal 'Scrummy Board', trello_board.name
-    scrum_board_count_before = ScrumBoard.count
-
-    # Act
-    scrum_board = ScrumBoard.by_trello_board_or_create(trello_board)
-    scrum_board.save!
-    first_sprint = scrum_board.completed_sprints.first
-    second_sprint = scrum_board.completed_sprints[1]
-    third_sprint = scrum_board.completed_sprints.last
-
-    # Assert
-    assert_equal trello_board.id, scrum_board.trello_board_id
-    assert_equal scrum_board_count_before + 1, ScrumBoard.count
-    assert_equal 3, scrum_board.backlog_points
-    assert_in_delta 5.667, scrum_board.average_velocity
-    assert_in_delta first_sprint.story_points_completed, first_sprint.average_velocity
-    assert_in_delta 5.0, second_sprint.average_velocity
-    assert_in_delta 5.667, third_sprint.average_velocity
   end
 
   test "expects scrum board with invalid trello url to be invalid" do
@@ -78,5 +55,22 @@ class ScrumBoardTest < ActiveSupport::TestCase
     # Assert
     assert_not scrum_board.valid?
     assert_equal ["must be valid Trello url"], scrum_board.errors.messages[:trello_url]
+  end
+
+  test "expects to identify queues" do
+    # Arrange
+    wish_heap_queue = scrum_queues(:wish_heap)
+    project_backlog_queue = scrum_queues(:project_backlog)
+    sprint_backlog_queue = scrum_queues(:sprint_backlog)
+    active_sprint_queue = scrum_queues(:active_sprint)
+
+    # Act
+    scrum_board = scrum_boards(:scrummy)
+
+    # Assert
+    assert_equal wish_heap_queue, scrum_board.wish_heap
+    assert_equal project_backlog_queue, scrum_board.project_backlog
+    assert_equal sprint_backlog_queue, scrum_board.sprint_backlog
+    assert_equal active_sprint_queue, scrum_board.active_sprint
   end
 end

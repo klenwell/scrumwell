@@ -25,6 +25,12 @@ class TrelloService
     end
   end
 
+  def self.card(id)
+    Rails.cache.fetch("trello_card/#{id}", expires_in: 1.minute) do
+      Trello::Card.find(id)
+    end
+  end
+
   def initialize
     @me = TrelloService.user('me')
   end

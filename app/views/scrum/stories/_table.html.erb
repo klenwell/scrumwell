@@ -12,13 +12,13 @@
   <tbody>
     <% stories.each do |story| %>
       <tr>
-        <td><%= story.public_title %></td>
+        <td><%= story.title %></td>
         <td><%= story.points %></td>
-        <td><%= link_to story.trello_short_url %></td>
+        <td><%= link_to story.trello_data['short_url'] %></td>
         <td><%= story.last_activity_at %></td>
-        <td><%= story.last_imported_at %></td>
+        <td><%= story.scrum_events.last.occurred_at %></td>
         <td>
-          <%= link_to show_icon, scrum_user_story_path(story) %>
+          <%= link_to show_icon, scrum_story_path(story) %>
         </td>
       </tr>
     <% end %>
