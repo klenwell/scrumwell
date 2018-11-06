@@ -193,6 +193,10 @@ class ScrumBoard < ApplicationRecord
     queues
   end
 
+  def created_on
+    events.find_by(trello_type: "createBoard").try(:occurred_at).to_date
+  end
+
   ## WIP Logs
   def build_wip_log_from_scratch
     new_logs = []
