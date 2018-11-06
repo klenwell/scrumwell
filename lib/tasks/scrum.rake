@@ -42,8 +42,10 @@ namespace :scrum do
     # Report
     trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
     board.reload
-    puts format("Imported %s events from %s to %s.", events.length,
-                events.first.occurred_at, events.last.occurred_at) if events.present?
+    if events.present?
+      puts format("Imported %s events from %s to %s.", events.length,
+                  events.first.occurred_at, events.last.occurred_at)
+    end
     puts format("Created %s wip_logs.", wip_logs.length) if events.present?
     puts format("Current Board Velocity: %s", board.current_velocity)
     puts format("Trello API calls: %s", trello_api_calls)
