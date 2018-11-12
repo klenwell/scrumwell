@@ -47,10 +47,6 @@ class ScrumStory < ApplicationRecord
     trello_data['due'].to_date
   end
 
-  def last_activity_at
-    trello_data['last_activity_date']
-  end
-
   def change_queue(queue, **options)
     event = options[:event]
     updated = update!(scrum_queue: queue)
@@ -94,5 +90,6 @@ class ScrumStory < ApplicationRecord
   def set_card_data
     self.points = ScrumStory.points_from_card(trello_card)
     self.trello_data = trello_card
+    self.last_activity_at = trello_data['last_activity_date']
   end
 end

@@ -123,7 +123,8 @@ class ScrumEvent < ApplicationRecord
       scrum_board: board,
       scrum_queue: queue,
       trello_card_id: trello_card_id,
-      title: trello_data.dig('card', 'name')
+      title: trello_data.dig('card', 'name'),
+      created_at: occurred_at
     )
 
     update!(eventable: story)
