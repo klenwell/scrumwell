@@ -73,4 +73,25 @@ class ScrumBoardTest < ActiveSupport::TestCase
     assert_equal sprint_backlog_queue, scrum_board.sprint_backlog
     assert_equal active_sprint_queue, scrum_board.active_sprint
   end
+
+  test "expects board created_at timestamp to match board creation event timestamp" do
+    # Arrange
+    ScrumEvent.any_instance.stubs(:trello_data).returns({})
+    trello_board_created_at = Time.zone.yesterday.beginning_of_day
+    scrum_board = scrum_boards(:scrummy)
+    scrum_event = ScrumEvent.create(eventable: scrum_board,
+                                    scrum_board: scrum_board,
+                                    trello_type: 'createBoard',
+                                    occurred_at: trello_board_created_at)
+
+    # Assume
+    assert scrum_event.creates_board?
+    assert_not_equal trello_board_created_at, scrum_board.created_at
+
+    # Act
+    scrum_board.digest_latest_event(scrum_event)
+
+    # Assert
+    assert_equal trello_board_created_at, scrum_board.created_at
+  end
 end

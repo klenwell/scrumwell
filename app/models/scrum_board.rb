@@ -124,7 +124,9 @@ class ScrumBoard < ApplicationRecord
   end
 
   def digest_latest_event(scrum_event)
-    if scrum_event.creates_queue?
+    if scrum_event.creates_board?
+      update(created_at: scrum_event.occurred_at)
+    elsif scrum_event.creates_queue?
       scrum_event.create_queue_for_board(self)
     elsif scrum_event.creates_story?
       scrum_event.create_story_for_board(self)

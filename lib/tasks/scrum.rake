@@ -19,6 +19,7 @@ namespace :scrum do
     board.build_wip_log_from_scratch
 
     # Stdout
+    trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
     board.queues.each { |q| puts q.to_stdout }
     puts format("Created %s events.", board.events.count)
     puts format("Created %s wip_logs.", board.wip_logs.count)

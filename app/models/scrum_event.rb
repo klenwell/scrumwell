@@ -42,6 +42,10 @@ class ScrumEvent < ApplicationRecord
     trello_data['old'][key]
   end
 
+  def creates_board?
+    action == 'created' && board?
+  end
+
   def creates_queue?
     action == 'created' && list?
   end
@@ -123,7 +127,8 @@ class ScrumEvent < ApplicationRecord
       scrum_board: board,
       scrum_queue: queue,
       trello_card_id: trello_card_id,
-      title: trello_data.dig('card', 'name')
+      title: trello_data.dig('card', 'name'),
+      created_at: occurred_at
     )
 
     update!(eventable: story)
@@ -224,6 +229,7 @@ class ScrumEvent < ApplicationRecord
 
     return :created if card_creation_actions.include? trello_type
     return :created if trello_type == 'createList'
+    return :created if trello_type == 'createBoard'
 
     return :changed_queue if card? && old_data?('idList')
     return :changed_due_date if card? && old_data?('due')
