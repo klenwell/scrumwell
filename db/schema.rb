@@ -10,10 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_11_232939) do
+ActiveRecord::Schema.define(version: 2018_11_21_055258) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "contributions", force: :cascade do |t|
+    t.integer "contributor_id"
+    t.integer "scrum_story_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "contributors", force: :cascade do |t|
+    t.string "username"
+    t.string "full_name"
+    t.string "email"
+    t.string "trello_member_id"
+    t.string "trello_url"
+    t.string "trello_avatar_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "scrum_boards", force: :cascade do |t|
     t.string "trello_board_id"

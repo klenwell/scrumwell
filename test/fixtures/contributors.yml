@@ -1,0 +1,6 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+developer:
+  trello_member_id: dEvelopER
+  trello_url: https://trello.com/developer
+  trello_avatar_url: https://trello-avatars.s3.amazonaws.com/avatar_url/170.png

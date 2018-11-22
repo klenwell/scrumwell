@@ -1,0 +1,5 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+minor:
+  contributor_id: <%= ActiveRecord::FixtureSet.identify(:developer) %>
+  scrum_story_id: <%= ActiveRecord::FixtureSet.identify(:complete) %>
