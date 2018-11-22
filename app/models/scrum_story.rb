@@ -19,6 +19,7 @@ class ScrumStory < ApplicationRecord
 
   ## Callbacks
   before_create :set_card_data
+  after_create :associate_contributors
 
   #
   # Class Methods
@@ -41,6 +42,10 @@ class ScrumStory < ApplicationRecord
 
   def trello_short_url
     trello_data['short_url']
+  end
+
+  def trello_member_ids
+    trello_data['member_ids'] || []
   end
 
   def completed_on
@@ -93,5 +98,14 @@ class ScrumStory < ApplicationRecord
     self.points = ScrumStory.points_from_card(trello_card)
     self.trello_data = trello_card
     self.last_activity_at = trello_data['last_activity_date']
+  end
+
+  def associate_contributors
+    trello_member_ids.each do |member_id|
+      contributor = Contributor.find_or_create_by_trello_member_id(member_id)
+      contributors << contributor
+    end
+
+    save!
   end
 end
