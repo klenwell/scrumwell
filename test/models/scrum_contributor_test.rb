@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ContributorTest < ActiveSupport::TestCase
+class ScrumContributorTest < ActiveSupport::TestCase
   test "expects to create new contributor" do
     # Arrange
     params = {
@@ -9,13 +9,13 @@ class ContributorTest < ActiveSupport::TestCase
     }
 
     # Assume
-    contributors_before = Contributor.count
+    contributors_before = ScrumContributor.count
 
     # Act
-    contributor = Contributor.create(params)
+    contributor = ScrumContributor.create(params)
 
     # Assert
     assert_equal params[:username], contributor.username
-    assert contributors_before + 1, Contributor.count
+    assert contributors_before + 1, ScrumContributor.count
   end
 end

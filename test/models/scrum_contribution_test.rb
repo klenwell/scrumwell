@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ContributionTest < ActiveSupport::TestCase
+class ScrumContributionTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

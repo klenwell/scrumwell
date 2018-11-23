@@ -31,7 +31,7 @@ class ScrumStoryTest < ActiveSupport::TestCase
 
   test "expects existing contributor to be associated with created story" do
     # Arrange
-    developer = contributors(:developer)
+    developer = scrum_contributors(:developer)
     params = {
       scrum_board: scrum_boards(:scrummy),
       trello_card_id: 'SH10151',
@@ -45,14 +45,14 @@ class ScrumStoryTest < ActiveSupport::TestCase
 
     # Assume
     stories_before = ScrumStory.count
-    contributions_before = Contribution.count
+    contributions_before = ScrumContribution.count
 
     # Act
     story = ScrumStory.create(params)
 
     # Assert
     assert_equal stories_before + 1, ScrumStory.count
-    assert_equal contributions_before + 1, Contribution.count
+    assert_equal contributions_before + 1, ScrumContribution.count
     assert_equal 1, story.contributors.count
     assert_equal developer.id, story.contributors.first.id
   end
