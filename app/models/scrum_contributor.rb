@@ -58,4 +58,9 @@ class ScrumContributor < ApplicationRecord
 
     points
   end
+
+  def avg_capacity
+    last_three_sprints = sprint_points.last(3)
+    1.0 * last_three_sprints.sum / last_three_sprints.length
+  end
 end

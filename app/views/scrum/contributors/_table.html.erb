@@ -1,0 +1,32 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Username</th>
+      <th scope="col">Full Name</th>
+      <th scope="col">Avg Capacity</th>
+      <th scope="col">Sprints</th>
+      <th scope="col">Total Points</th>
+      <th scope="col">Trello URL</th>
+      <th scope="col" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% contributors.each do |contributor| %>
+      <tr>
+        <td>
+            <%= image_tag contributor.trello_avatar_url, class: 'avatar r32' %>
+        </td>
+        <td><%= contributor.username %></td>
+        <td><%= contributor.full_name %></td>
+        <td><%= contributor.avg_capacity %></td>
+        <td><%= contributor.sprints.length %></td>
+        <td><%= contributor.story_points %></td>
+        <td><%= link_to contributor.trello_url, contributor.trello_url %></td>
+        <td>
+          <%= link_to show_icon, scrum_contributor_path(contributor) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
