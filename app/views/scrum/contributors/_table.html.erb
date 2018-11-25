@@ -15,11 +15,11 @@
     <% contributors.each do |contributor| %>
       <tr>
         <td>
-            <%= image_tag contributor.trello_avatar_url, class: 'avatar r32' %>
+            <%= contributor_avatar(contributor) %>
         </td>
         <td><%= contributor.username %></td>
         <td><%= contributor.full_name %></td>
-        <td><%= contributor.avg_capacity %></td>
+        <td><%= as_decimal(contributor.avg_capacity, alt: 'N/A') %></td>
         <td><%= contributor.sprints.length %></td>
         <td><%= contributor.story_points %></td>
         <td><%= link_to contributor.trello_url, contributor.trello_url %></td>

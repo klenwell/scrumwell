@@ -33,8 +33,15 @@ class ScrumContributor < ApplicationRecord
   #
   # Instance Methods
   #
+  def avatar_url
+    nil_url = 'https://trello-avatars.s3.amazonaws.com//170.png'
+    return nil if trello_avatar_url == nil_url
+    trello_avatar_url
+  end
+
   def story_points
-    scrum_stories.sum(&:points)
+    return 0 if scrum_stories.blank?
+    scrum_stories.sum { |s| s.points.to_i }
   end
 
   def sprints
@@ -46,7 +53,7 @@ class ScrumContributor < ApplicationRecord
   end
 
   def points_for_sprint(sprint)
-    scrum_stories.where(scrum_queue: sprint).sum(&:points)
+    scrum_stories.where(scrum_queue: sprint).sum { |s| s.points.to_i }
   end
 
   def sprint_points
