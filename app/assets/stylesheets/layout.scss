@@ -14,3 +14,20 @@ nav.navbar a.navbar.brand {
 i.material-icons {
   vertical-align: middle;
 }
+
+img.avatar {
+  max-width: 64px;
+  max-height: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+
+  &.r32 {
+    width: 32px;
+    height: 32px;
+  }
+
+  &.r64 {
+    width: 64px;
+    height: 64px;
+  }
+}

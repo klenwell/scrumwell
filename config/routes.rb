@@ -11,6 +11,8 @@ Rails.application.routes.draw do
 
       resources :events
     end
+
+    resources :contributors, only: [:index, :show]
   end
 
   # Trello Routes

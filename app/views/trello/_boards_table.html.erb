@@ -3,6 +3,7 @@
     <tr>
       <th scope="col" class="icon"></th>
       <th scope="col">Board</th>
+      <th scope="col">ID</th>
       <th scope="col">URL</th>
       <th scope="col">Last Activity</th>
       <th scope="col" class="actions"></th>
@@ -13,6 +14,7 @@
       <tr>
         <td><%= trello_board_icon(board) %></td>
         <th scope="row"><%= board.name %></th>
+        <th scope="row"><%= board.id %></th>
         <td><%= link_to board.url, board.url %></td>
         <td><%= board.last_activity_date %></td>
         <td>

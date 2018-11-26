@@ -46,7 +46,7 @@
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in link_to href",
       "file": "app/views/scrum/boards/index.html.erb",
-      "line": 38,
+      "line": 31,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
       "code": "link_to(trello_icon, ScrumBoard.new.trello_url, :title => \"visit Trello board\")",
       "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":11,"file":"app/controllers/scrum/boards_controller.rb"}],
@@ -57,8 +57,27 @@
       "user_input": "ScrumBoard.new.trello_url",
       "confidence": "Weak",
       "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "fe68c508bbf87b208b3f1441d53182737490097e66f0061ca321a3c85d387105",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in link_to href",
+      "file": "app/views/scrum/contributors/_table.html.erb",
+      "line": 25,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(ScrumContributor.new.trello_url, ScrumContributor.new.trello_url)",
+      "render_path": [{"type":"controller","class":"Scrum::ContributorsController","method":"index","line":12,"file":"app/controllers/scrum/contributors_controller.rb"},{"type":"template","name":"scrum/contributors/index","line":4,"file":"app/views/scrum/contributors/index.html.erb"}],
+      "location": {
+        "type": "template",
+        "template": "scrum/contributors/_table"
+      },
+      "user_input": "ScrumContributor.new.trello_url",
+      "confidence": "Weak",
+      "note": ""
     }
   ],
-  "updated": "2018-10-27 22:12:37 -0700",
+  "updated": "2018-11-25 13:43:43 -0800",
   "brakeman_version": "4.3.1"
 }

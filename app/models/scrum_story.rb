@@ -4,12 +4,15 @@ class ScrumStory < ApplicationRecord
   ## Associations
   belongs_to :scrum_board
   belongs_to :scrum_queue, optional: true
+  has_many :scrum_contributions, dependent: :destroy
+  has_many :scrum_contributors, through: :scrum_contributions
 
   # rubocop: disable Rails/InverseOf
   has_many :scrum_events, -> { order(occurred_at: :desc) }, as: :eventable
   # rubocop: enable Rails/InverseOf
 
   ## Aliases
+  alias_attribute :contributors, :scrum_contributors
 
   ## Validations
   validates :trello_card_id, presence: true
@@ -17,6 +20,7 @@ class ScrumStory < ApplicationRecord
 
   ## Callbacks
   before_create :set_card_data
+  after_create :associate_contributors
 
   #
   # Class Methods
@@ -39,6 +43,10 @@ class ScrumStory < ApplicationRecord
 
   def trello_short_url
     trello_data['short_url']
+  end
+
+  def trello_member_ids
+    trello_data['member_ids'] || []
   end
 
   def completed_on
@@ -91,5 +99,14 @@ class ScrumStory < ApplicationRecord
     self.points = ScrumStory.points_from_card(trello_card)
     self.trello_data = trello_card
     self.last_activity_at = trello_data['last_activity_date']
+  end
+
+  def associate_contributors
+    trello_member_ids.each do |member_id|
+      contributor = ScrumContributor.find_or_create_by_trello_member_id(member_id)
+      scrum_contributors << contributor
+    end
+
+    save!
   end
 end

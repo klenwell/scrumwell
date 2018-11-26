@@ -3,8 +3,12 @@
 class TrelloService
   attr_reader :me
 
-  def self.user(name)
-    Trello::Member.find(name)
+  def self.user(name_or_id)
+    Trello::Member.find(name_or_id)
+  end
+
+  def self.member(name_or_id)
+    TrelloService.user(name_or_id)
   end
 
   def self.board(id)

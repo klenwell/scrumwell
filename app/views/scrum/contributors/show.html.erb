@@ -1,0 +1,28 @@
+<div class="page-header">
+  <h2>Contributor <span class="text-primary"><%= @contributor.full_name %></span></h2>
+  <p><%#= link_to 'Edit', edit_scrum_contributor_path(@contributor), role: 'button', class: 'btn btn-primary' %></p>
+</div>
+
+<div class="row">
+  <div class="col-sm">
+    <%= contributor_avatar(@contributor, size: 64) %>
+  </div>
+  <div class="col-sm">
+    <dl class="dl-horizontal">
+      <dt><strong>Username</strong></dt>
+      <dd><%= @contributor.username %></dd>
+    </dl>
+  </div>
+  <div class="col-sm">
+    <h4><span class="badge badge-pill badge-success">
+      <%= as_decimal(@contributor.avg_capacity, alt: 'N/A') %></span> Points per Sprint
+    </h4>
+  </div>
+</div>
+
+<h3>Contributions</h3>
+<%= render partial: "scrum/stories/table", locals: {stories: @contributor.scrum_stories} %>
+
+<div class="actions">
+  <%= link_to 'Index', scrum_contributors_path, role: 'button', class: 'btn btn-info ml-2' %>
+</div>
