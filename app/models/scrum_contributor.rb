@@ -1,5 +1,6 @@
 class ScrumContributor < ApplicationRecord
   has_many :scrum_contributions, dependent: :destroy
+  has_many :sprint_contributions, dependent: :destroy
   has_many :scrum_stories, through: :scrum_contributions
   has_many :scrum_queues, through: :scrum_stories
 

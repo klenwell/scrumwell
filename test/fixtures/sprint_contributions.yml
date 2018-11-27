@@ -1,0 +1,7 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+by_developer_for_completed_sprint:
+  scrum_contributor_id: <%= ActiveRecord::FixtureSet.identify(:developer) %>
+  scrum_queue_id: <%= ActiveRecord::FixtureSet.identify(:completed_sprint) %>
+  story_points: 3
+  event_count: 8
