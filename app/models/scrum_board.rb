@@ -12,6 +12,7 @@ class ScrumBoard < ApplicationRecord
                                                             inverse_of: :scrum_board
   has_many :wip_logs, -> { order(occurred_at: :desc) }, dependent: :destroy,
                                                         inverse_of: :scrum_board
+  has_many :sprint_contributions, through: :scrum_queues
 
   ## Aliases
   alias_attribute :queues, :scrum_queues
@@ -227,6 +228,36 @@ class ScrumBoard < ApplicationRecord
   def wish_heap_points_on(date)
     logs = wip_logs.where('occurred_at <= ?', date.end_of_day).order(occurred_at: :desc).limit(1)
     logs.count > 0 ? logs.first.wip['wish_heap'] : nil
+  end
+
+  ## Sprint Contributions
+  # rubocop: disable Metrics/AbcSize
+  def build_sprint_contributions_from_scratch
+    saved_contributions = []
+    sprint_contributions.destroy_all
+
+    # For each completed sprint...
+    completed_queues.each do |queue|
+      # Add a contribution for each contributor who performed at least 3 events/actions.
+      # This will capture any contributors who may have contributed 0 story points.
+      queue.contributors.each do |contributor|
+        event_count = contributor.count_events_for_queue(queue)
+        next unless event_count >= 3
+
+        sprint_contrib = SprintContribution.create(
+          scrum_contributor: contributor,
+          scrum_queue: queue,
+          story_points: contributor.points_for_sprint(sprint),
+          event_count: event_count
+        )
+
+        puts sprint_contrib.to_stdout if Rails.env.development? # rubocop: disable Rails/Output
+        saved_contributions << sprint_contrib
+      end
+    end
+    # rubocop: enable Metrics/AbcSize
+
+    saved_contributions
   end
 
   ## Velocity
