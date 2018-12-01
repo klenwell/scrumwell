@@ -27,12 +27,14 @@ class ScrumEventTest < ActiveSupport::TestCase
     ScrumStory.stubs(:points_from_card).returns(1)
 
     board = scrum_boards(:scrummy)
+    contributor = scrum_contributors(:developer)
     action_data = {
       'list' => { 'id' => board.wish_heap.trello_list_id },
       'card' => { 'id' => 'test-card', 'name' => 'Mock Test Card' }
     }
     trello_action = MockTrelloAction.new(id: 'tests-card-creation',
                                          type: 'createCard',
+                                         member_creator_id: contributor.trello_member_id,
                                          date: Time.zone.yesterday.beginning_of_day,
                                          data: action_data)
     event = ScrumEvent.create_from_trello_board_event(board, trello_action)

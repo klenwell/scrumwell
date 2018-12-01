@@ -18,4 +18,27 @@ class ScrumContributorTest < ActiveSupport::TestCase
     assert_equal params[:username], contributor.username
     assert contributors_before + 1, ScrumContributor.count
   end
+
+  test "expects contributor to have many events" do
+    # Arrange
+    contributor = scrum_contributors(:developer)
+    event_count_before = ScrumEvent.count
+    event_params = {
+      trello_member_id: contributor.trello_member_id,
+      scrum_board_id: scrum_boards(:scrummy).id,
+      action: 'test',
+      trello_data: {}
+    }
+
+    # Assert
+    assert_equal 0, contributor.events.count
+
+    # Act
+    ScrumEvent.create!(event_params)
+    ScrumEvent.create!(event_params)
+
+    # Assert
+    assert_equal event_count_before + 2, ScrumEvent.count
+    assert_equal 2, contributor.events.count
+  end
 end

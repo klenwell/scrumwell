@@ -2,6 +2,8 @@ class ScrumEvent < ApplicationRecord
   ## Associations
   belongs_to :eventable, polymorphic: true, optional: true
   belongs_to :scrum_board
+  belongs_to :scrum_contributor, primary_key: :trello_member_id, foreign_key: :trello_member_id,
+                                 inverse_of: :scrum_events
   has_one :wip_log, dependent: :destroy
 
   ## Callbacks
@@ -15,6 +17,7 @@ class ScrumEvent < ApplicationRecord
       scrum_board: scrum_board,
       trello_id: trello_action.id,
       trello_type: trello_action.type,
+      trello_member_id: trello_action.member_creator_id,
       trello_data: trello_action.data,
       occurred_at: trello_action.date
     )

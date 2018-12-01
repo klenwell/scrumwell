@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_27_044123) do
+ActiveRecord::Schema.define(version: 2018_12_01_044139) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,8 +54,10 @@ ActiveRecord::Schema.define(version: 2018_11_27_044123) do
     t.datetime "occurred_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "trello_member_id"
     t.index ["eventable_type", "eventable_id"], name: "index_scrum_events_on_eventable_type_and_eventable_id"
     t.index ["scrum_board_id"], name: "index_scrum_events_on_scrum_board_id"
+    t.index ["trello_member_id"], name: "index_scrum_events_on_trello_member_id"
   end
 
   create_table "scrum_queues", force: :cascade do |t|
