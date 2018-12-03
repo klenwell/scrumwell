@@ -74,4 +74,13 @@ class ScrumContributor < ApplicationRecord
     last_three_sprints = sprint_points.last(3)
     1.0 * last_three_sprints.sum / last_three_sprints.length
   end
+
+  def events_for_queue(queue)
+    date_range = queue.started_on.end_of_day..queue.ended_on.end_of_day
+    scrum_events.where(scrum_board: queue.scrum_board).where(occurred_at: date_range)
+  end
+
+  def count_events_for_queue(queue)
+    events_for_queue(queue).count
+  end
 end
