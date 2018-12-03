@@ -3,7 +3,7 @@ class ScrumEvent < ApplicationRecord
   belongs_to :eventable, polymorphic: true, optional: true
   belongs_to :scrum_board
   belongs_to :scrum_contributor, primary_key: :trello_member_id, foreign_key: :trello_member_id,
-                                 inverse_of: :scrum_events
+                                 inverse_of: :scrum_events, optional:true
   has_one :wip_log, dependent: :destroy
 
   ## Callbacks
@@ -26,6 +26,11 @@ class ScrumEvent < ApplicationRecord
   #
   # Instance Methods
   #
+  def trello_action
+    # Gets action data from Trello
+    Trello::Action.find(trello_id)
+  end
+
   def wip?
     return false if card? && deletes_story?
     creates_story? || moves_story? || changes_story_status?
