@@ -3,7 +3,7 @@ class ScrumEvent < ApplicationRecord
   belongs_to :eventable, polymorphic: true, optional: true
   belongs_to :scrum_board
   belongs_to :scrum_contributor, primary_key: :trello_member_id, foreign_key: :trello_member_id,
-                                 inverse_of: :scrum_events, optional:true
+                                 inverse_of: :scrum_events, optional: true
   has_one :wip_log, dependent: :destroy
 
   ## Callbacks

@@ -3,18 +3,22 @@ namespace :scrum do
   # rake scrum:import_board[5b26fe3ad86bfdbb5a8290b1]
   desc "Imports board and reconstructs its history from Trello events."
   task :import_board, [:trello_board_id] => :environment do |_, args|
+    # Parse args
     trello_board_id = args[:trello_board_id]
+
+    # Delete existing board
     board = ScrumBoard.find_by(trello_board_id: trello_board_id)
     if board.present?
       puts format("Destroying existing board: %s", board.name)
       board.destroy
     end
-
     `rake log:clear` if Rails.env.development?
 
+    # Find Trello board
     trello_board = TrelloService.board(trello_board_id)
     puts format("Importing board: %s", trello_board.name)
 
+    # Create scrum board from Trello board
     board = ScrumBoard.reconstruct_from_trello_board_actions(trello_board)
     board.build_wip_log_from_scratch
     board.build_sprint_contributions_from_scratch

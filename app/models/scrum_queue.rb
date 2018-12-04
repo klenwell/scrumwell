@@ -3,7 +3,8 @@ class ScrumQueue < ApplicationRecord
   belongs_to :scrum_board
   has_many :scrum_stories, -> { order(created_at: :asc) }, dependent: :destroy,
                                                            inverse_of: :scrum_queue
-  has_many :sprint_contributions, -> { order(story_points: :desc) }, dependent: :destroy
+  has_many :sprint_contributions, -> { order(story_points: :desc) }, dependent: :destroy,
+                                                                     inverse_of: :scrum_queue
 
   # rubocop: disable Rails/InverseOf
   has_many :scrum_events, -> { order(occurred_at: :desc) }, as: :eventable
@@ -54,7 +55,7 @@ class ScrumQueue < ApplicationRecord
   def event_contributors
     date_range = started_on.end_of_day..ended_on.end_of_day
     events = ScrumEvent.where(scrum_board: scrum_board).where(occurred_at: date_range)
-    events.map{ |e| e.scrum_contributor }.compact.flatten.uniq
+    events.map(&:scrum_contributor).compact.flatten.uniq
   end
 
   def trello_list
