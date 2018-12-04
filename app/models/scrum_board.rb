@@ -233,21 +233,25 @@ class ScrumBoard < ApplicationRecord
   ## Sprint Contributions
   # rubocop: disable Metrics/AbcSize
   def build_sprint_contributions_from_scratch
+    # To be considered active that sprint event without contributing story points.
+    min_events_to_be_active = 3
     saved_contributions = []
-    sprint_contributions.destroy_all
 
     # For each completed sprint...
     completed_queues.each do |queue|
-      # Add a contribution for each contributor who performed at least 3 events/actions.
+      # From scratch...
+      queue.sprint_contributions.destroy_all
+
+      # Add a contribution for each contributor who performed the min events/actions.
       # This will capture any contributors who may have contributed 0 story points.
-      queue.contributors.each do |contributor|
+      queue.event_contributors.each do |contributor|
         event_count = contributor.count_events_for_queue(queue)
-        next unless event_count >= 3
+        next unless event_count >= min_events_to_be_active
 
         sprint_contrib = SprintContribution.create(
           scrum_contributor: contributor,
           scrum_queue: queue,
-          story_points: contributor.points_for_sprint(sprint),
+          story_points: contributor.points_for_sprint(queue),
           event_count: event_count
         )
 

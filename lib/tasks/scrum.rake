@@ -17,6 +17,7 @@ namespace :scrum do
 
     board = ScrumBoard.reconstruct_from_trello_board_actions(trello_board)
     board.build_wip_log_from_scratch
+    board.build_sprint_contributions_from_scratch
 
     # Stdout
     trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`

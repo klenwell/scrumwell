@@ -51,6 +51,12 @@ class ScrumQueue < ApplicationRecord
     groomed_stories.sum(&:points)
   end
 
+  def event_contributors
+    date_range = started_on.end_of_day..ended_on.end_of_day
+    events = ScrumEvent.where(scrum_board: scrum_board).where(occurred_at: date_range)
+    events.map{ |e| e.scrum_contributor }.compact.flatten.uniq
+  end
+
   def trello_list
     TrelloService.list(trello_list_id)
   end
