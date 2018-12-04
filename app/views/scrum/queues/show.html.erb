@@ -36,6 +36,9 @@
   </div>
 </div>
 
+<h3>Contributions</h3>
+<%= render partial: "scrum/sprint_contributions/table", locals: {contributions: @queue.sprint_contributions} %>
+
 <h3>User Stories</h3>
 <%= render partial: "scrum/stories/table", locals: {stories: @queue.groomed_stories} %>
 

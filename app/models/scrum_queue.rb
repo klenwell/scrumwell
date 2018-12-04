@@ -3,7 +3,7 @@ class ScrumQueue < ApplicationRecord
   belongs_to :scrum_board
   has_many :scrum_stories, -> { order(created_at: :asc) }, dependent: :destroy,
                                                            inverse_of: :scrum_queue
-  has_many :sprint_contributions, dependent: :destroy
+  has_many :sprint_contributions, -> { order(story_points: :desc) }, dependent: :destroy
 
   # rubocop: disable Rails/InverseOf
   has_many :scrum_events, -> { order(occurred_at: :desc) }, as: :eventable
