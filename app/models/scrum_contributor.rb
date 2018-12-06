@@ -71,8 +71,8 @@ class ScrumContributor < ApplicationRecord
   end
 
   def avg_capacity
-    last_three_sprints = sprint_points.last(3)
-    1.0 * last_three_sprints.sum / last_three_sprints.length
+    last_three_sprints = sprint_contributions.last(3)
+    1.0 * last_three_sprints.pluck(:story_points).sum / last_three_sprints.length
   end
 
   def events_for_queue(queue)
