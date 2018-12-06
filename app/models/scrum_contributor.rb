@@ -72,6 +72,10 @@ class ScrumContributor < ApplicationRecord
 
   def avg_capacity
     last_three_sprints = sprint_contributions.last(3)
+
+    # Avoid NaN issues
+    return 0 if last_three_sprints.empty?
+
     1.0 * last_three_sprints.pluck(:story_points).sum / last_three_sprints.length
   end
 
