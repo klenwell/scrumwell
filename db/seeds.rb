@@ -27,4 +27,4 @@ def seed_scrumwell_trello_board
 end
 
 # Main: uncomment to enable
-# seed_scrumwell_trello_board
+seed_scrumwell_trello_board

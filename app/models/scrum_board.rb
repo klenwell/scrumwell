@@ -116,9 +116,13 @@ class ScrumBoard < ApplicationRecord
     events = []
 
     latest_trello_actions.each do |trello_action|
-      event = ScrumEvent.create_from_trello_board_event(self, trello_action)
-      events << digest_latest_event(event)
-      puts event.to_stdout if Rails.env.development? # rubocop: disable Rails/Output
+      begin
+        event = ScrumEvent.create_from_trello_board_event(self, trello_action)
+        events << digest_latest_event(event)
+        LogService.dev event.to_stdout
+      rescue StandardError => e
+        LogService.dev "*** Error: #{e}"
+      end
     end
 
     events
@@ -160,12 +164,9 @@ class ScrumBoard < ApplicationRecord
       actions = trello_board.actions(limit: limit, since: since_id, before: before_id)
       actions.each { |action| latest_actions << action }
 
-      # rubocop: disable Rails/Output
-      if Rails.env.development?
-        f = 'Fetched %s (%s) Trello board actions from API.'
-        puts format(f, actions.length, latest_actions.length)
-      end
-      # rubocop: enable Rails/Output
+      LogService.dev format('Fetched %s (%s) Trello board actions from API.',
+                            actions.length,
+                            latest_actions.length)
 
       more = actions.length == limit
       before_id = actions.last.id if more
@@ -208,7 +209,7 @@ class ScrumBoard < ApplicationRecord
     events.reverse_each do |event|
       next unless event.wip?
       wip_log = WipLog.create_from_event(event)
-      puts wip_log.to_stdout if Rails.env.development? # rubocop: disable Rails/Output
+      LogService.dev wip_log.to_stdout
       new_logs << wip_log
     end
 
@@ -255,7 +256,7 @@ class ScrumBoard < ApplicationRecord
           event_count: event_count
         )
 
-        puts sprint_contrib.to_stdout if Rails.env.development? # rubocop: disable Rails/Output
+        LogService.dev sprint_contrib.to_stdout
         saved_contributions << sprint_contrib
       end
     end

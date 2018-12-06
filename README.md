@@ -61,6 +61,14 @@ To reset the encrypted `credentials.yml.enc` file:
 
 Then copy-paste contents of `credentials.yml-dist` where indicated below into vi buffer and update values as needed.
 
+### Config Files
+
+Permissions are associated with a Google account and set in the `auth_groups.yml`. First copy over the `-dist` version
+
+    cp -v config/auth_groups.yml{-dist,}
+
+Then edit the file to add users to groups by an email address associated with a Google account.
+
 ### Database
 
 Create your application's postgres database user:
@@ -76,6 +84,10 @@ Setup database:
 
     bundle exec rake db:setup
     bundle exec rake db:setup RAILS_ENV=test
+
+Purge development database:
+
+    rake db:schema:load
 
 
 ## Development
@@ -110,3 +122,9 @@ To start the local server:
     bundle exec rails server -b 0.0.0.0 -p 3000
 
 From your browser, head to http://localhost:3000
+
+### Command Line
+
+See lib/tasks for rake modules. To import the Scrumwell Trello board:
+
+    rake scrum:import_board[5b26fe3ad86bfdbb5a8290b1]
