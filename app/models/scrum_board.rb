@@ -116,13 +116,11 @@ class ScrumBoard < ApplicationRecord
     events = []
 
     latest_trello_actions.each do |trello_action|
-      begin
-        event = ScrumEvent.create_from_trello_board_event(self, trello_action)
-        events << digest_latest_event(event)
-        LogService.dev event.to_stdout
-      rescue StandardError => e
-        LogService.dev "*** Error: #{e}"
-      end
+      event = ScrumEvent.create_from_trello_board_event(self, trello_action)
+      events << digest_latest_event(event)
+      LogService.dev event.to_stdout
+    rescue StandardError => e
+      LogService.dev "*** Error: #{e}"
     end
 
     events
@@ -232,7 +230,6 @@ class ScrumBoard < ApplicationRecord
   end
 
   ## Sprint Contributions
-  # rubocop: disable Metrics/AbcSize
   def build_sprint_contributions_from_scratch
     # To be considered active that sprint event without contributing story points.
     min_events_to_be_active = 3
@@ -260,7 +257,6 @@ class ScrumBoard < ApplicationRecord
         saved_contributions << sprint_contrib
       end
     end
-    # rubocop: enable Metrics/AbcSize
 
     saved_contributions
   end
