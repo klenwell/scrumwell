@@ -18,11 +18,13 @@ def seed_scrumwell_trello_board
 
   scrumwell_trello_board = TrelloService.board(SCRUMWELL_TRELLO_BOARD_ID)
   scrumwell_board = ScrumBoard.reconstruct_from_trello_board_actions(scrumwell_trello_board)
+  scrumwell_board.build_wip_log_from_scratch
+  scrumwell_board.build_sprint_contributions_from_scratch
 
   puts format('Created board %s with %s sprints',
               scrumwell_board.name,
               scrumwell_board.completed_queues.count)
 end
 
-# Main
-seed_scrumwell_trello_board
+# Main: uncomment to enable
+# seed_scrumwell_trello_board
