@@ -1,9 +1,12 @@
 class ScrumContributor < ApplicationRecord
-  has_many :scrum_contributions, dependent: :destroy
-  has_many :scrum_stories, through: :scrum_contributions
+  has_many :story_contributions, dependent: :destroy
+  has_many :sprint_contributions, dependent: :destroy
+  has_many :scrum_stories, through: :story_contributions
   has_many :scrum_queues, through: :scrum_stories
+  has_many :scrum_events, primary_key: :trello_member_id, foreign_key: :trello_member_id,
+                          dependent: :destroy, inverse_of: :scrum_contributor
 
-  alias_attribute :contributions, :scrum_contributions
+  alias_attribute :events, :scrum_events
 
   #
   # Class Methods
@@ -67,7 +70,20 @@ class ScrumContributor < ApplicationRecord
   end
 
   def avg_capacity
-    last_three_sprints = sprint_points.last(3)
-    1.0 * last_three_sprints.sum / last_three_sprints.length
+    last_three_sprints = sprint_contributions.last(3)
+
+    # Avoid NaN issues
+    return 0 if last_three_sprints.empty?
+
+    1.0 * last_three_sprints.pluck(:story_points).sum / last_three_sprints.length
+  end
+
+  def events_for_queue(queue)
+    date_range = queue.started_on.end_of_day..queue.ended_on.end_of_day
+    scrum_events.where(scrum_board: queue.scrum_board).where(occurred_at: date_range)
+  end
+
+  def count_events_for_queue(queue)
+    events_for_queue(queue).count
   end
 end

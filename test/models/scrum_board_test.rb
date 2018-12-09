@@ -79,9 +79,11 @@ class ScrumBoardTest < ActiveSupport::TestCase
     ScrumEvent.any_instance.stubs(:trello_data).returns({})
     trello_board_created_at = Time.zone.yesterday.beginning_of_day
     scrum_board = scrum_boards(:scrummy)
+    contributor = scrum_contributors(:developer)
     scrum_event = ScrumEvent.create(eventable: scrum_board,
                                     scrum_board: scrum_board,
                                     trello_type: 'createBoard',
+                                    trello_member_id: contributor.trello_member_id,
                                     occurred_at: trello_board_created_at)
 
     # Assume

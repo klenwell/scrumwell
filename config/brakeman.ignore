@@ -3,21 +3,41 @@
     {
       "warning_type": "Redirect",
       "warning_code": 18,
-      "fingerprint": "30160e37b47a8d61019a60ffafdd2ae3fcd4974e422a6a3714d2c1c05b56ef52",
+      "fingerprint": "1ea052b67da4ee5841702f0103823fc7ce233842061bdee55bdeec2af662829f",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/scrum/queues_controller.rb",
+      "line": 27,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(ScrumBoard.find(params[:board_id]), :notice => \"Sprint was successfully created.\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Scrum::QueuesController",
+        "method": "create"
+      },
+      "user_input": "params[:board_id]",
+      "confidence": "Weak",
+      "note": ""
+    },
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "9746807bb502b5c7ccd68c0d3ba0e34efbecbb00c8fe4e0969b1d56d9ed02551",
       "check_name": "Redirect",
       "message": "Possible unprotected redirect",
       "file": "app/controllers/scrum/boards_controller.rb",
-      "line": 41,
+      "line": 56,
       "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
-      "code": "redirect_to(ScrumBoard.by_trello_board_or_create(TrelloService.board(scrum_board_params[:trello_board_id])), :notice => \"Board was successfully created.\")",
+      "code": "redirect_to(ScrumBoard.find(params[:id]), :notice => \"Backlog was successfully updated.\")",
       "render_path": null,
       "location": {
         "type": "method",
         "class": "Scrum::BoardsController",
-        "method": "create"
+        "method": "update"
       },
-      "user_input": "ScrumBoard.by_trello_board_or_create(TrelloService.board(scrum_board_params[:trello_board_id]))",
-      "confidence": "High",
+      "user_input": "params[:id]",
+      "confidence": "Weak",
       "note": ""
     },
     {
@@ -42,42 +62,23 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 4,
-      "fingerprint": "f6527a13ec4724d38a6470bf7b7d384ae0c112b94cf766750040e4030e518150",
-      "check_name": "LinkToHref",
-      "message": "Potentially unsafe model attribute in link_to href",
-      "file": "app/views/scrum/boards/index.html.erb",
-      "line": 31,
-      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
-      "code": "link_to(trello_icon, ScrumBoard.new.trello_url, :title => \"visit Trello board\")",
-      "render_path": [{"type":"controller","class":"Scrum::BoardsController","method":"index","line":11,"file":"app/controllers/scrum/boards_controller.rb"}],
-      "location": {
-        "type": "template",
-        "template": "scrum/boards/index"
-      },
-      "user_input": "ScrumBoard.new.trello_url",
-      "confidence": "Weak",
-      "note": ""
-    },
-    {
-      "warning_type": "Cross-Site Scripting",
-      "warning_code": 4,
-      "fingerprint": "fe68c508bbf87b208b3f1441d53182737490097e66f0061ca321a3c85d387105",
+      "fingerprint": "f75aa070c8fb058b522d45258d7f110a24d9f4b822a37a6efecdc17118a1e28f",
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in link_to href",
       "file": "app/views/scrum/contributors/_table.html.erb",
       "line": 25,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
-      "code": "link_to(ScrumContributor.new.trello_url, ScrumContributor.new.trello_url)",
-      "render_path": [{"type":"controller","class":"Scrum::ContributorsController","method":"index","line":12,"file":"app/controllers/scrum/contributors_controller.rb"},{"type":"template","name":"scrum/contributors/index","line":4,"file":"app/views/scrum/contributors/index.html.erb"}],
+      "code": "link_to((Unresolved Model).new.trello_url, (Unresolved Model).new.trello_url)",
+      "render_path": [{"type":"controller","class":"Scrum::ContributorsController","method":"index","line":13,"file":"app/controllers/scrum/contributors_controller.rb"},{"type":"template","name":"scrum/contributors/index","line":4,"file":"app/views/scrum/contributors/index.html.erb"}],
       "location": {
         "type": "template",
         "template": "scrum/contributors/_table"
       },
-      "user_input": "ScrumContributor.new.trello_url",
+      "user_input": "(Unresolved Model).new.trello_url",
       "confidence": "Weak",
       "note": ""
     }
   ],
-  "updated": "2018-11-25 13:43:43 -0800",
+  "updated": "2018-12-08 19:59:02 -0800",
   "brakeman_version": "4.3.1"
 }

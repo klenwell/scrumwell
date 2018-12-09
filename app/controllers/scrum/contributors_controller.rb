@@ -1,12 +1,13 @@
 module Scrum
   class ContributorsController < ApplicationController
     before_action :authenticate
+    before_action :auth_scrum_masters
     before_action :set_contributor, only: [:show]
 
     # GET /scrum/contributors
     # GET /scrum/contributors.json
     def index
-      @contributors = ScrumContributor.all
+      @contributors = ScrumContributor.all.sort_by(&:avg_capacity).reverse
 
       respond_to do |format|
         format.html

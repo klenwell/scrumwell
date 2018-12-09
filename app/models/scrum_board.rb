@@ -12,6 +12,7 @@ class ScrumBoard < ApplicationRecord
                                                             inverse_of: :scrum_board
   has_many :wip_logs, -> { order(occurred_at: :desc) }, dependent: :destroy,
                                                         inverse_of: :scrum_board
+  has_many :sprint_contributions, through: :scrum_queues
 
   ## Aliases
   alias_attribute :queues, :scrum_queues
@@ -117,7 +118,9 @@ class ScrumBoard < ApplicationRecord
     latest_trello_actions.each do |trello_action|
       event = ScrumEvent.create_from_trello_board_event(self, trello_action)
       events << digest_latest_event(event)
-      puts event.to_stdout if Rails.env.development? # rubocop: disable Rails/Output
+      LogService.dev event.to_stdout
+    rescue StandardError => e
+      LogService.dev "*** Error: #{e}"
     end
 
     events
@@ -159,12 +162,9 @@ class ScrumBoard < ApplicationRecord
       actions = trello_board.actions(limit: limit, since: since_id, before: before_id)
       actions.each { |action| latest_actions << action }
 
-      # rubocop: disable Rails/Output
-      if Rails.env.development?
-        f = 'Fetched %s (%s) Trello board actions from API.'
-        puts format(f, actions.length, latest_actions.length)
-      end
-      # rubocop: enable Rails/Output
+      LogService.dev format('Fetched %s (%s) Trello board actions from API.',
+                            actions.length,
+                            latest_actions.length)
 
       more = actions.length == limit
       before_id = actions.last.id if more
@@ -207,7 +207,7 @@ class ScrumBoard < ApplicationRecord
     events.reverse_each do |event|
       next unless event.wip?
       wip_log = WipLog.create_from_event(event)
-      puts wip_log.to_stdout if Rails.env.development? # rubocop: disable Rails/Output
+      LogService.dev wip_log.to_stdout
       new_logs << wip_log
     end
 
@@ -227,6 +227,38 @@ class ScrumBoard < ApplicationRecord
   def wish_heap_points_on(date)
     logs = wip_logs.where('occurred_at <= ?', date.end_of_day).order(occurred_at: :desc).limit(1)
     logs.count > 0 ? logs.first.wip['wish_heap'] : nil
+  end
+
+  ## Sprint Contributions
+  def build_sprint_contributions_from_scratch
+    # To be considered active that sprint event without contributing story points.
+    min_events_to_be_active = 3
+    saved_contributions = []
+
+    # For each completed sprint...
+    completed_queues.each do |queue|
+      # From scratch...
+      queue.sprint_contributions.destroy_all
+
+      # Add a contribution for each contributor who performed the min events/actions.
+      # This will capture any contributors who may have contributed 0 story points.
+      queue.event_contributors.each do |contributor|
+        event_count = contributor.count_events_for_queue(queue)
+        next unless event_count >= min_events_to_be_active
+
+        sprint_contrib = SprintContribution.create(
+          scrum_contributor: contributor,
+          scrum_queue: queue,
+          story_points: contributor.points_for_sprint(queue),
+          event_count: event_count
+        )
+
+        LogService.dev sprint_contrib.to_stdout
+        saved_contributions << sprint_contrib
+      end
+    end
+
+    saved_contributions
   end
 
   ## Velocity

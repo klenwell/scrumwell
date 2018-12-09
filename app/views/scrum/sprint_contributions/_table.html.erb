@@ -1,0 +1,18 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Contributor</th>
+      <th scope="col">Points</th>
+      <th scope="col">Events</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% contributions.each do |contribution| %>
+      <tr>
+        <td><%= contribution.contributor.username %></td>
+        <td><%= contribution.story_points %></td>
+        <td><%= contribution.event_count %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

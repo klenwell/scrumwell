@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_21_055258) do
+ActiveRecord::Schema.define(version: 2018_12_09_183819) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,13 +20,6 @@ ActiveRecord::Schema.define(version: 2018_11_21_055258) do
     t.string "trello_url"
     t.string "name"
     t.datetime "last_imported_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "scrum_contributions", force: :cascade do |t|
-    t.integer "scrum_contributor_id"
-    t.integer "scrum_story_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -54,8 +47,10 @@ ActiveRecord::Schema.define(version: 2018_11_21_055258) do
     t.datetime "occurred_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "trello_member_id"
     t.index ["eventable_type", "eventable_id"], name: "index_scrum_events_on_eventable_type_and_eventable_id"
     t.index ["scrum_board_id"], name: "index_scrum_events_on_scrum_board_id"
+    t.index ["trello_member_id"], name: "index_scrum_events_on_trello_member_id"
   end
 
   create_table "scrum_queues", force: :cascade do |t|
@@ -82,6 +77,22 @@ ActiveRecord::Schema.define(version: 2018_11_21_055258) do
     t.datetime "last_activity_at"
     t.index ["scrum_board_id"], name: "index_scrum_stories_on_scrum_board_id"
     t.index ["scrum_queue_id"], name: "index_scrum_stories_on_scrum_queue_id"
+  end
+
+  create_table "sprint_contributions", force: :cascade do |t|
+    t.integer "scrum_contributor_id"
+    t.integer "scrum_queue_id"
+    t.integer "story_points"
+    t.integer "event_count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "story_contributions", force: :cascade do |t|
+    t.integer "scrum_contributor_id"
+    t.integer "scrum_story_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "wip_logs", force: :cascade do |t|

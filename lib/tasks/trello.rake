@@ -4,37 +4,40 @@ namespace :trello do
   kwoss_org_id = '5129323d688a384c63007609'
   scrumwell_board_id = '5b26fe3ad86bfdbb5a8290b1'
 
+  # rake trello:wish_heap[5b26fe3ad86bfdbb5a8290b1]
   desc "Counts wish heap stories for given board"
   task :wish_heap, [:board_id] => :environment do |_, args|
     args.with_defaults(board_id: scrumwell_board_id)
 
-    trello_board = TrelloService.board(args[:board_id])
-    board = ScrumBoard.by_trello_board_or_create(trello_board)
+    board = TrelloService.board(args[:board_id])
+    wish_heap = board.lists.find { |list| list.name.downcase.include? 'wish heap' }
 
-    puts format("Board %s Wish Heap stories: %d", board.name, board.wish_heap.stories.length)
+    LogService.rake(
+      format("Board %s Wish Heap stories: %d", board.name, wish_heap.cards.length)
+    )
   end
 
-  # rake trello:backlog
+  # rake trello:backlog[5b26fe3ad86bfdbb5a8290b1]
   desc "Counts story points in backlog info for given board"
   task :backlog, [:board_id] => :environment do |_, args|
     args.with_defaults(board_id: scrumwell_board_id)
 
     board = TrelloService.board(args[:board_id])
     backlog = board.lists.find { |list| list.name.downcase.include? 'backlog' }
-    byebug
 
     abort "Backlog list not found for board #{board.name}." unless backlog
 
     backlog_story_points = 0
     backlog.cards.each do |card|
-      story_points = UserStory.story_points_from_card(card)
+      story_points = ScrumStory.points_from_card(card)
       backlog_story_points += story_points
-      puts format('[%d] %s', story_points, card.name)
+      LogService.rake format('[%d] %s', story_points, card.name)
     end
 
-    puts format("Backlog points for board %s: %d", board.name, backlog_story_points)
+    LogService.rake format("Backlog points for board %s: %d", board.name, backlog_story_points)
   end
 
+  # rake trello:boards[scrumwell]
   desc "Lists boards ids for given member"
   task :boards, [:member_name] => :environment do |_, args|
     args.with_defaults(member_name: default_member)
@@ -46,10 +49,11 @@ namespace :trello do
       board_map[board.name] = board.id
     end
 
-    pp board_map
-    puts format("%s has %d boards", member.username, board_map.keys.count)
+    LogService.pretty board_map
+    LogService.rake format("%s has %d boards", member.username, board_map.keys.count)
   end
 
+  # rake trello:orgs[scrumwell]
   desc "Lists organization ids for given member"
   task :orgs, [:member_name] => :environment do |_, args|
     args.with_defaults(member_name: default_member)
@@ -61,8 +65,8 @@ namespace :trello do
       org_map[org.name] = org.id
     end
 
-    pp org_map
-    puts format("%s belongs to %d orgs", member.username, org_map.keys.count)
+    LogService.pretty org_map
+    LogService.rake format("%s belongs to %d orgs", member.username, org_map.keys.count)
   end
 
   desc "Lists organization ids for kwoss org"
@@ -74,8 +78,8 @@ namespace :trello do
       board_map[board.name] = board.id
     end
 
-    pp board_map
-    puts format("%s org has %d boards", org.name, board_map.keys.count)
+    LogService.pretty board_map
+    LogService.rake format("%s org has %d boards", org.name, board_map.keys.count)
   end
 
   desc "Lists board's lists"
@@ -94,8 +98,8 @@ namespace :trello do
       board_lists_map[board.name] << list_data
     end
 
-    pp board_lists_map
-    puts format("%s board has %d lists.", board.name, board_lists_map[board.name].count)
+    LogService.pretty board_lists_map
+    LogService.rake format("%s board has %d lists.", board.name, board_lists_map[board.name].count)
   end
 end
 # rubocop: enable Metrics/BlockLength
