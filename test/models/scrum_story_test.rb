@@ -45,14 +45,14 @@ class ScrumStoryTest < ActiveSupport::TestCase
 
     # Assume
     stories_before = ScrumStory.count
-    contributions_before = ScrumContribution.count
+    contributions_before = StoryContribution.count
 
     # Act
     story = ScrumStory.create(params)
 
     # Assert
     assert_equal stories_before + 1, ScrumStory.count
-    assert_equal contributions_before + 1, ScrumContribution.count
+    assert_equal contributions_before + 1, StoryContribution.count
     assert_equal 1, story.contributors.count
     assert_equal developer.id, story.contributors.first.id
   end

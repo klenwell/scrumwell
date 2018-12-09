@@ -1,12 +1,11 @@
 class ScrumContributor < ApplicationRecord
-  has_many :scrum_contributions, dependent: :destroy
+  has_many :story_contributions, dependent: :destroy
   has_many :sprint_contributions, dependent: :destroy
-  has_many :scrum_stories, through: :scrum_contributions
+  has_many :scrum_stories, through: :story_contributions
   has_many :scrum_queues, through: :scrum_stories
   has_many :scrum_events, primary_key: :trello_member_id, foreign_key: :trello_member_id,
                           dependent: :destroy, inverse_of: :scrum_contributor
 
-  alias_attribute :contributions, :scrum_contributions
   alias_attribute :events, :scrum_events
 
   #
