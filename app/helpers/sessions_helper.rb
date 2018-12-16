@@ -26,6 +26,7 @@ module SessionsHelper
   end
 
   def current_user_in_group?(group_name)
+    return false if current_user.blank?
     authorized_group = group_name.to_sym
     user_email = current_user['email']
     auth_groups[authorized_group].include?(user_email)

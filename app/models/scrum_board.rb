@@ -27,14 +27,38 @@ class ScrumBoard < ApplicationRecord
   #
   # Class Methods
   #
-  def self.reconstruct_from_trello_board_actions(trello_board)
-    scrum_board = ScrumBoard.create!(trello_board_id: trello_board.id,
-                                     trello_url: trello_board.url,
-                                     name: trello_board.name)
+  def self.import_from_trello(trello_board)
+    # Find or create board.
+    scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
 
+    # Create TrelloImport.
+    trello_import = TrelloImport.create!(scrum_board: scrum_board)
+
+    # Import lists and actions.
     scrum_board.import_trello_lists
-    scrum_board.import_latest_trello_actions
+    scrum_board.import_latest_trello_actions(trello_import)
     scrum_board.reload
+
+    # Build WipLogs and SprintContributions
+    scrum_board.build_wip_log_from_scratch
+    scrum_board.build_sprint_contributions_from_scratch
+
+    # Conclude
+    trello_import.end_now
+    scrum_board
+  end
+
+  def self.find_or_create_by_trello_board(trello_board)
+    # Find or create board.
+    scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)
+
+    if scrum_board.nil?
+      scrum_board = ScrumBoard.create!(trello_board_id: trello_board.id,
+                                       trello_url: trello_board.url,
+                                       name: trello_board.name)
+    end
+
+    scrum_board
   end
 
   def self.scrummy_trello_board?(trello_board)
@@ -112,12 +136,12 @@ class ScrumBoard < ApplicationRecord
   # Instance Methods
   #
   ## Action / Event Imports
-  def import_latest_trello_actions
+  def import_latest_trello_actions(trello_import)
     # Processes latest board actions to update sprints and board WIP.
     events = []
 
     latest_trello_actions.each do |trello_action|
-      event = ScrumEvent.create_from_trello_board_event(self, trello_action)
+      event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
       events << digest_latest_event(event)
       LogService.dev event.to_stdout
     rescue StandardError => e

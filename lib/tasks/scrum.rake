@@ -19,9 +19,7 @@ namespace :scrum do
     LogService.rake format("Importing board: %s", trello_board.name)
 
     # Create scrum board from Trello board
-    board = ScrumBoard.reconstruct_from_trello_board_actions(trello_board)
-    board.build_wip_log_from_scratch
-    board.build_sprint_contributions_from_scratch
+    board = ScrumBoard.import_from_trello(trello_board)
 
     # Stdout
     trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`

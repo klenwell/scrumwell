@@ -80,7 +80,11 @@ class ScrumContributor < ApplicationRecord
 
   def events_for_queue(queue)
     date_range = queue.started_on.end_of_day..queue.ended_on.end_of_day
-    scrum_events.where(scrum_board: queue.scrum_board).where(occurred_at: date_range)
+    event_params = {occurred_at: date_range}
+    import_params = {scrum_board_id: queue.scrum_board.id}
+    #scrum_events.where(scrum_board: queue.scrum_board).where(occurred_at: date_range)
+    scrum_events.joins(:trello_import).where(scrum_events: event_params,
+                                             trello_imports: import_params)
   end
 
   def count_events_for_queue(queue)

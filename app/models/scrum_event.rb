@@ -6,6 +6,9 @@ class ScrumEvent < ApplicationRecord
                                  inverse_of: :scrum_events, optional: true
   has_one :wip_log, dependent: :destroy
 
+  ## Aliases
+  alias_attribute :board, :scrum_board
+
   ## Callbacks
   before_create :categorize
 
@@ -29,6 +32,10 @@ class ScrumEvent < ApplicationRecord
   def trello_action
     # Gets action data from Trello
     Trello::Action.find(trello_id)
+  end
+
+  def scrum_board
+    trello_import.scrum_board
   end
 
   def wip?
