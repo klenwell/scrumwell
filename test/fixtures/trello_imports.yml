@@ -1,0 +1,10 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+complete:
+  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
+  created_at: <%= Time.zone.now - 1.day %>
+  ended_at: <%= Time.zone.now - 1.day + 5.minutes %>
+
+in_progress:
+  scrum_board_id: <%= ActiveRecord::FixtureSet.identify(:scrummy) %>
+  ended_at: <%= Time.zone.now + 1.minute %>

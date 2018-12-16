@@ -13,6 +13,7 @@ class ScrumBoard < ApplicationRecord
   has_many :wip_logs, -> { order(occurred_at: :desc) }, dependent: :destroy,
                                                         inverse_of: :scrum_board
   has_many :sprint_contributions, through: :scrum_queues
+  has_many :trello_imports, dependent: :destroy
 
   ## Aliases
   alias_attribute :queues, :scrum_queues

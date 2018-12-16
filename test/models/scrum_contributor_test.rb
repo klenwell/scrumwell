@@ -1,3 +1,6 @@
+#
+# rake test TEST=test/models/scrum_contributor_test.rb
+#
 require 'test_helper'
 
 class ScrumContributorTest < ActiveSupport::TestCase
@@ -22,9 +25,11 @@ class ScrumContributorTest < ActiveSupport::TestCase
   test "expects contributor to have many events" do
     # Arrange
     contributor = scrum_contributors(:developer)
+    trello_import = trello_imports(:complete)
     event_count_before = ScrumEvent.count
     event_params = {
       trello_member_id: contributor.trello_member_id,
+      trello_import_id: trello_import.id,
       scrum_board_id: scrum_boards(:scrummy).id,
       action: 'test',
       trello_data: {}
