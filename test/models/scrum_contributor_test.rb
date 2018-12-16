@@ -30,7 +30,6 @@ class ScrumContributorTest < ActiveSupport::TestCase
     event_params = {
       trello_member_id: contributor.trello_member_id,
       trello_import_id: trello_import.id,
-      scrum_board_id: scrum_boards(:scrummy).id,
       action: 'test',
       trello_data: {}
     }

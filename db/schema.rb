@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_11_061124) do
+ActiveRecord::Schema.define(version: 2018_12_16_213054) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,6 @@ ActiveRecord::Schema.define(version: 2018_12_11_061124) do
   create_table "scrum_events", force: :cascade do |t|
     t.string "eventable_type"
     t.bigint "eventable_id"
-    t.bigint "scrum_board_id"
     t.string "action"
     t.string "trello_id"
     t.string "trello_type"
@@ -50,7 +49,6 @@ ActiveRecord::Schema.define(version: 2018_12_11_061124) do
     t.string "trello_member_id"
     t.bigint "trello_import_id"
     t.index ["eventable_type", "eventable_id"], name: "index_scrum_events_on_eventable_type_and_eventable_id"
-    t.index ["scrum_board_id"], name: "index_scrum_events_on_scrum_board_id"
     t.index ["trello_import_id"], name: "index_scrum_events_on_trello_import_id"
     t.index ["trello_member_id"], name: "index_scrum_events_on_trello_member_id"
   end
@@ -119,7 +117,6 @@ ActiveRecord::Schema.define(version: 2018_12_11_061124) do
     t.index ["scrum_event_id"], name: "index_wip_logs_on_scrum_event_id"
   end
 
-  add_foreign_key "scrum_events", "scrum_boards"
   add_foreign_key "scrum_queues", "scrum_boards"
   add_foreign_key "scrum_stories", "scrum_boards"
   add_foreign_key "scrum_stories", "scrum_queues"
