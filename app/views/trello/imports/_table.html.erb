@@ -5,6 +5,9 @@
       <th scope="col">Started</th>
       <th scope="col">Ended</th>
       <th scope="col">Duration</th>
+      <th scope="col">First Event</th>
+      <th scope="col">Last Event</th>
+      <th scope="col">Span</th>
       <th scope="col" class="actions"></th>
     </tr>
   </thead>
@@ -15,6 +18,9 @@
         <td><%= import.created_at %></td>
         <td><%= import.ended_at %></td>
         <td><%= import.duration %></td>
+        <td><%= import.events.first.occurred_at %></td>
+        <td><%= import.events.last.occurred_at %></td>
+        <td><%= import.events_period %></td>
         <td>
           <%#= link_to show_icon, trello_import_path(import) %>
         </td>

@@ -12,7 +12,7 @@ class ScrumBoard < ApplicationRecord
                                                              inverse_of: :scrum_board
   has_many :wip_logs, -> { order(occurred_at: :desc) }, dependent: :destroy,
                                                         inverse_of: :scrum_board
-  has_many :scrum_events, through: :trello_imports
+  has_many :scrum_events, -> { order(occurred_at: :desc) }, through: :trello_imports
   has_many :sprint_contributions, through: :scrum_queues
 
   ## Aliases
@@ -37,7 +37,6 @@ class ScrumBoard < ApplicationRecord
     # Import lists and actions.
     scrum_board.import_trello_lists
     scrum_board.import_latest_trello_actions(trello_import)
-    scrum_board.reload
 
     # Build WipLogs and SprintContributions
     scrum_board.build_wip_log_from_scratch
