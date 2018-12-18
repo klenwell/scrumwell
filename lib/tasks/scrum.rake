@@ -41,20 +41,19 @@ namespace :scrum do
                            board.last_event.occurred_at)
     `rake log:clear` if Rails.env.development?
 
-    # Act
-    events = board.import_latest_trello_actions
-    wip_logs = board.build_wip_log_from_scratch if events.present?
+    # Update scrum board from Trello board
+    import = board.update_from_trello
+    board.reload
 
     # Report
     trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
-    board.reload
-    if events.present?
-      LogService.rake format("Imported %s events from %s to %s.", events.length,
-                             events.first.occurred_at, events.last.occurred_at)
-    end
-    LogService.rake format("Created %s wip_logs.", wip_logs.length) if events.present?
+    LogService.rake format("Created %s wip_logs.", board.wip_logs.count)
     LogService.rake format("Current Board Velocity: %s", board.current_velocity)
     LogService.rake format("Trello API calls: %s", trello_api_calls)
+    if import.events.present?
+      LogService.rake format("Imported %s events from %s to %s.", import.events.count,
+                             import.events.first.occurred_at, import.events.last.occurred_at)
+    end
   end
 
   # rake scrum:rebuild_wip_log[Scrumwell]

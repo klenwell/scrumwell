@@ -14,12 +14,21 @@ class TrelloImport < ApplicationRecord
   end
 
   def status
-    'TODO'
+    return 'complete' if complete?
+    'in-progress'
   end
 
   def duration
     return nil unless complete?
     ended_at - created_at
+  end
+
+  def first_event
+    events.first
+  end
+
+  def last_event
+    events.last
   end
 
   def events_period

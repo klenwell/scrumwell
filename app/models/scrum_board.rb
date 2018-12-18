@@ -135,6 +135,23 @@ class ScrumBoard < ApplicationRecord
   # Instance Methods
   #
   ## Action / Event Imports
+  def update_from_trello
+    # Create TrelloImport.
+    trello_import = TrelloImport.create!(scrum_board: self)
+
+    # Import lists and actions.
+    import_trello_lists
+    import_latest_trello_actions(trello_import)
+
+    # Build WipLogs and SprintContributions
+    build_wip_log_from_scratch
+    build_sprint_contributions_from_scratch
+
+    # Conclude
+    trello_import.end_now
+    trello_import
+  end
+
   def import_latest_trello_actions(trello_import)
     # Processes latest board actions to update sprints and board WIP.
     events = []
