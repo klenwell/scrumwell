@@ -4,12 +4,10 @@
       <th scope="col">Board</th>
       <th scope="col">Status</th>
       <th scope="col">Events</th>
-      <th scope="col">Started</th>
-      <th scope="col">Ended</th>
+      <th scope="col">Completed</th>
       <th scope="col">Duration</th>
-      <th scope="col">First Event</th>
       <th scope="col">Last Event</th>
-      <th scope="col">Span</th>
+      <th scope="col">Days</th>
       <th scope="col" class="actions"></th>
     </tr>
   </thead>
@@ -19,14 +17,12 @@
         <td><%= import.board.name %></td>
         <td><%= import.status %></td>
         <td><%= import.events.count %></td>
-        <td><%= import.created_at %></td>
         <td><%= import.ended_at %></td>
         <td><%= import.duration %></td>
-        <td><%= import.first_event.try(:occurred_at) %></td>
         <td><%= import.last_event.try(:occurred_at) %></td>
         <td><%= import.events_period %></td>
         <td>
-          <%#= link_to show_icon, trello_import_path(import) %>
+          <%= link_to show_icon, trello_import_path(import) %>
         </td>
       </tr>
     <% end %>

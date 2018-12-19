@@ -1,0 +1,47 @@
+<div class="row justify-content-center">
+  <div class="card import-card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <p><%= link_to @import.board.name, scrum_board_path(@import.board) %> Import</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="import-card-table">
+        <tr>
+          <td class="field-label" colspan="2">Completed at</td>
+          <td>
+            <span class="momentize-format" data-datetime="<%= @import.ended_at.to_i %>">
+              <%= @import.ended_at %>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="field-label" colspan="2">Duration</td>
+          <td><%= @import.duration.to_d %> s</td>
+        </tr>
+        <tr>
+          <td class="field-label" colspan="2">Events</td>
+          <td><%= @import.events.count %></td>
+        </tr>
+        <tr>
+          <td class="field-label" colspan="2">First Event</td>
+          <td><%= @import.first_event.try(:occurred_at) %></td>
+        </tr>
+        <tr>
+          <td class="field-label" colspan="2">Last Event</td>
+          <td><%= @import.last_event.try(:occurred_at) %></td>
+        </tr>
+        <tr>
+          <td class="field-label" colspan="2">Span</td>
+          <td><%= @import.events_period %> Days</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="actions">
+  <%= link_to 'Imports', trello_imports_path, role: 'button', class: 'btn btn-info ml-2' %>
+</div>
