@@ -23,7 +23,7 @@ module TrelloBoardHelper
     end
   end
 
-  def trello_board_navbar_class(nav_label) 
+  def trello_board_navbar_class(nav_label)
     action = params[:action]
     action = 'index' if action == 'all'
     action == nav_label ? 'active' : 'inactive'
