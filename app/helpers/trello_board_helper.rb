@@ -22,4 +22,10 @@ module TrelloBoardHelper
       tag.span('N/A', class: 'text-muted')
     end
   end
+
+  def trello_board_navbar_class(nav_label) 
+    action = params[:action]
+    action = 'index' if action == 'all'
+    action == nav_label ? 'active' : 'inactive'
+  end
 end
