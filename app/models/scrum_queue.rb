@@ -110,6 +110,7 @@ class ScrumQueue < ApplicationRecord
   end
 
   def average_story_size
+    return (points.to_d / groomed_stories.count).round(1) if completed_sprint_queue?
     scrum_board.average_story_size_on(ended_on)
   end
 
