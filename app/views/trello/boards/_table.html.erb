@@ -19,6 +19,7 @@
         <td><%= board.last_activity_date %></td>
         <td>
           <%= link_to show_icon, trello_board_path(board.id) %>
+          <%= trello_board_import_link(board) if scrum_master?  %>
         </td>
       </tr>
     <% end %>
