@@ -27,7 +27,7 @@ class TrelloBoardImportWorker
     board = ScrumBoard.import_from_trello(trello_board)
 
     # Log Results
-    LogService.log format("%s  Trello board import complete.", board.name)
+    LogService.log format("%s Trello board import complete.", board.name)
     LogService.log format("Created %s events.", board.events.count)
 
     board

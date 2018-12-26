@@ -10,6 +10,18 @@
     <div class="card-body">
       <table class="import-card-table">
         <tr>
+          <td class="field-label" colspan="2">Status</td>
+          <td><%= @import.status %></td>
+        </tr>
+        <tr>
+          <td class="field-label" colspan="2">Started at</td>
+          <td>
+            <span class="momentize-format" data-datetime="<%= @import.created_at.to_i %>">
+              <%= @import.created_at %>
+            </span>
+          </td>
+        </tr>
+        <tr>
           <td class="field-label" colspan="2">Completed at</td>
           <td>
             <span class="momentize-format" data-datetime="<%= @import.ended_at.to_i %>">

@@ -19,7 +19,7 @@ class TrelloImport < ApplicationRecord
   end
 
   def duration
-    return nil unless complete?
+    return Time.zone.now - created_at unless complete?
     ended_at - created_at
   end
 
