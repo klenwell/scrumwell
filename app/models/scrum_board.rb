@@ -30,20 +30,7 @@ class ScrumBoard < ApplicationRecord
   def self.import_from_trello(trello_board)
     # Find or create board.
     scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
-
-    # Create TrelloImport.
-    trello_import = TrelloImport.create!(scrum_board: scrum_board)
-
-    # Import lists and actions.
-    scrum_board.import_trello_lists
-    scrum_board.import_latest_trello_actions(trello_import)
-
-    # Build WipLogs and SprintContributions
-    scrum_board.build_wip_log_from_scratch
-    scrum_board.build_sprint_contributions_from_scratch
-
-    # Conclude
-    trello_import.end_now
+    scrum_board.update_from_trello
     scrum_board
   end
 
