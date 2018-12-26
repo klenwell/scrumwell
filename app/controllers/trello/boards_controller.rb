@@ -23,11 +23,17 @@ module Trello
 
     # POST trello/board/import
     def import
-      # Send import job to processor
-      @trello_board = TrelloService.board(params[:id])
+      trello_board_id = params[:id]
+
+      # Existing boards should be updated.
+      board = ScrumBoard.find_by(trello_board_id: trello_board_id)
+      return redirect_to scrum_board_path(board), notice: 'Board already exists.' if board.present?
+
+      # Call worker
+      TrelloBoardImportWorker.perform_async(trello_board_id)
 
       # Redirect to imports page
-      redirect_to trello_imports_path, notice: 'TODO: start import.'
+      redirect_to trello_imports_path, notice: 'Import started.'
     end
 
     private

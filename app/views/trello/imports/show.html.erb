@@ -19,7 +19,7 @@
         </tr>
         <tr>
           <td class="field-label" colspan="2">Duration</td>
-          <td><%= @import.duration.to_d %> s</td>
+          <td><%= @import.duration.try(:to_d) %> s</td>
         </tr>
         <tr>
           <td class="field-label" colspan="2">Events</td>
