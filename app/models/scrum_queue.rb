@@ -54,7 +54,10 @@ class ScrumQueue < ApplicationRecord
 
   def event_contributors
     date_range = started_on.end_of_day..ended_on.end_of_day
-    events = ScrumEvent.where(scrum_board: scrum_board).where(occurred_at: date_range)
+    event_params = { occurred_at: date_range }
+    import_params = { scrum_board_id: scrum_board.id }
+    events = ScrumEvent.joins(:trello_import).where(scrum_events: event_params,
+                                                    trello_imports: import_params)
     events.map(&:scrum_contributor).compact.flatten.uniq
   end
 
@@ -107,6 +110,7 @@ class ScrumQueue < ApplicationRecord
   end
 
   def average_story_size
+    return (points.to_d / groomed_stories.count).round(1) if completed_sprint_queue?
     scrum_board.average_story_size_on(ended_on)
   end
 

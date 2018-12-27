@@ -12,7 +12,7 @@ class TrelloService
   end
 
   def self.board(id)
-    Rails.cache.fetch("trello_board/#{id}", expires_in: 1.minute) do
+    Rails.cache.fetch("trello_board/#{id}", expires_in: 5.minutes) do
       Trello::Board.find(id)
     end
   end

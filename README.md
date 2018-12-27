@@ -117,7 +117,11 @@ For more information, see https://brakemanscanner.org/docs/ignoring_false_positi
 
 ### Local Server
 
-To start the local server:
+Use Foreman to start the web server with Redis and Sidekiq:
+
+    foreman start -p 3000
+
+To start just the web server:
 
     bundle exec rails server -b 0.0.0.0 -p 3000
 

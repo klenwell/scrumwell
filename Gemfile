@@ -57,6 +57,12 @@ gem 'omniauth-google-oauth2'
 # Simple charts: https://github.com/ankane/chartkick#installation
 gem 'chartkick'
 
+# For background jobs: https://github.com/mperham/sidekiq
+gem 'sidekiq'
+
+# Used by Sidekiq to store job/process data: https://github.com/antirez/redis
+gem 'redis'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -79,6 +85,9 @@ group :development do
 
   # Log exernal requests: https://github.com/trusche/httplog
   gem 'httplog'
+
+  # Local process management (for Redis): https://github.com/ddollar/foreman
+  gem 'foreman'
 end
 
 group :test do

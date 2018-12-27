@@ -1,10 +1,15 @@
+#
+# rake test TEST=test/models/scrum_event_test.rb
+#
 require 'test_helper'
 
 class ScrumEventTest < ActiveSupport::TestCase
   test "expects to create new event" do
     # Arrange
+    trello_import = trello_imports(:in_progress)
     eventable = scrum_stories(:complete)
     params = {
+      trello_import_id: trello_import.id,
       eventable_id: eventable.id,
       eventable_type: eventable
     }
@@ -26,10 +31,10 @@ class ScrumEventTest < ActiveSupport::TestCase
     stub_trello_response
     ScrumStory.stubs(:points_from_card).returns(1)
 
-    board = scrum_boards(:scrummy)
     contributor = scrum_contributors(:developer)
+    trello_import = trello_imports(:complete)
     action_data = {
-      'list' => { 'id' => board.wish_heap.trello_list_id },
+      'list' => { 'id' => trello_import.board.wish_heap.trello_list_id },
       'card' => { 'id' => 'test-card', 'name' => 'Mock Test Card' }
     }
     trello_action = MockTrelloAction.new(id: 'tests-card-creation',
@@ -37,16 +42,16 @@ class ScrumEventTest < ActiveSupport::TestCase
                                          member_creator_id: contributor.trello_member_id,
                                          date: Time.zone.yesterday.beginning_of_day,
                                          data: action_data)
-    event = ScrumEvent.create_from_trello_board_event(board, trello_action)
+    event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
 
     # Assume
     assert_equal trello_action.date, event.occurred_at
     assert_equal 'created', event.action
     assert_equal 'card', event.trello_object
-    assert_equal board.wish_heap.trello_list_id, event.trello_list_id
+    assert_equal trello_import.board.wish_heap.trello_list_id, event.trello_list_id
 
     # Act
-    story = event.create_story_for_board(board)
+    story = event.create_story_for_board(trello_import.board)
 
     # Assert
     assert_equal event.occurred_at, story.created_at

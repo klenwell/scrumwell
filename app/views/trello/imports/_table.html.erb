@@ -1,0 +1,30 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Board</th>
+      <th scope="col">Status</th>
+      <th scope="col">Events</th>
+      <th scope="col">Completed</th>
+      <th scope="col">Duration</th>
+      <th scope="col">Last Event</th>
+      <th scope="col">Days</th>
+      <th scope="col" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% imports.each do |import| %>
+      <tr>
+        <td><%= import.board.name %></td>
+        <td><%= import.status %></td>
+        <td><%= import.events.count %></td>
+        <td><%= import.ended_at %></td>
+        <td><%= import.duration %></td>
+        <td><%= import.last_event.try(:occurred_at) %></td>
+        <td><%= import.events_period %></td>
+        <td>
+          <%= link_to show_icon, trello_import_path(import) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,10 +1,15 @@
 class ScrumEvent < ApplicationRecord
   ## Associations
   belongs_to :eventable, polymorphic: true, optional: true
-  belongs_to :scrum_board
+  belongs_to :trello_import
   belongs_to :scrum_contributor, primary_key: :trello_member_id, foreign_key: :trello_member_id,
                                  inverse_of: :scrum_events, optional: true
   has_one :wip_log, dependent: :destroy
+
+  delegate :scrum_board, to: :trello_import
+
+  ## Aliases
+  alias_attribute :board, :scrum_board
 
   ## Callbacks
   before_create :categorize
@@ -12,9 +17,9 @@ class ScrumEvent < ApplicationRecord
   #
   # Instance Methods
   #
-  def self.create_from_trello_board_event(scrum_board, trello_action)
+  def self.create_from_trello_import(trello_import, trello_action)
     ScrumEvent.create!(
-      scrum_board: scrum_board,
+      trello_import: trello_import,
       trello_id: trello_action.id,
       trello_type: trello_action.type,
       trello_member_id: trello_action.member_creator_id,
@@ -37,6 +42,7 @@ class ScrumEvent < ApplicationRecord
   end
 
   def trello_data?(key)
+    return false if trello_data.nil?
     trello_data.key? key
   end
 

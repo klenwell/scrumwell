@@ -33,6 +33,9 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <%= link_to 'Orgs', trello_orgs_path, class: 'dropdown-item' %>
           <%= link_to 'Boards', trello_boards_path, class: 'dropdown-item' %>
+          <% if scrum_master? %>
+            <%= link_to 'Imports', trello_imports_path, class: 'dropdown-item' %>
+          <% end %>
         </div>
       </li>
     </div>

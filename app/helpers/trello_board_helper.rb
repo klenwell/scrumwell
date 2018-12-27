@@ -22,4 +22,17 @@ module TrelloBoardHelper
       tag.span('N/A', class: 'text-muted')
     end
   end
+
+  def trello_board_import_link(trello_board)
+    return '' unless ScrumBoard.scrummy_trello_board?(trello_board)
+    return '' if ScrumBoard.find_by(trello_board_id: trello_board.id).present?
+    link_to import_icon, trello_board_import_path(id: trello_board.id),
+            title: 'import', method: :post
+  end
+
+  def trello_board_navbar_class(nav_label)
+    action = params[:action]
+    action = 'index' if action == 'all'
+    action == nav_label ? 'active' : 'inactive'
+  end
 end

@@ -16,8 +16,18 @@ Rails.application.routes.draw do
   end
 
   # Trello Routes
-  get '/trello/boards', to: 'trello#boards_index'
-  get '/trello/boards/:id', to: 'trello#boards_show', as: 'trello_boards_show'
+  namespace :trello do
+    resources :boards, only: [:index, :show] do
+      collection do
+        get 'all', to: 'boards#index'
+        get 'scrum', to: 'boards#scrum'
+      end
+    end
+
+    post 'board/import', to: 'boards#import'
+  end
+  get '/trello/imports', to: 'trello/imports#index'
+  get '/trello/imports/:id', to: 'trello/imports#show', as: 'trello_import'
   get '/trello/orgs', to: 'trello#orgs_index'
   get '/trello/orgs/:id/boards', to: 'trello#orgs_boards_index', as: 'trello_orgs_boards'
 

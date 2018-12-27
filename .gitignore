@@ -50,3 +50,6 @@ node_modules/
 # Ignore Google OAuth Credentials File
 config/google-client_id.json
 config/auth_groups.yml
+
+# Ignore whatever this is (Redis file?)
+dump.rdb

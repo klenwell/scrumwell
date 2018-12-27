@@ -1,0 +1,19 @@
+<h2>Trello Boards</h2>
+<ul class="nav nav-tabs">
+  </ul>
+
+
+<p class="lead">For user <%= @trello.me.username %><p>
+<p><%= @boards.count %> boards listed<p>
+
+<!-- Navbar -->
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link <%= trello_board_navbar_class('index') %>" href="/trello/boards">All</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= trello_board_navbar_class('scrum') %>" href="/trello/boards/scrum">Scrum</a>
+  </li>
+</ul>
+
+<%= render partial: "trello/boards/table" %>
