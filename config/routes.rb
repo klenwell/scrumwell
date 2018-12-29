@@ -5,6 +5,14 @@ Rails.application.routes.draw do
   namespace :scrum do
     # Nested Resources: https://stackoverflow.com/a/10661690/1093087
     resources :boards, shallow: true do
+      member do
+        # Show view tabs.
+        get 'sprints', to: 'boards#show'
+        get 'chart', to: 'boards#show'
+        get 'events', to: 'boards#show'
+        get 'imports', to: 'boards#show'
+      end
+
       resources :queues, shallow: true do
         resources :stories
       end

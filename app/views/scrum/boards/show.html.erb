@@ -27,22 +27,37 @@
   </div>
 </div>
 
-<h3>Sprints</h3>
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link <%= scrum_board_nav_tab_class('Sprints') %>"
+      href="<%= sprints_scrum_board_path(@scrum_board) %>">Sprints</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= scrum_board_nav_tab_class('Chart') %>"
+       href="<%= chart_scrum_board_path(@scrum_board) %>">Chart</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= scrum_board_nav_tab_class('Events') %>"
+       href="<%= events_scrum_board_path(@scrum_board) %>">Events</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= scrum_board_nav_tab_class('Imports') %>"
+       href="<%= imports_scrum_board_path(@scrum_board) %>">Imports</a>
+  </li>
+</ul>
 
 <div class="actions">
 </div>
 
-<div class="chart">
-  <h4>Chart</h4>
-  <%= line_chart scrum_board_charts_path(@scrum_board), xtitle: "Sprint", ytitle: "Story Points",
-                 curve: false, discrete: true %>
-</div>
-
-<h4>Completed</h4>
-<%= render partial: "scrum/queues/table", locals: {queues: @scrum_board.completed_queues.reverse} %>
-
-<h3>Events</h3>
-<%= render partial: "scrum/events/board_table", locals: {events: @scrum_board.wip_events} %>
+<% if @tab == 'chart' %>
+  <%= render partial: "scrum/boards/chart", locals: {events: @scrum_board.wip_events} %>
+<% elsif @tab == 'events' %>
+  <%= render partial: "scrum/events/board_table", locals: {events: @scrum_board.wip_events} %>
+<% else %>
+  <%= render partial: "scrum/queues/table",
+             locals: {queues: @scrum_board.completed_queues.reverse} %>
+<% end %>
 
 <div class="actions">
   <%= link_to 'Index', scrum_boards_path, role: 'button', class: 'btn btn-light mt-2' %>

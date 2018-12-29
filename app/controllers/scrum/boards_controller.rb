@@ -3,6 +3,7 @@ module Scrum
     before_action :authenticate
     before_action :auth_scrum_masters, only: [:new, :create, :edit, :update, :destroy]
     before_action :set_scrum_board, only: [:show, :edit, :update, :destroy]
+    before_action :set_scrum_board_tab, only: [:show]
 
     # GET /scrum_boards
     # GET /scrum_boards.json
@@ -10,8 +11,11 @@ module Scrum
       @scrum_boards = ScrumBoard.all
     end
 
-    # GET /scrum_boards/1
-    # GET /scrum_boards/1.json
+    # GET /scrum/boards/1
+    # GET /scrum/boards/1/sprints
+    # GET /scrum/boards/1/chart
+    # GET /scrum/boards/1/events
+    # GET /scrum/boards/1/imports
     def show; end
 
     # GET /scrum_boards/new
@@ -79,6 +83,14 @@ module Scrum
     # Use callbacks to share common setup or constraints between actions.
     def set_scrum_board
       @scrum_board = ScrumBoard.find(params[:id])
+    end
+
+    def set_scrum_board_tab
+      # Is there a better way to do this? Params doesn't work:
+      # GET /scrum/boards/1/sprints -> {"controller"=>"scrum/boards", "action"=>"show", "id"=>"1"}
+      valid_tabs = ['sprints', 'chart', 'events', 'imports']
+      @tab = request.fullpath.split('/').last
+      @tab = valid_tabs.first unless valid_tabs.include? @tab
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -1,0 +1,7 @@
+<div class="chart">
+  <%= line_chart scrum_board_charts_path(@scrum_board),
+                 xtitle: "Sprint",
+                 ytitle: "Story Points",
+                 curve: false,
+                 discrete: true %>
+</div>
