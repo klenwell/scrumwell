@@ -66,8 +66,8 @@ module Scrum
       end
     end
 
-    # DELETE /scrum_boards/1
-    # DELETE /scrum_boards/1.json
+    # DELETE /scrum/board/1
+    # DELETE /scrum/board/1.json
     def destroy
       @scrum_board.destroy
       respond_to do |format|
@@ -76,6 +76,22 @@ module Scrum
         }
         format.json { head :no_content }
       end
+    end
+
+    # POST /scrum/board/import
+    def import
+      id = scrum_board_params[:id]
+
+      # Existing boards should be updated.
+      board = ScrumBoard.find(id)
+      return redirect_to scrum_board_path(board), notice: 'Board not found.' if board.nil?
+
+      # Call worker
+      TrelloBoardImportWorker.perform_async(board.trello_board_id)
+
+      # Redirect to imports page
+      redirect_to imports_scrum_board_path(board),
+                  notice: "Importing latest events for #{board.name} board."
     end
 
     private
@@ -95,7 +111,7 @@ module Scrum
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def scrum_board_params
-      params.require(:scrum_board).permit(:trello_board_id, :trello_url, :name,
+      params.require(:scrum_board).permit(:id, :trello_board_id, :trello_url, :name,
                                           :last_board_activity_at, :last_imported_at)
     end
   end

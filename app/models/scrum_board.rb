@@ -119,21 +119,32 @@ class ScrumBoard < ApplicationRecord
     TrelloService.board(trello_board_id)
   end
 
+  def import_in_progress?
+    imports.select(&:in_progress?).present?
+  end
+
   #
   # Instance Methods
   #
   ## Action / Event Imports
   def update_from_trello
+    raise 'Import in progress!' if import_in_progress?
+
     # Create TrelloImport.
     trello_import = TrelloImport.create!(scrum_board: self)
 
-    # Import lists and actions.
-    import_trello_lists
-    import_latest_trello_actions(trello_import)
+    begin
+      # Import lists and actions.
+      import_trello_lists
+      import_latest_trello_actions(trello_import)
 
-    # Build WipLogs and SprintContributions
-    build_wip_log_from_scratch
-    build_sprint_contributions_from_scratch
+      # Build WipLogs and SprintContributions
+      build_wip_log_from_scratch
+      build_sprint_contributions_from_scratch
+    rescue StandardError => e
+      trello_import.end_now
+      raise e
+    end
 
     # Conclude
     trello_import.end_now

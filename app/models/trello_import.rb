@@ -13,6 +13,10 @@ class TrelloImport < ApplicationRecord
     ended_at.present?
   end
 
+  def in_progress?
+    status == 'in-progress'
+  end
+
   def status
     return 'complete' if complete?
     'in-progress'

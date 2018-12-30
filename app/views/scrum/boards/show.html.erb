@@ -27,6 +27,15 @@
   </div>
 </div>
 
+<div class="actions">
+  <% unless @scrum_board.import_in_progress? %>
+    <%= form_for @scrum_board, url: scrum_board_import_path, method: :post do |f| %>
+      <%= f.hidden_field :id, value: @scrum_board.id %>
+      <%= f.submit "Import Latest Events", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+</div>
+
 <!-- Nav Tabs -->
 <ul class="nav nav-tabs">
   <li class="nav-item">
@@ -46,9 +55,6 @@
        href="<%= imports_scrum_board_path(@scrum_board) %>">Imports</a>
   </li>
 </ul>
-
-<div class="actions">
-</div>
 
 <% if @tab == 'chart' %>
   <%= render partial: "scrum/boards/chart", locals: {events: @scrum_board.wip_events} %>

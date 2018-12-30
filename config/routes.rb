@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     end
 
     resources :contributors, only: [:index, :show]
+
+    post 'board/import', to: 'boards#import'
   end
 
   # Trello Routes
@@ -47,6 +49,12 @@ Rails.application.routes.draw do
   get '/auth/:provider/callback', to: 'sessions#create', as: :auth_callback
   get '/sign_out', to: 'sessions#destroy', as: :sign_out
   get '/auth/failure', to: 'sessions#failure'
+
+  # Sidekiq Monitor
+  if Rails.env.development?
+    require 'sidekiq/web'
+    mount Sidekiq::Web => '/sidekiq'
+  end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'home#index'
