@@ -54,6 +54,8 @@
   <%= render partial: "scrum/boards/chart", locals: {events: @scrum_board.wip_events} %>
 <% elsif @tab == 'events' %>
   <%= render partial: "scrum/events/board_table", locals: {events: @scrum_board.wip_events} %>
+<% elsif @tab == 'imports' %>
+  <%= render partial: "trello/imports/table", locals: {imports: @scrum_board.imports} %>
 <% else %>
   <%= render partial: "scrum/queues/table",
              locals: {queues: @scrum_board.completed_queues.reverse} %>

@@ -19,6 +19,7 @@ class ScrumBoard < ApplicationRecord
   alias_attribute :queues, :scrum_queues
   alias_attribute :stories, :scrum_stories
   alias_attribute :events, :scrum_events
+  alias_attribute :imports, :trello_imports
 
   ## Validators
   validates :name, presence: true
