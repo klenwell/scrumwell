@@ -28,7 +28,8 @@ class ScrumBoard < ApplicationRecord
   #
   # Class Methods
   #
-  def self.import_from_trello(trello_board)
+  # TODO: remove
+  def self.deprecated_import_from_trello(trello_board)
     # Find or create board.
     scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
     scrum_board.update_from_trello
@@ -127,24 +128,14 @@ class ScrumBoard < ApplicationRecord
   # Instance Methods
   #
   ## Action / Event Imports
-  def update_from_trello
-    raise 'Import in progress!' if import_in_progress?
+  def update_from_trello(trello_import)
+    # Import lists and actions.
+    import_trello_lists
+    import_latest_trello_actions(trello_import)
 
-    # Create TrelloImport.
-    trello_import = TrelloImport.create!(scrum_board: self)
-
-    begin
-      # Import lists and actions.
-      import_trello_lists
-      import_latest_trello_actions(trello_import)
-
-      # Build WipLogs and SprintContributions
-      build_wip_log_from_scratch
-      build_sprint_contributions_from_scratch
-    rescue StandardError => e
-      trello_import.end_now
-      raise e
-    end
+    # Build WipLogs and SprintContributions
+    build_wip_log_from_scratch
+    build_sprint_contributions_from_scratch
 
     # Conclude
     trello_import.end_now

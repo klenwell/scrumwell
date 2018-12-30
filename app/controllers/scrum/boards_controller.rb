@@ -79,20 +79,24 @@ module Scrum
     end
 
     # POST /scrum/board/import
+    # rubocop: disable Metrics/AbcSize
     def import
-      id = scrum_board_params[:id]
+      board = ScrumBoard.find(scrum_board_params[:id])
+      import = TrelloImport.create(scrum_board: board)
 
-      # Existing boards should be updated.
-      board = ScrumBoard.find(id)
-      return redirect_to scrum_board_path(board), notice: 'Board not found.' if board.nil?
+      if import.errors.any?
+        notice = format('Import failed: %s', import.errors.full_messages.to_sentence)
+        return redirect_to scrum_board_path(board), notice: notice
+      end
 
-      # Call worker
-      TrelloBoardImportWorker.perform_async(board.trello_board_id)
+      # Hand off import to worker.
+      TrelloBoardImportWorker.perform_async(import.id)
 
       # Redirect to imports page
       redirect_to imports_scrum_board_path(board),
                   notice: "Importing latest events for #{board.name} board."
     end
+    # rubocop: enable Metrics/AbcSize
 
     private
 

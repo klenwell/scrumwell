@@ -24,6 +24,8 @@ class WipLog < ApplicationRecord
 
   # rubocop: disable Metrics/AbcSize
   def self.daily_velocity_between(board, start_at, end_at)
+    return 0 if board.completed_queues.blank?
+
     project_started_at = board.completed_queues.first.started_on.beginning_of_day
     start_at = [project_started_at, start_at].max
     end_at = [project_started_at, end_at].max

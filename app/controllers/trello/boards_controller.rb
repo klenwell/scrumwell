@@ -26,11 +26,18 @@ module Trello
       trello_board_id = params[:id]
 
       # Existing boards should be updated.
-      board = ScrumBoard.find_by(trello_board_id: trello_board_id)
-      return redirect_to scrum_board_path(board), notice: 'Board already exists.' if board.present?
+      existing_board = ScrumBoard.find_by(trello_board_id: trello_board_id)
+      if existing_board.present?
+        return redirect_to scrum_board_path(existing_board), notice: 'Board already exists.'
+      end
 
-      # Call worker
-      TrelloBoardImportWorker.perform_async(trello_board_id)
+      # Create import.
+      trello_board = TrelloService.board(trello_board_id)
+      scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
+      import = TrelloImport.create(scrum_board: scrum_board)
+
+      # Hand off to worker.
+      TrelloBoardImportWorker.perform_async(import.id)
 
       # Redirect to imports page
       redirect_to trello_imports_path, notice: 'Import started.'

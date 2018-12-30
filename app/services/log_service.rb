@@ -14,6 +14,11 @@ class LogService
     rake(message, level)
   end
 
+  def self.sidekiq(message, level=:debug)
+    log(message, level)
+    to_stdout(message) if Rails.env.development?
+  end
+
   #
   # Stdout
   #

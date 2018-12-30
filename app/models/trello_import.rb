@@ -5,7 +5,15 @@ class TrelloImport < ApplicationRecord
   alias_attribute :board, :scrum_board
   alias_attribute :events, :scrum_events
 
+  validate :no_board_imports_in_progress
+
   def end_now
+    update(ended_at: Time.zone.now)
+  end
+
+  def err_now(import_error)
+    # TODO: save error?
+    LogService.log import_error # this can be removed
     update(ended_at: Time.zone.now)
   end
 
@@ -38,5 +46,11 @@ class TrelloImport < ApplicationRecord
   def events_period
     return nil if events.empty?
     (events.last.occurred_at - events.first.occurred_at).to_i / 1.day
+  end
+
+  # private
+
+  def no_board_imports_in_progress
+    errors.add(:scrum_board, "import already in progress") if scrum_board.import_in_progress?
   end
 end
