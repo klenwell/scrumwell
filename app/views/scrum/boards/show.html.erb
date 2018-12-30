@@ -27,8 +27,8 @@
   </div>
 </div>
 
-<div class="actions">
-  <% unless false && @scrum_board.import_in_progress? %>
+<div class="actions mb-2">
+  <% unless @scrum_board.import_in_progress? %>
     <%= form_for @scrum_board, url: scrum_board_import_path, method: :post do |f| %>
       <%= f.hidden_field :id, value: @scrum_board.id %>
       <%= f.submit "Import Latest Events", class: "btn btn-primary" %>

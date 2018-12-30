@@ -28,14 +28,6 @@ class ScrumBoard < ApplicationRecord
   #
   # Class Methods
   #
-  # TODO: remove
-  def self.deprecated_import_from_trello(trello_board)
-    # Find or create board.
-    scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
-    scrum_board.update_from_trello
-    scrum_board
-  end
-
   def self.find_or_create_by_trello_board(trello_board)
     # Find or create board.
     scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)

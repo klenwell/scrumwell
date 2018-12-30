@@ -5,16 +5,16 @@ class TrelloImport < ApplicationRecord
   alias_attribute :board, :scrum_board
   alias_attribute :events, :scrum_events
 
-  validate :no_board_imports_in_progress
+  validate :no_board_imports_in_progress, on: :create
 
   def end_now
-    update(ended_at: Time.zone.now)
+    update!(ended_at: Time.zone.now)
   end
 
   def err_now(import_error)
     # TODO: save error?
     LogService.log import_error # this can be removed
-    update(ended_at: Time.zone.now)
+    update!(ended_at: Time.zone.now)
   end
 
   def complete?
