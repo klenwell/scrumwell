@@ -2,10 +2,9 @@ class TrelloBoardImportWorker
   include Sidekiq::Worker
   sidekiq_options retry: 0
 
-  # rubocop: disable Metrics/AbcSize
   def perform(trello_board_id)
     LogService.log format("TrelloBoardImportWorker start for trello board id: %s",
-                          board.wip_logs.count)
+                          trello_board_id)
     board = ScrumBoard.find_by(trello_board_id: trello_board_id)
 
     board = if board.present?
@@ -18,7 +17,6 @@ class TrelloBoardImportWorker
     LogService.log format("Created %s wip_logs.", board.wip_logs.count)
     LogService.log format("Current Board Velocity: %s", board.current_velocity)
   end
-  # rubocop: enable Metrics/AbcSize
 
   private
 
@@ -43,7 +41,7 @@ class TrelloBoardImportWorker
     # This method echoes rake scrum:update_board
     LogService.log format("Updating board %s (last update: %s)",
                           board.name,
-                          board.last_event.occurred_at)
+                          board.last_event.try(:occurred_at))
 
     # Update scrum board from Trello board
     import = board.update_from_trello
