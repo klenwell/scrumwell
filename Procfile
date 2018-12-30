@@ -3,4 +3,3 @@
 web:      bundle exec rails server
 redis:    redis-server
 sidekiq:  bundle exec sidekiq
-#log:      tail -f log/development.log
