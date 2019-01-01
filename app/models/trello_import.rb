@@ -12,13 +12,15 @@ class TrelloImport < ApplicationRecord
   end
 
   def err_now(import_error)
-    # TODO: save error?
-    LogService.log import_error # this can be removed
-    update!(ended_at: Time.zone.now)
+    update!(error: import_error.to_s, ended_at: Time.zone.now)
   end
 
   def complete?
     ended_at.present?
+  end
+
+  def erred?
+    error.present?
   end
 
   def in_progress?
@@ -26,6 +28,7 @@ class TrelloImport < ApplicationRecord
   end
 
   def status
+    return 'error' if erred?
     return 'complete' if complete?
     'in-progress'
   end

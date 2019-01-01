@@ -14,6 +14,10 @@
           <td><%= @import.status %></td>
         </tr>
         <tr>
+          <td class="field-label" colspan="2">Error</td>
+          <td><%= @import.error || 'N/A' %></td>
+        </tr>
+        <tr>
           <td class="field-label" colspan="2">Started at</td>
           <td>
             <span class="momentize-format" data-datetime="<%= @import.created_at.to_i %>">
