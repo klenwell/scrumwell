@@ -57,4 +57,24 @@ class TrelloImportTest < ActiveSupport::TestCase
     assert_equal 'error', trello_import.status
     assert_equal 'A test error.', trello_import.error
   end
+
+  test "expects a board to only allow one import at a time" do
+    # Arrange
+    board = scrum_boards(:scrummy)
+    params = { scrum_board_id: board.id }
+    first_import = TrelloImport.create(params)
+
+    # Assume
+    assert_equal 'in-progress', first_import.status
+    imports_before = TrelloImport.count
+
+    # Act
+    second_import = TrelloImport.create(params)
+
+    # Assert
+    assert_not second_import.persisted?
+    assert imports_before, TrelloImport.count
+    assert_equal 'Scrum board import already in progress',
+                 second_import.errors.full_messages.to_sentence
+  end
 end
