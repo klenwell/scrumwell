@@ -1,3 +1,6 @@
+# For forman logging issues: https://stackoverflow.com/a/8782299/1093087
+$stdout.sync = true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 

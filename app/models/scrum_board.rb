@@ -19,6 +19,7 @@ class ScrumBoard < ApplicationRecord
   alias_attribute :queues, :scrum_queues
   alias_attribute :stories, :scrum_stories
   alias_attribute :events, :scrum_events
+  alias_attribute :imports, :trello_imports
 
   ## Validators
   validates :name, presence: true
@@ -27,13 +28,6 @@ class ScrumBoard < ApplicationRecord
   #
   # Class Methods
   #
-  def self.import_from_trello(trello_board)
-    # Find or create board.
-    scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
-    scrum_board.update_from_trello
-    scrum_board
-  end
-
   def self.find_or_create_by_trello_board(trello_board)
     # Find or create board.
     scrum_board = ScrumBoard.find_by(trello_board_id: trello_board.id)
@@ -118,14 +112,15 @@ class ScrumBoard < ApplicationRecord
     TrelloService.board(trello_board_id)
   end
 
+  def import_in_progress?
+    imports.select(&:in_progress?).present?
+  end
+
   #
   # Instance Methods
   #
   ## Action / Event Imports
-  def update_from_trello
-    # Create TrelloImport.
-    trello_import = TrelloImport.create!(scrum_board: self)
-
+  def update_from_trello(trello_import)
     # Import lists and actions.
     import_trello_lists
     import_latest_trello_actions(trello_import)

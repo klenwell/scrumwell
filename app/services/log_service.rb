@@ -14,14 +14,24 @@ class LogService
     rake(message, level)
   end
 
+  def self.sidekiq(message, level=:debug)
+    log(message, level)
+    to_stdout(message) if Rails.env.development?
+  end
+
   #
   # Stdout
   #
   def self.to_stdout(message)
     puts message # rubocop: disable Rails/Output
+  rescue StandardError
+    # Sidekiq doesn't like puts statement
+    log('LogService.to_stdout failed!')
   end
 
   def self.pretty(message)
     pp message # rubocop: disable Rails/Output
+  rescue StandardError
+    # Forget about it.
   end
 end

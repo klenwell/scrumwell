@@ -8,4 +8,9 @@ module Scrum::BoardsHelper
       tag.span alt, class: 'text-muted'
     end
   end
+
+  def scrum_board_nav_tab_class(tab_label)
+    tab_label = tab_label.downcase
+    @tab == tab_label ? 'active' : 'inactive'
+  end
 end

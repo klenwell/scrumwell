@@ -38,6 +38,12 @@
           <% end %>
         </div>
       </li>
+
+      <% if scrum_master? %>
+        <li class="nav-item">
+          <%= link_to 'Sidekiq', '/sidekiq', class: 'nav-link' %>
+        </li>
+      <% end %>
     </div>
   </div>
 
