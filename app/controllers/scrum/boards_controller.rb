@@ -93,7 +93,7 @@ module Scrum
       TrelloBoardImportWorker.perform_async(import.id)
 
       # Redirect to imports page
-      redirect_to imports_scrum_board_path(board),
+      redirect_to trello_import_path(import),
                   notice: "Importing latest events for #{board.name} board."
     end
     # rubocop: enable Metrics/AbcSize

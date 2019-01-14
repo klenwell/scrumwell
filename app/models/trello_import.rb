@@ -30,6 +30,7 @@ class TrelloImport < ApplicationRecord
   def status
     return 'error' if erred?
     return 'complete' if complete?
+    return 'timeout' if duration > 3600
     'in-progress'
   end
 
