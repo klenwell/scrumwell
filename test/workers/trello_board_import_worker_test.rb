@@ -1,5 +1,5 @@
 require 'test_helper'
-class TrelloBoardImportWorkerTest < MiniTest::Unit::TestCase
+class TrelloBoardImportWorkerTest < Minitest::Test
   def test_example
     skip "add some examples to (or delete) #{__FILE__}"
   end

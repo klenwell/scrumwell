@@ -15,12 +15,12 @@
     <% imports.each do |import| %>
       <tr>
         <td><%= import.board.name %></td>
-        <td><%= import.status %></td>
+        <td data-import-status="<%= import.status %>"><%= import.status %></td>
         <td><%= import.events.count %></td>
         <td><%= import.ended_at %></td>
         <td><%= import.duration %></td>
-        <td><%= import.last_event.try(:occurred_at) %></td>
-        <td><%= import.events_period %></td>
+        <td><%= import.last_event.try(:occurred_at) || 'N/A' %></td>
+        <td><%= import.events_period  || '0' %></td>
         <td>
           <%= link_to show_icon, trello_import_path(import) %>
         </td>

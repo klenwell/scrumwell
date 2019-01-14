@@ -43,15 +43,15 @@
         </tr>
         <tr>
           <td class="field-label" colspan="2">First Event</td>
-          <td><%= @import.first_event.try(:occurred_at) %></td>
+          <td><%= @import.first_event.try(:occurred_at) || 'N/A'  %></td>
         </tr>
         <tr>
           <td class="field-label" colspan="2">Last Event</td>
-          <td><%= @import.last_event.try(:occurred_at) %></td>
+          <td><%= @import.last_event.try(:occurred_at) || 'N/A'  %></td>
         </tr>
         <tr>
-          <td class="field-label" colspan="2">Span</td>
-          <td><%= @import.events_period %> Days</td>
+          <td class="field-label" colspan="2">Span (Days)</td>
+          <td><%= @import.events_period || '0' %></td>
         </tr>
       </table>
     </div>
