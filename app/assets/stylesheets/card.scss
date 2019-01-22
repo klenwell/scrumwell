@@ -11,6 +11,13 @@ div.card {
     border-bottom: 1px solid $light-grey;
     font-size: 18px;
 
+    h6.card-type {
+      color: $grey;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
     p {
       color: $primary-text-color;
       display: inline;

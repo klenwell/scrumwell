@@ -31,3 +31,16 @@ img.avatar {
     height: 64px;
   }
 }
+
+/* Tables */
+.table {
+  font-size: 0.9rem;
+  border-radius: 4px;
+  overflow: hidden;
+
+  th, td {
+    // Default is top aligned
+    vertical-align: middle;
+    padding: 0.5rem;
+  }
+}

@@ -12,11 +12,15 @@
   <tbody>
     <% events.each do |event| %>
       <tr>
-        <td><%= event.eventable_type %></td>
+        <td><code><%= event.eventable_type %></code></td>
         <td><%= event.eventable.try(:title) %></td>
-        <td><%= event.action %></td>
-        <td><%= event.trello_type %></td>
-        <td><%= event.occurred_at %></td>
+        <td><code><%= event.action %></code></td>
+        <td><code><%= event.trello_type %></code></td>
+        <td>
+          <span class="momentize-time-ago" data-datetime="<%= event.occurred_at.to_i %>">
+            <%= event.occurred_at %>
+          </span>
+        </td>
         <td>
           <%= link_to show_icon, scrum_event_path(event) %>
         </td>
