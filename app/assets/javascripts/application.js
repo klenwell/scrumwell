@@ -23,3 +23,36 @@
 //= require chartkick
 
 //= require_tree .
+
+var applicationHandler = (function() {
+  var humanizeDateTimeFields = function() {
+    $('.momentize-time-ago').each(function(index, element) {
+      var momentTimestamp = moment.unix($(element).data('datetime'));
+      var now = moment.utc();
+      var timeDelta = momentTimestamp.diff(now);
+      var humanized = moment.duration(timeDelta).humanize(true);
+
+      $(element).text(humanized);
+    });
+
+    $('.momentize-format').each(function(index, element) {
+      var momentTimestamp = moment.unix($(element).data('datetime'));
+      // Moment Timezone: http://momentjs.com/timezone/docs/#/using-timezones/guessing-user-timezone/
+      var timezone = moment.tz.guess();
+
+      // Format: July 9, 2018 12:15 PM PDT
+      var humanized = moment.tz(momentTimestamp, timezone).local().format('LLL z');
+
+      $(element).text(humanized);
+    });
+  };
+
+  // Public API
+  return {
+    humanizeDateTimeFields: humanizeDateTimeFields
+  };
+})();
+
+$(document).on('turbolinks:load', function(){
+  applicationHandler.humanizeDateTimeFields();
+});
