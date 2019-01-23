@@ -3,6 +3,7 @@ module Scrum
     before_action :authenticate
     before_action :auth_scrum_masters, only: [:new, :create, :edit, :update]
     before_action :set_queue, only: [:edit, :update, :show]
+    before_action :set_scrum_queue_tab, only: [:show]
 
     # GET /scrum/sprints
     # GET /scrum/sprints.json
@@ -59,11 +60,23 @@ module Scrum
     # GET /scrum/queues/1.json
     def show; end
 
+    # GET /scrum/queues/1
+    # GET /scrum/queues/1/stories
+    # GET /scrum/queues/1/contributions
+    # GET /scrum/queues/1/events
+    def show; end
+
     private
 
     # Use callbacks to share common setup or constraints between actions.
     def set_queue
       @queue = ScrumQueue.find(params[:id])
+    end
+
+    def set_scrum_queue_tab
+      valid_tabs = ['stories', 'contributions', 'events']
+      @tab = request.fullpath.split('/').last
+      @tab = valid_tabs.first unless valid_tabs.include? @tab
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

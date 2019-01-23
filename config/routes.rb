@@ -14,7 +14,14 @@ Rails.application.routes.draw do
       end
 
       resources :queues, shallow: true do
-        resources :stories
+        resources :stories, except: [:index]
+
+        member do
+          # Show view tabs.
+          get 'stories', to: 'queues#show'
+          get 'contributions', to: 'queues#show'
+          get 'events', to: 'queues#show'
+        end
       end
 
       resources :events
