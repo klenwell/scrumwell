@@ -140,7 +140,8 @@ class ScrumBoard < ApplicationRecord
     events = []
 
     latest_trello_actions(import_limit).each do |trello_action|
-      events << ScrumEvent.create_from_trello_import(trello_import, trello_action)
+      event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
+      events << event
       LogService.dev event.to_stdout
     rescue StandardError => e
       LogService.dev "*** Error: #{e}"

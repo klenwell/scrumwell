@@ -92,8 +92,8 @@ class ScrumEvent < ApplicationRecord
   end
 
   def updates_story_contributor?
-    status_actions = ['addMemberToCard', 'removeMemberFromCard']
-    status_actions.include?(action)
+    member_trello_types = ['addMemberToCard', 'removeMemberFromCard']
+    member_trello_types.include?(trello_type)
   end
 
   def card?
