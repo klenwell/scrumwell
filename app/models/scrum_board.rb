@@ -136,9 +136,10 @@ class ScrumBoard < ApplicationRecord
 
   def import_latest_trello_actions(trello_import)
     # Processes latest board actions to update sprints and board WIP.
+    import_limit = 500
     events = []
 
-    latest_trello_actions.each do |trello_action|
+    latest_trello_actions(import_limit).each do |trello_action|
       events << ScrumEvent.create_from_trello_import(trello_import, trello_action)
       LogService.dev event.to_stdout
     rescue StandardError => e
@@ -149,11 +150,11 @@ class ScrumBoard < ApplicationRecord
   end
 
   # rubocop: disable Metrics/AbcSize
-  def latest_trello_actions
+  def latest_trello_actions(count=1000)
     # Board actions are ordered in DESC order: most recent are first. So to pull the latest,
     # need to import since last imported id going backwards.
     latest_actions = []
-    limit = 1000
+    request_limit = 1000
     since_id = last_imported_action_id
     before_id = nil
     more = true
@@ -165,19 +166,19 @@ class ScrumBoard < ApplicationRecord
       raise "Too many calls: #{calls}" if calls > max_calls
       calls += 1
 
-      actions = trello_board.actions(limit: limit, since: since_id, before: before_id)
+      actions = trello_board.actions(limit: request_limit, since: since_id, before: before_id)
       actions.each { |action| latest_actions << action }
 
       LogService.dev format('Fetched %s (%s) Trello board actions from API.',
                             actions.length,
                             latest_actions.length)
 
-      more = actions.length == limit
+      more = actions.length == request_limit
       before_id = actions.last.id if more
     end
 
     # Actions come in reverse chronological order per https://stackoverflow.com/a/51817635/1093087
-    latest_actions.reverse
+    latest_actions.reverse.slice(0, count)
   end
   # rubocop: enable Metrics/AbcSize
 
