@@ -57,10 +57,6 @@ module Scrum
     end
 
     # GET /scrum/queues/1
-    # GET /scrum/queues/1.json
-    def show; end
-
-    # GET /scrum/queues/1
     # GET /scrum/queues/1/stories
     # GET /scrum/queues/1/contributions
     # GET /scrum/queues/1/events

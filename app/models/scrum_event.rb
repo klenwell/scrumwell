@@ -13,6 +13,7 @@ class ScrumEvent < ApplicationRecord
 
   ## Callbacks
   before_create :categorize
+  after_create :apply_consequences
 
   #
   # Instance Methods
@@ -90,6 +91,11 @@ class ScrumEvent < ApplicationRecord
     card? && status_actions.include?(action)
   end
 
+  def updates_story_contributor?
+    status_actions = ['addMemberToCard', 'removeMemberFromCard']
+    status_actions.include?(action)
+  end
+
   def card?
     trello_object == 'card'
   end
@@ -121,6 +127,11 @@ class ScrumEvent < ApplicationRecord
   def trello_card_id
     return nil unless trello_data?('card')
     trello_data['card']['id']
+  end
+
+  def trello_member_id
+    return nil unless trello_data?('member')
+    trello_data['member']['id']
   end
 
   ## WIP events
@@ -176,6 +187,7 @@ class ScrumEvent < ApplicationRecord
     story
   end
 
+  ## Queue Methods
   def queue
     list_id = trello_data.dig('list', 'id')
     return nil unless list_id
@@ -206,6 +218,28 @@ class ScrumEvent < ApplicationRecord
     ScrumQueue.find_by(trello_list_id: list_after_id)
   end
 
+  ## Story Contributor
+  # rubocop: disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  def update_story_contributor
+    return nil unless trello_card_id && trello_member_id
+
+    story = ScrumStory.find_by(trello_card_id: trello_card_id)
+    contributor = ScrumContributor.find_or_create_by_trello_member_id(trello_member_id)
+
+    return nil unless story && contributor
+
+    if action == 'added_member'
+      story.add_contributor(contributor)
+    elsif action == 'removed_member'
+      story.remove_contributor(contributor)
+    end
+
+    update!(eventable: story)
+    contributor
+    # rubocop: enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  end
+
+  ## Inspect
   def to_stdout
     f = '#<ScrumEvent id=%s trello_type=%s action=%s queues:%s->%s occurred_at=%s>'
     format(f, id, trello_type, action, old_queue.try(:name), new_queue.try(:name), occurred_at)
@@ -222,7 +256,7 @@ class ScrumEvent < ApplicationRecord
     type_object_map = {
       board: ['addMemberToBoard', 'addToOrganizationBoard', 'createBoard', 'updateBoard'],
       card: ['addMemberToCard', 'convertToCardFromCheckItem', 'copyCard', 'createCard',
-             'deleteCard', 'updateCard'],
+             'deleteCard', 'removeMemberFromCard', 'updateCard'],
       checklist: ['addChecklistToCard', 'removeChecklistFromCard', 'updateCheckItemStateOnCard',
                   'updateChecklist'],
       comment: ['commentCard'],
@@ -260,10 +294,31 @@ class ScrumEvent < ApplicationRecord
     return :reopened if old_data('closed') == true
 
     return :added_member if trello_type == 'addMemberToCard'
+    return :removed_member if trello_type == 'removeMemberFromCard'
 
     return trello_object if [:board, :checklist, :comment, :plugin].include? trello_object
 
     nil
+  end
+  # rubocop: enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+  # rubocop: disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  def apply_consequences
+    if creates_board?
+      board.update(created_at: occurred_at)
+    elsif creates_queue?
+      create_queue_for_board(board)
+    elsif creates_story?
+      create_story_for_board(board)
+    elsif moves_story?
+      move_story
+    elsif changes_story_status?
+      update_story_status
+    elsif updates_story_contributor?
+      update_story_contributor
+    end
+
+    reload
   end
   # rubocop: enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 end

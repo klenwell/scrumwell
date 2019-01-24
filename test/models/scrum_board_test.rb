@@ -81,20 +81,19 @@ class ScrumBoardTest < ActiveSupport::TestCase
     trello_import = trello_imports(:complete)
     scrum_board = trello_import.board
     contributor = scrum_contributors(:developer)
+
+    # Assume
+    assert_not_equal trello_board_created_at, Time.zone.now
+
+    # Act
     scrum_event = ScrumEvent.create(eventable: scrum_board,
                                     trello_import: trello_import,
                                     trello_type: 'createBoard',
                                     trello_member_id: contributor.trello_member_id,
                                     occurred_at: trello_board_created_at)
 
-    # Assume
-    assert scrum_event.creates_board?, scrum_event
-    assert_not_equal trello_board_created_at, scrum_board.created_at
-
-    # Act
-    scrum_board.digest_latest_event(scrum_event)
-
     # Assert
+    assert scrum_event.creates_board?, scrum_event
     assert_equal trello_board_created_at, scrum_board.created_at
   end
 end

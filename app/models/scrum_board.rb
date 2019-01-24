@@ -139,30 +139,13 @@ class ScrumBoard < ApplicationRecord
     events = []
 
     latest_trello_actions.each do |trello_action|
-      event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
-      events << digest_latest_event(event)
+      events << ScrumEvent.create_from_trello_import(trello_import, trello_action)
       LogService.dev event.to_stdout
     rescue StandardError => e
       LogService.dev "*** Error: #{e}"
     end
 
     events
-  end
-
-  def digest_latest_event(scrum_event)
-    if scrum_event.creates_board?
-      update(created_at: scrum_event.occurred_at)
-    elsif scrum_event.creates_queue?
-      scrum_event.create_queue_for_board(self)
-    elsif scrum_event.creates_story?
-      scrum_event.create_story_for_board(self)
-    elsif scrum_event.moves_story?
-      scrum_event.move_story
-    elsif scrum_event.changes_story_status?
-      scrum_event.update_story_status
-    end
-
-    scrum_event.reload
   end
 
   # rubocop: disable Metrics/AbcSize
@@ -175,7 +158,7 @@ class ScrumBoard < ApplicationRecord
     before_id = nil
     more = true
     calls = 0
-    max_calls = 25
+    max_calls = 100
 
     while more
       # Rate limits: https://developers.trello.com/docs/rate-limits
