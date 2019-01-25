@@ -122,8 +122,8 @@ class ScrumBoard < ApplicationRecord
   ## Action / Event Imports
   def update_from_trello(trello_import)
     # Import lists and actions.
-    import_trello_lists
-    import_latest_trello_actions(trello_import)
+    trello_import.import_board_lists
+    trello_import.import_board_actions
 
     # Build WipLogs and SprintContributions
     build_wip_log_from_scratch
@@ -132,22 +132,6 @@ class ScrumBoard < ApplicationRecord
     # Conclude
     trello_import.end_now
     trello_import
-  end
-
-  def import_latest_trello_actions(trello_import)
-    # Processes latest board actions to update sprints and board WIP.
-    import_limit = 500
-    events = []
-
-    latest_trello_actions(import_limit).each do |trello_action|
-      event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
-      events << event
-      LogService.dev event.to_stdout
-    rescue StandardError => e
-      LogService.dev "*** Error: #{e}"
-    end
-
-    events
   end
 
   # rubocop: disable Metrics/AbcSize
@@ -190,17 +174,6 @@ class ScrumBoard < ApplicationRecord
   def last_imported_action_id
     # events are sorted in desc order.
     last_event.present? ? last_event.trello_id : nil
-  end
-
-  def import_trello_lists
-    queues = []
-
-    trello_board.lists.each do |trello_list|
-      queue = ScrumQueue.find_or_create_from_trello_list(self, trello_list)
-      queues << queue
-    end
-
-    queues
   end
 
   def created_on
