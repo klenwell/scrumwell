@@ -9,6 +9,33 @@ class TrelloImport < ApplicationRecord
 
   validate :no_board_imports_in_progress, on: :create
 
+  # Imports full board from Trello all at once.
+  def self.import_full_board(trello_board_id)
+    # Create board and import.
+    trello_board = TrelloService.board(trello_board_id)
+    scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
+    trello_import = TrelloImport.create(scrum_board: scrum_board)
+
+    # Import board lists.
+    trello_import.import_board_lists
+
+    # Import board actions.
+    scrum_board.latest_trello_actions(100_000).each do |trello_action|
+      event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
+      LogService.dev event.to_stdout
+    rescue StandardError => e
+      LogService.dev "*** Error: #{e}"
+    end
+
+    # Build WipLogs and SprintContributions
+    scrum_board.build_wip_log_from_scratch
+    scrum_board.build_sprint_contributions_from_scratch
+
+    # Conclude
+    trello_import.end_now
+    trello_import
+  end
+
   def import_board_lists
     queues = []
 

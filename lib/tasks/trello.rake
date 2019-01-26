@@ -4,6 +4,32 @@ namespace :trello do
   kwoss_org_id = '5129323d688a384c63007609'
   scrumwell_board_id = '5b26fe3ad86bfdbb5a8290b1'
 
+  # rake trello:import_board[5b26fe3ad86bfdbb5a8290b1]
+  desc "Fully reconstructs a Trello board by importing its actions."
+  task :import_board, [:trello_board_id] => :environment do |_, args|
+    # Parse args
+    trello_board_id = args[:trello_board_id]
+
+    # Delete existing board
+    board = ScrumBoard.find_by(trello_board_id: trello_board_id)
+    if board.present?
+      LogService.rake format("Destroying existing board: %s", board.name)
+      board.destroy
+    end
+    `rake log:clear` if Rails.env.development?
+
+    # Import Trello board
+    import = TrelloImport.import_full_board(trello_board_id)
+
+    # Stdout
+    trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
+    import.board.queues.each { |q| puts q.to_stdout }
+    LogService.rake format("Created %s events.", import.board.events.count)
+    LogService.rake format("Created %s wip_logs.", import.board.wip_logs.count)
+    LogService.rake format("Current Board Velocity: %s", import.board.current_velocity)
+    LogService.rake format("Trello API calls: %s", trello_api_calls)
+  end
+
   # rake trello:wish_heap[5b26fe3ad86bfdbb5a8290b1]
   desc "Counts wish heap stories for given board"
   task :wish_heap, [:board_id] => :environment do |_, args|
