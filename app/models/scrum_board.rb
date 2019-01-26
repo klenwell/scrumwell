@@ -223,6 +223,9 @@ class ScrumBoard < ApplicationRecord
     min_events_to_be_active = 3
     saved_contributions = []
 
+    # Reload instance data. Not doing this was causing some contributions to be missed.
+    reload
+
     # For each completed sprint...
     completed_queues.each do |queue|
       # From scratch...
