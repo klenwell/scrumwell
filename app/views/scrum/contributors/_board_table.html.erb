@@ -1,0 +1,30 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Username</th>
+      <th scope="col">Full Name</th>
+      <th scope="col">Sprints</th>
+      <th scope="col">Points</th>
+      <th scope="col">Trello URL</th>
+      <th scope="col" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% board.contributors.each do |contributor| %>
+      <tr>
+        <td>
+            <%= contributor_avatar(contributor) %>
+        </td>
+        <td><%= contributor.username %></td>
+        <td><%= contributor.full_name %></td>
+        <td><%= contributor.completed_board_sprints(board).length %></td>
+        <td><%= contributor.board_points(board) %></td>
+        <td><%= link_to contributor.trello_url, contributor.trello_url %></td>
+        <td>
+          <%= link_to show_icon, scrum_contributor_path(contributor) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -58,7 +58,7 @@ module Scrum
 
     # GET /scrum/queues/1
     # GET /scrum/queues/1/stories
-    # GET /scrum/queues/1/contributions
+    # GET /scrum/queues/1/contributors
     # GET /scrum/queues/1/events
     def show; end
 
@@ -70,7 +70,7 @@ module Scrum
     end
 
     def set_scrum_queue_tab
-      valid_tabs = ['stories', 'contributions', 'events']
+      valid_tabs = ['stories', 'contributors', 'events']
       @tab = request.fullpath.split('/').last
       @tab = valid_tabs.first unless valid_tabs.include? @tab
     end

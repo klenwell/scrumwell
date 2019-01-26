@@ -43,8 +43,8 @@
       href="<%= stories_scrum_queue_path(@queue) %>">Stories</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link <%= scrum_board_nav_tab_class('Contributions') %>"
-       href="<%= contributions_scrum_queue_path(@queue) %>">Contributions</a>
+    <a class="nav-link <%= scrum_board_nav_tab_class('Contributors') %>"
+       href="<%= contributors_scrum_queue_path(@queue) %>">Contributors</a>
   </li>
   <li class="nav-item">
     <a class="nav-link <%= scrum_board_nav_tab_class('Events') %>"
@@ -52,7 +52,7 @@
   </li>
 </ul>
 
-<% if @tab == 'contributions' %>
+<% if @tab == 'contributors' %>
   <%= render partial: "scrum/sprint_contributions/table",
              locals: {contributions: @queue.sprint_contributions} %>
 <% elsif @tab == 'events' %>

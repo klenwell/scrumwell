@@ -116,6 +116,13 @@ class ScrumBoard < ApplicationRecord
     imports.select(&:in_progress?).present?
   end
 
+  def contributors
+    sprint_contributions.map(&:scrum_contributor)
+                        .uniq
+                        .sort_by { |c| c.board_points(self) }
+                        .reverse
+  end
+
   #
   # Instance Methods
   #
