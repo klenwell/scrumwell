@@ -69,6 +69,17 @@ class ScrumContributor < ApplicationRecord
     points
   end
 
+  def completed_board_sprints(board)
+    scrum_queues.where(scrum_board: board)
+                .where('ended_on < ?', Time.zone.today)
+                .order(:ended_on)
+                .uniq
+  end
+
+  def board_points(board)
+    scrum_stories.where(scrum_board: board).sum { |s| s.points.to_i }
+  end
+
   def avg_capacity
     last_three_sprints = sprint_contributions.last(3)
 

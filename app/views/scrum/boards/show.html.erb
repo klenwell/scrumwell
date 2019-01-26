@@ -47,6 +47,10 @@
        href="<%= chart_scrum_board_path(@scrum_board) %>">Chart</a>
   </li>
   <li class="nav-item">
+    <a class="nav-link <%= scrum_board_nav_tab_class('Contributors') %>"
+       href="<%= contributors_scrum_board_path(@scrum_board) %>">Contributors</a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link <%= scrum_board_nav_tab_class('Events') %>"
        href="<%= events_scrum_board_path(@scrum_board) %>">Events</a>
   </li>
@@ -58,6 +62,9 @@
 
 <% if @tab == 'chart' %>
   <%= render partial: "scrum/boards/chart", locals: {events: @scrum_board.wip_events} %>
+<% elsif @tab == 'contributors' %>
+  <%= render partial: "scrum/contributors/board_table",
+             locals: { board: @scrum_board } %>
 <% elsif @tab == 'events' %>
   <%= render partial: "scrum/events/board_table", locals: {events: @scrum_board.wip_events} %>
 <% elsif @tab == 'imports' %>

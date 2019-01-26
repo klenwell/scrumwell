@@ -116,14 +116,21 @@ class ScrumBoard < ApplicationRecord
     imports.select(&:in_progress?).present?
   end
 
+  def contributors
+    sprint_contributions.map(&:scrum_contributor)
+                        .uniq
+                        .sort_by { |c| c.board_points(self) }
+                        .reverse
+  end
+
   #
   # Instance Methods
   #
   ## Action / Event Imports
   def update_from_trello(trello_import)
     # Import lists and actions.
-    import_trello_lists
-    import_latest_trello_actions(trello_import)
+    trello_import.import_board_lists
+    trello_import.import_board_actions
 
     # Build WipLogs and SprintContributions
     build_wip_log_from_scratch
@@ -134,67 +141,36 @@ class ScrumBoard < ApplicationRecord
     trello_import
   end
 
-  def import_latest_trello_actions(trello_import)
-    # Processes latest board actions to update sprints and board WIP.
-    events = []
-
-    latest_trello_actions.each do |trello_action|
-      event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
-      events << digest_latest_event(event)
-      LogService.dev event.to_stdout
-    rescue StandardError => e
-      LogService.dev "*** Error: #{e}"
-    end
-
-    events
-  end
-
-  def digest_latest_event(scrum_event)
-    if scrum_event.creates_board?
-      update(created_at: scrum_event.occurred_at)
-    elsif scrum_event.creates_queue?
-      scrum_event.create_queue_for_board(self)
-    elsif scrum_event.creates_story?
-      scrum_event.create_story_for_board(self)
-    elsif scrum_event.moves_story?
-      scrum_event.move_story
-    elsif scrum_event.changes_story_status?
-      scrum_event.update_story_status
-    end
-
-    scrum_event.reload
-  end
-
   # rubocop: disable Metrics/AbcSize
-  def latest_trello_actions
+  def latest_trello_actions(count=1000)
     # Board actions are ordered in DESC order: most recent are first. So to pull the latest,
     # need to import since last imported id going backwards.
     latest_actions = []
-    limit = 1000
+    request_limit = 1000
     since_id = last_imported_action_id
     before_id = nil
     more = true
     calls = 0
-    max_calls = 25
+    max_calls = 100
 
     while more
       # Rate limits: https://developers.trello.com/docs/rate-limits
       raise "Too many calls: #{calls}" if calls > max_calls
       calls += 1
 
-      actions = trello_board.actions(limit: limit, since: since_id, before: before_id)
+      actions = trello_board.actions(limit: request_limit, since: since_id, before: before_id)
       actions.each { |action| latest_actions << action }
 
       LogService.dev format('Fetched %s (%s) Trello board actions from API.',
                             actions.length,
                             latest_actions.length)
 
-      more = actions.length == limit
+      more = actions.length == request_limit
       before_id = actions.last.id if more
     end
 
     # Actions come in reverse chronological order per https://stackoverflow.com/a/51817635/1093087
-    latest_actions.reverse
+    latest_actions.reverse.slice(0, count)
   end
   # rubocop: enable Metrics/AbcSize
 
@@ -205,17 +181,6 @@ class ScrumBoard < ApplicationRecord
   def last_imported_action_id
     # events are sorted in desc order.
     last_event.present? ? last_event.trello_id : nil
-  end
-
-  def import_trello_lists
-    queues = []
-
-    trello_board.lists.each do |trello_list|
-      queue = ScrumQueue.find_or_create_from_trello_list(self, trello_list)
-      queues << queue
-    end
-
-    queues
   end
 
   def created_on
@@ -257,6 +222,9 @@ class ScrumBoard < ApplicationRecord
     # To be considered active that sprint event without contributing story points.
     min_events_to_be_active = 3
     saved_contributions = []
+
+    # Reload instance data. Not doing this was causing some contributions to be missed.
+    reload
 
     # For each completed sprint...
     completed_queues.each do |queue|

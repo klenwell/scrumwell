@@ -14,6 +14,7 @@ module Scrum
     # GET /scrum/boards/1
     # GET /scrum/boards/1/sprints
     # GET /scrum/boards/1/chart
+    # GET /scrum/boards/1/contributors
     # GET /scrum/boards/1/events
     # GET /scrum/boards/1/imports
     def show; end
@@ -108,7 +109,7 @@ module Scrum
     def set_scrum_board_tab
       # Is there a better way to do this? Params doesn't work:
       # GET /scrum/boards/1/sprints -> {"controller"=>"scrum/boards", "action"=>"show", "id"=>"1"}
-      valid_tabs = ['sprints', 'chart', 'events', 'imports']
+      valid_tabs = ['sprints', 'chart', 'contributors', 'events', 'imports']
       @tab = request.fullpath.split('/').last
       @tab = valid_tabs.first unless valid_tabs.include? @tab
     end

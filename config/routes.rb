@@ -9,12 +9,20 @@ Rails.application.routes.draw do
         # Show view tabs.
         get 'sprints', to: 'boards#show'
         get 'chart', to: 'boards#show'
+        get 'contributors', to: 'boards#show'
         get 'events', to: 'boards#show'
         get 'imports', to: 'boards#show'
       end
 
       resources :queues, shallow: true do
-        resources :stories
+        resources :stories, except: [:index]
+
+        member do
+          # Show view tabs.
+          get 'stories', to: 'queues#show'
+          get 'contributors', to: 'queues#show'
+          get 'events', to: 'queues#show'
+        end
       end
 
       resources :events

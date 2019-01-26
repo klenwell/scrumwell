@@ -57,4 +57,35 @@ class ScrumEventTest < ActiveSupport::TestCase
     assert_equal event.occurred_at, story.created_at
     assert_equal trello_action.date, story.created_at
   end
+
+  test "expects event to add contributor to story" do
+    # Arrange
+    trello_import = trello_imports(:in_progress)
+    story = scrum_stories(:incomplete)
+    contributor = scrum_contributors(:developer)
+    story.scrum_board = trello_import.board
+    story.save!
+
+    # Mock addMemberToCard action.
+    action_data = {
+      'card' => { 'id' => story.trello_card_id, 'name' => story.title },
+      'member' => { 'id' => contributor.trello_member_id }
+    }
+    trello_action = MockTrelloAction.new(id: 'tests-card-creation',
+                                         type: 'addMemberToCard',
+                                         member_creator_id: contributor.trello_member_id,
+                                         date: Time.zone.yesterday.beginning_of_day,
+                                         data: action_data)
+
+    # Assume
+    assert story.contributors.empty?
+
+    # Act
+    event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
+
+    # Assert
+    assert event.updates_story_contributor?
+    assert_equal 1, story.contributors.count
+    assert_equal contributor, story.contributors.first
+  end
 end
