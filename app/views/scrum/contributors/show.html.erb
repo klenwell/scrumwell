@@ -1,27 +1,43 @@
 <div class="page-header">
-  <h2>Contributor <span class="text-primary"><%= @contributor.full_name %></span></h2>
+  <h1>Contributor <span class="text-primary"><%= @contributor.full_name %></span></h1>
   <p><%#= link_to 'Edit', edit_scrum_contributor_path(@contributor), role: 'button', class: 'btn btn-primary' %></p>
 </div>
 
 <div class="row">
   <div class="col-sm">
-    <%= contributor_avatar(@contributor, size: 64) %>
-  </div>
-  <div class="col-sm">
     <dl class="dl-horizontal">
       <dt><strong>Username</strong></dt>
       <dd><%= @contributor.username %></dd>
     </dl>
-  </div>
-  <div class="col-sm">
     <h4><span class="badge badge-pill badge-success">
       <%= as_decimal(@contributor.avg_capacity, alt: 'N/A') %></span> Points per Sprint
     </h4>
   </div>
+
+  <div class="col-sm">
+      <%= contributor_avatar(@contributor, size: 64) %>
+  </div>
 </div>
 
-<h3>Contributions</h3>
-<%= render partial: "scrum/stories/table", locals: {stories: @contributor.scrum_stories} %>
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link <%= scrum_board_nav_tab_class('Sprints') %>"
+      href="<%= sprints_scrum_contributor_path(@contributor) %>">Sprints</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= scrum_board_nav_tab_class('Stories') %>"
+       href="<%= stories_scrum_contributor_path(@contributor) %>">Stories</a>
+  </li>
+</ul>
+
+<% if @tab == 'stories' %>
+  <%= render partial: "scrum/stories/contributor_table",
+             locals: {stories: @contributor.scrum_stories.reverse} %>
+<% else %>
+  <%= render partial: "scrum/sprint_contributions/contributor_table",
+             locals: {contributions: @contributor.sprint_contributions.reverse} %>
+<% end %>
 
 <div class="actions">
   <%= link_to 'Index', scrum_contributors_path, role: 'button', class: 'btn btn-info ml-2' %>

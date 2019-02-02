@@ -28,7 +28,13 @@ Rails.application.routes.draw do
       resources :events
     end
 
-    resources :contributors, only: [:index, :show]
+    resources :contributors, only: [:index, :show] do
+      member do
+        # Show view tabs.
+        get 'sprints', to: 'contributors#show'
+        get 'stories', to: 'contributors#show'
+      end
+    end
 
     post 'board/import', to: 'boards#import'
   end

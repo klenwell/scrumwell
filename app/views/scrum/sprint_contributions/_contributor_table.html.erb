@@ -1,0 +1,24 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Sprint</th>
+      <th scope="col">Points</th>
+      <th scope="col">Started</th>
+      <th scope="col">Ended</th>
+      <th scope="col">Events</th>
+      <th scope="col">Team Points</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% contributions.each do |contribution| %>
+      <tr>
+        <td><%= contribution.queue.name %></td>
+        <td><%= contribution.story_points %></td>
+        <td><%= contribution.queue.started_on %></td>
+        <td><%= contribution.queue.ended_on %></td>
+        <td><%= contribution.event_count %></td>
+        <td class="story_points_completed"><%= contribution.queue.points %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
