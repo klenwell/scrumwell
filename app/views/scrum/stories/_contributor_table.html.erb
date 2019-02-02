@@ -1,0 +1,38 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Points</th>
+      <th scope="col">URL</th>
+      <th scope="col">Created</th>
+      <th scope="col">Last Activity</th>
+      <th scope="col" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% stories.each do |story| %>
+      <tr>
+        <td><%= story.title %></td>
+        <td><%= story.points %></td>
+        <td><%= link_to story.trello_data['short_url'] %></td>
+        <td>
+          <span class="momentize-time-ago"
+                title="<%= story.created_at %>"
+                data-datetime="<%= story.created_at.to_i %>">
+            <%= story.created_at %>
+          </span>
+        </td>
+        <td>
+          <span class="momentize-time-ago"
+                title="<%= story.scrum_events.first.occurred_at %>"
+                data-datetime="<%= story.scrum_events.first.occurred_at.to_i %>">
+            <%= story.scrum_events.first.occurred_at %>
+          </span>
+        </td>
+        <td>
+          <%= link_to show_icon, scrum_story_path(story) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
