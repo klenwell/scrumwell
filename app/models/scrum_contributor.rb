@@ -1,7 +1,7 @@
 class ScrumContributor < ApplicationRecord
   has_many :story_contributions, dependent: :destroy
   has_many :sprint_contributions, dependent: :destroy
-  has_many :scrum_stories, through: :story_contributions
+  has_many :scrum_stories, -> { order(created_at: :asc) }, through: :story_contributions
   has_many :scrum_queues, through: :scrum_stories
   has_many :scrum_events, primary_key: :trello_member_id, foreign_key: :trello_member_id,
                           dependent: :destroy, inverse_of: :scrum_contributor

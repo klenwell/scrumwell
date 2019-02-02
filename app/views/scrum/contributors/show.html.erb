@@ -32,7 +32,8 @@
 </ul>
 
 <% if @tab == 'stories' %>
-  <%= render partial: "scrum/stories/table", locals: {stories: @contributor.scrum_stories} %>
+  <%= render partial: "scrum/stories/contributor_table",
+             locals: {stories: @contributor.scrum_stories.reverse} %>
 <% else %>
   <%= render partial: "scrum/sprint_contributions/contributor_table",
              locals: {contributions: @contributor.sprint_contributions.reverse} %>
