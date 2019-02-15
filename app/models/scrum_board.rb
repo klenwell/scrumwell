@@ -184,7 +184,9 @@ class ScrumBoard < ApplicationRecord
   end
 
   def created_on
-    events.find_by(trello_type: "createBoard").try(:occurred_at).to_date
+    creation_event = events.find_by(trello_type: "createBoard")
+    return nil unless creation_event
+    creation_event.occurred_at.to_date
   end
 
   ## WIP Logs
