@@ -149,4 +149,16 @@ class ScrumBoardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to scrum_boards_url
   end
+
+  test "expects not get error even if board has no wip logs" do
+    # See https://github.com/klenwell/scrumwell/issues/29
+    # Arrange
+    login_as(email: 'testing@gmail.com')
+
+    # Act
+    get scrum_boards_url
+
+    # Assert
+    assert_response :success
+  end
 end
