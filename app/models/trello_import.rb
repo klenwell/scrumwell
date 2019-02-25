@@ -71,6 +71,10 @@ class TrelloImport < ApplicationRecord
     update!(error: import_error.to_s, ended_at: Time.zone.now)
   end
 
+  def abort_now
+    update!(error: 'aborted', ended_at: Time.zone.now)
+  end
+
   def complete?
     ended_at.present?
   end
@@ -92,7 +96,6 @@ class TrelloImport < ApplicationRecord
   def status
     return 'error' if erred?
     return 'complete' if complete?
-    return 'timeout' if duration > 3600
     'in-progress'
   end
 
