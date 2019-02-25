@@ -1,6 +1,6 @@
 class TrelloImport < ApplicationRecord
   BOARD_ACTION_IMPORT_LIMIT = 1000
-  STALLED_IMPORT_TIME_LIMIT = 1.minute
+  STALLED_IMPORT_TIME_LIMIT = 30.seconds
 
   belongs_to :scrum_board
   has_many :scrum_events, dependent: :destroy
