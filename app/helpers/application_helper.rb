@@ -1,4 +1,5 @@
 module ApplicationHelper
+  # For Material icon list: https://material.io/tools/icons/
   def scrum_icon
     material_icon.bubble_chart
   end
@@ -17,6 +18,10 @@ module ApplicationHelper
 
   def import_icon
     material_icon.cloud_download
+  end
+
+  def abort_icon
+    material_icon.sync_disabled
   end
 
   def bootstrap_datepicker(form, field, opts)

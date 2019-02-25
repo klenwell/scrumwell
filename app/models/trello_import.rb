@@ -93,6 +93,10 @@ class TrelloImport < ApplicationRecord
     events.count < 1
   end
 
+  def aborted?
+    erred? && error == 'aborted'
+  end
+
   def status
     return 'error' if erred?
     return 'complete' if complete?

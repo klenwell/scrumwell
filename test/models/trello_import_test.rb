@@ -83,15 +83,34 @@ class TrelloImportTest < ActiveSupport::TestCase
     board = scrum_boards(:scrummy)
     params = { scrum_board_id: board.id }
     import = TrelloImport.create(params)
+    time_past = TrelloImport::STALLED_IMPORT_TIME_LIMIT + 1
 
     # Assume
     assert_equal 'in-progress', import.status
 
     # Act
-    import.update(created_at: Time.zone.now - 120.seconds)
+    import.update(created_at: Time.zone.now - time_past)
 
     # Assert
     assert import.stuck?
     assert_equal 'in-progress', import.status
+  end
+
+  test "expects import to be aborted" do
+    # Arrange
+    board = scrum_boards(:scrummy)
+    ancient_past = Time.zone.now - (TrelloImport::STALLED_IMPORT_TIME_LIMIT + 1)
+    import = TrelloImport.create({ scrum_board_id: board.id, created_at: ancient_past })
+
+    # Assume
+    assert import.stuck?
+    assert_not import.aborted?
+
+    # Act
+    import.abort_now
+
+    # Assert
+    assert_not import.stuck?
+    assert import.aborted?
   end
 end
