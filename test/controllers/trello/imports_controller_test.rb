@@ -5,7 +5,7 @@ class Trello::ImportControllerTest < ActionDispatch::IntegrationTest
     # Arrange
     board = scrum_boards(:scrummy)
     ancient_past = Time.zone.now - (TrelloImport::STALLED_IMPORT_TIME_LIMIT + 1)
-    import = TrelloImport.create({ scrum_board_id: board.id, created_at: ancient_past })
+    import = TrelloImport.create(scrum_board_id: board.id, created_at: ancient_past)
     login_as(email: 'testing@gmail.com', scrum_master: true)
 
     # Assume
@@ -24,7 +24,7 @@ class Trello::ImportControllerTest < ActionDispatch::IntegrationTest
   test "expects import not to be aborted if not stuck" do
     # Arrange
     board = scrum_boards(:scrummy)
-    import = TrelloImport.create({ scrum_board_id: board.id })
+    import = TrelloImport.create(scrum_board_id: board.id)
     login_as(email: 'testing@gmail.com', scrum_master: true)
 
     # Assume

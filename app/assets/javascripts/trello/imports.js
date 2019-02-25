@@ -2,6 +2,7 @@
 // All this logic will automatically be available in application.js.
 var TrelloImport = (function() {
   // Constants
+  const IN_PROGRESS_RELOAD_DELAY = 3000;
 
   // Module Vars
 
@@ -14,7 +15,7 @@ var TrelloImport = (function() {
   var initStatusReloader = function() {
     if ( importIsInProgress() ) {
       showLoadingIcon();
-      reloadPageAfterDelay(1500);
+      reloadPageAfterDelay(IN_PROGRESS_RELOAD_DELAY);
     }
   };
 
