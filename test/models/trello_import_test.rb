@@ -77,4 +77,21 @@ class TrelloImportTest < ActiveSupport::TestCase
     assert_equal 'Scrum board import already in progress',
                  second_import.errors.full_messages.to_sentence
   end
+
+  test "expects import to be stuck" do
+    # Arrange
+    board = scrum_boards(:scrummy)
+    params = { scrum_board_id: board.id }
+    import = TrelloImport.create(params)
+
+    # Assume
+    assert_equal 'in-progress', import.status
+
+    # Act
+    import.update(created_at: Time.zone.now - 120.seconds)
+
+    # Assert
+    assert import.stuck?
+    assert_equal 'in-progress', import.status
+  end
 end
