@@ -20,7 +20,6 @@ var TrelloImport = (function() {
 
   var importIsInProgress = function() {
     var inProgressCount = $('[data-import-status="in-progress"]').length;
-    console.log(inProgressCount);
     return inProgressCount > 0;
   };
 
