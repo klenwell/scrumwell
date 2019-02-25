@@ -4,13 +4,30 @@ namespace :trello do
   kwoss_org_id = '5129323d688a384c63007609'
   scrumwell_board_id = '5b26fe3ad86bfdbb5a8290b1'
 
-  # rake trello:import_board[5b26fe3ad86bfdbb5a8290b1]
+  # rake trello:import_board[:id]
+  desc "Imports most recent board actions from Trello to update board."
+  task :import_board, [:scrum_board_id] => :environment do |_, args|
+    # Parse args
+    scrum_board_id = args[:scrum_board_id]
+
+    # Find board
+    board = ScrumBoard.find_by(id: scrum_board_id)
+    abort "Board not found." unless board.present?
+
+    # Compare Scrum::BoardsController#import and TrelloBoardImportWorker#perform
+    import = TrelloImport.create(scrum_board: board)
+    TrelloBoardImportWorker.new.perform(import.id)
+  end
+
+  # rake trello:reimport_board[5b26fe3ad86bfdbb5a8290b1]
   desc "Fully reconstructs a Trello board by importing its actions."
-  task :import_board, [:trello_board_id] => :environment do |_, args|
+  task :reimport_board, [:trello_board_id] => :environment do |_, args|
     # Parse args
     trello_board_id = args[:trello_board_id]
 
     # Delete existing board
+    # Note: this is slow for large boards. It's quicker just to nuke the database
+    # with rake db:schema:load (but that will take everything with it.)
     board = ScrumBoard.find_by(trello_board_id: trello_board_id)
     if board.present?
       LogService.rake format("Destroying existing board: %s", board.name)
