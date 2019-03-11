@@ -21,7 +21,7 @@ module ApplicationHelper
   end
 
   def abort_icon
-    material_icon.sync_disabled
+    material_icon.clear
   end
 
   def bootstrap_datepicker(form, field, opts)
