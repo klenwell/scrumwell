@@ -12,7 +12,7 @@ namespace :trello do
 
     # Find board
     board = ScrumBoard.find_by(id: scrum_board_id)
-    abort "Board not found." unless board.present?
+    abort "Board not found." if board.blank?
 
     # Compare Scrum::BoardsController#import and TrelloBoardImportWorker#perform
     import = TrelloImport.create(scrum_board: board)
