@@ -39,7 +39,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'bootsnap', '>= 1.1.0', require: false
 
 # Bootstrap 4: https://github.com/twbs/bootstrap-rubygem
-gem 'bootstrap', '~> 4.1.1'
+gem 'bootstrap', '>= 4.3.1'
 gem 'jquery-rails'
 
 # Bootstrap Forms: https://github.com/bootstrap-ruby/bootstrap_form
