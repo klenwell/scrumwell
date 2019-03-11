@@ -1,5 +1,6 @@
 class TrelloImport < ApplicationRecord
   BOARD_ACTION_IMPORT_LIMIT = 1000
+  STALLED_IMPORT_TIME_LIMIT = 30.seconds
 
   belongs_to :scrum_board
   has_many :scrum_events, dependent: :destroy
@@ -70,6 +71,10 @@ class TrelloImport < ApplicationRecord
     update!(error: import_error.to_s, ended_at: Time.zone.now)
   end
 
+  def abort_now
+    update!(error: 'aborted', ended_at: Time.zone.now)
+  end
+
   def complete?
     ended_at.present?
   end
@@ -82,10 +87,19 @@ class TrelloImport < ApplicationRecord
     status == 'in-progress'
   end
 
+  def stuck?
+    in_progress? &&
+    duration > STALLED_IMPORT_TIME_LIMIT &&
+    events.count < 1
+  end
+
+  def aborted?
+    erred? && error == 'aborted'
+  end
+
   def status
     return 'error' if erred?
     return 'complete' if complete?
-    return 'timeout' if duration > 3600
     'in-progress'
   end
 

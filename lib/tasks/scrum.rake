@@ -1,35 +1,5 @@
 # rubocop: disable Metrics/BlockLength
 namespace :scrum do
-  # rake scrum:import_board[5b26fe3ad86bfdbb5a8290b1]
-  desc "Imports board and reconstructs its history from Trello events."
-  task :import_board, [:trello_board_id] => :environment do |_, args|
-    # Parse args
-    trello_board_id = args[:trello_board_id]
-
-    # Delete existing board
-    board = ScrumBoard.find_by(trello_board_id: trello_board_id)
-    if board.present?
-      LogService.rake format("Destroying existing board: %s", board.name)
-      board.destroy
-    end
-    `rake log:clear` if Rails.env.development?
-
-    # Find Trello board
-    trello_board = TrelloService.board(trello_board_id)
-    LogService.rake format("Importing board: %s", trello_board.name)
-
-    # Create scrum board from Trello board
-    board = ScrumBoard.import_from_trello(trello_board)
-
-    # Stdout
-    trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
-    board.queues.each { |q| puts q.to_stdout }
-    LogService.rake format("Created %s events.", board.events.count)
-    LogService.rake format("Created %s wip_logs.", board.wip_logs.count)
-    LogService.rake format("Current Board Velocity: %s", board.current_velocity)
-    LogService.rake format("Trello API calls: %s", trello_api_calls)
-  end
-
   # rake scrum:update_board[:id]
   desc "Imports board and reconstructs its history from Trello events."
   task :update_board, [:scrum_board_id] => :environment do |_, args|

@@ -23,6 +23,7 @@
         <td><%= import.events_period  || '0' %></td>
         <td>
           <%= link_to show_icon, trello_import_path(import) %>
+          <%= link_to abort_icon, trello_import_abort_path(import), method: :patch if import.stuck? %>
         </td>
       </tr>
     <% end %>

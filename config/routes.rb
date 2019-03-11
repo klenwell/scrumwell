@@ -52,6 +52,7 @@ Rails.application.routes.draw do
   end
   get '/trello/imports', to: 'trello/imports#index'
   get '/trello/imports/:id', to: 'trello/imports#show', as: 'trello_import'
+  patch '/trello/imports/abort/:id', to: 'trello/imports#abort', as: 'trello_import_abort'
   get '/trello/orgs', to: 'trello#orgs_index'
   get '/trello/orgs/:id/boards', to: 'trello#orgs_boards_index', as: 'trello_orgs_boards'
 
