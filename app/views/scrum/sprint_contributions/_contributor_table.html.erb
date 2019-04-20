@@ -12,7 +12,7 @@
   <tbody>
     <% contributions.each do |contribution| %>
       <tr>
-        <td><%= contribution.queue.name %></td>
+        <td><%= link_to contribution.queue.name, contribution.queue %></td>
         <td><%= contribution.story_points %></td>
         <td><%= contribution.queue.started_on %></td>
         <td><%= contribution.queue.ended_on %></td>
