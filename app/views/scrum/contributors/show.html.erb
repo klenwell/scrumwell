@@ -36,7 +36,7 @@
              locals: {stories: @contributor.scrum_stories.reverse} %>
 <% else %>
   <%= render partial: "scrum/sprint_contributions/contributor_table",
-             locals: {contributions: @contributor.sprint_contributions.reverse} %>
+             locals: {contributions: @contributor.sprint_contributions.includes(:scrum_queue).order('scrum_queues.started_on DESC') } %>
 <% end %>
 
 <div class="actions">

@@ -1,5 +1,5 @@
 <div class="page-header">
-  <h2>Sprint <span class="text-primary"><%= @queue.date_from_name.strftime('%Y%m%d') %></span></h2>
+  <h2>Sprint <span class="text-primary"><%= @queue.date_name %></span></h2>
   <p><%#= link_to 'Edit', edit_scrum_sprint_path(@scrum_sprint), role: 'button', class: 'btn btn-primary' %></p>
 </div>
 
@@ -34,6 +34,25 @@
       <%= @queue.average_story_size %></span> Average Story Size
     </h4>
   </div>
+</div>
+
+<!-- Previous/Next Buttons -->
+<div class="adjacent-nav pb-2 clearfix">
+  <% if @queue.previous.present? %>
+    <div class="float-left">
+      <%= link_to("&laquo; Sprint #{@queue.previous.date_name}".html_safe,
+                  @queue.previous,
+                  class: 'btn btn-light') %>
+    </div>
+  <% end %>
+
+  <% if @queue.next.present? %>
+    <div class="float-right">
+      <%= link_to("Sprint #{@queue.next.date_name} &raquo;".html_safe,
+                  @queue.next,
+                  class: 'btn btn-light')  %>
+    </div>
+  <% end %>
 </div>
 
 <!-- Nav Tabs -->

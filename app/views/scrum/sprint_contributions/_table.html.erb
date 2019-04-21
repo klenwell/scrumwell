@@ -9,7 +9,7 @@
   <tbody>
     <% contributions.each do |contribution| %>
       <tr>
-        <td><%= contribution.contributor.username %></td>
+        <td><%= link_to contribution.contributor.username, contribution.contributor %></td>
         <td><%= contribution.story_points %></td>
         <td><%= contribution.event_count %></td>
       </tr>

@@ -43,6 +43,16 @@ class ScrumQueue < ApplicationRecord
     '(coming soon)'
   end
 
+  # previous/next: https://stackoverflow.com/a/7394804/1093087
+  # https://stackoverflow.com/a/33428162/1093087
+  def previous
+    scrum_board.queues.where("started_on < ?", started_on).order(started_on: :desc).last
+  end
+
+  def next
+    scrum_board.queues.where("started_on > ?", started_on).order(:started_on).first
+  end
+
   def groomed_stories
     stories.select(&:groomed?)
   end
@@ -103,6 +113,10 @@ class ScrumQueue < ApplicationRecord
 
   def date_from_name
     Date.parse(name.delete("^0-9"))
+  end
+
+  def date_name
+    date_from_name.strftime('%Y%m%d')
   end
 
   def average_velocity
