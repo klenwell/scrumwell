@@ -23,9 +23,9 @@ class TrelloImport < ApplicationRecord
     # Import board actions.
     scrum_board.latest_trello_actions(100_000).each do |trello_action|
       event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
-      LogService.dev event.to_stdout
+      ImportLogger.info event.to_stdout
     rescue StandardError => e
-      LogService.dev "*** Error: #{e}"
+      ImportLogger.error e
     end
 
     # Build WipLogs and SprintContributions
@@ -55,9 +55,9 @@ class TrelloImport < ApplicationRecord
     scrum_board.latest_trello_actions(BOARD_ACTION_IMPORT_LIMIT).each do |trello_action|
       event = ScrumEvent.create_from_trello_import(self, trello_action)
       import_count += 1
-      LogService.dev event.to_stdout
+      ImportLogger.info event.to_stdout
     rescue StandardError => e
-      LogService.dev "*** Error: #{e}"
+      ImportLogger.error e
     end
 
     import_count
