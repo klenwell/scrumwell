@@ -18,13 +18,23 @@ class ImportLogger
 
   def self.init_logger
     logger = Logger.new(LogFile)
+    stdout_logger = Logger.new(STDOUT)
     logger.formatter = self.formatter()
+
+    # https://stackoverflow.com/a/26704547/1093087
+    logger.extend(ActiveSupport::Logger.broadcast(stdout_logger))
+
     logger
   end
 
   def self.init_error_logger
     logger = Logger.new(ErrorLogFile)
+    stderr_logger = Logger.new(STDERR)
     logger.formatter = self.formatter()
+
+    # https://stackoverflow.com/a/26704547/1093087
+    logger.extend(ActiveSupport::Logger.broadcast(stderr_logger))
+
     logger
   end
 

@@ -23,7 +23,7 @@ class TrelloImport < ApplicationRecord
     # Import board actions.
     scrum_board.latest_trello_actions(100_000).each do |trello_action|
       event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
-      ImportLogger.info event.to_stdout
+      ImportLogger.debug event.to_stdout
     rescue StandardError => e
       ImportLogger.error e
     end
@@ -55,7 +55,7 @@ class TrelloImport < ApplicationRecord
     scrum_board.latest_trello_actions(BOARD_ACTION_IMPORT_LIMIT).each do |trello_action|
       event = ScrumEvent.create_from_trello_import(self, trello_action)
       import_count += 1
-      ImportLogger.info event.to_stdout
+      ImportLogger.debug event.to_stdout
     rescue StandardError => e
       ImportLogger.error e
     end

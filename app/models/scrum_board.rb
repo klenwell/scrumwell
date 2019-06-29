@@ -161,9 +161,9 @@ class ScrumBoard < ApplicationRecord
       actions = trello_board.actions(limit: request_limit, since: since_id, before: before_id)
       actions.each { |action| latest_actions << action }
 
-      LogService.dev format('Fetched %s (%s) Trello board actions from API.',
-                            actions.length,
-                            latest_actions.length)
+      ImportLogger.info format('Fetched %s (%s) Trello board actions from API.',
+                               actions.length,
+                               latest_actions.length)
 
       more = actions.length == request_limit
       before_id = actions.last.id if more
@@ -197,7 +197,7 @@ class ScrumBoard < ApplicationRecord
     events.reverse_each do |event|
       next unless event.wip?
       wip_log = WipLog.create_from_event(event)
-      LogService.dev wip_log.to_stdout
+      ImportLogger.debug wip_log.to_stdout
       new_logs << wip_log
     end
 
@@ -246,7 +246,7 @@ class ScrumBoard < ApplicationRecord
           event_count: event_count
         )
 
-        LogService.dev sprint_contrib.to_stdout
+        ImportLogger.debug sprint_contrib.to_stdout
         saved_contributions << sprint_contrib
       end
     end
