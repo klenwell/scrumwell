@@ -11,6 +11,7 @@ class TrelloImport < ApplicationRecord
   validate :no_board_imports_in_progress, on: :create
 
   # Imports full board from Trello all at once.
+  # rubocop: disable Metrics/AbcSize
   def self.import_full_board(trello_board_id)
     # Create board and import.
     trello_board = TrelloService.board(trello_board_id)
@@ -22,10 +23,10 @@ class TrelloImport < ApplicationRecord
 
     # Import board actions.
     scrum_board.latest_trello_actions(100_000).each do |trello_action|
-      event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
+      event = ScrumEvent.create_from_trello_import(trello_import.id, trello_action)
       ImportLogger.debug event.to_stdout
     rescue StandardError => e
-      ImportLogger.error e
+      ImportLogger.error format("%s: %s", trello_action, e)
     end
 
     # Build WipLogs and SprintContributions
@@ -36,6 +37,7 @@ class TrelloImport < ApplicationRecord
     trello_import.end_now
     trello_import
   end
+  # rubocop: enable Metrics/AbcSize
 
   def import_board_lists
     queues = []
