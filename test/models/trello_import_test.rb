@@ -130,8 +130,8 @@ class TrelloImportTest < ActiveSupport::TestCase
     ScrumEvent.stubs(:create_from_trello_import).raises(import_error)
 
     # Assume
-    expect_error_message = format("%s: %s", trello_action, import_error)
-    ImportLogger.expects(:error).with(expect_error_message).once
+    expected_error_message = format("%s: %s", trello_action, import_error)
+    ImportLogger.expects(:error).with(expected_error_message).once
 
     # Act
     import = TrelloImport.import_full_board(trello_board_id)
