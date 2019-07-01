@@ -30,7 +30,7 @@ namespace :trello do
     # with rake db:schema:load (but that will take everything with it.)
     board = ScrumBoard.find_by(trello_board_id: trello_board_id)
     if board.present?
-      LogService.rake format("Destroying existing board: %s", board.name)
+      ImportLogger.info format("Destroying existing board: %s", board.name)
       board.destroy
     end
     `rake log:clear` if Rails.env.development?
@@ -41,10 +41,10 @@ namespace :trello do
     # Stdout
     trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
     import.board.queues.each { |q| puts q.to_stdout }
-    LogService.rake format("Created %s events.", import.board.events.count)
-    LogService.rake format("Created %s wip_logs.", import.board.wip_logs.count)
-    LogService.rake format("Current Board Velocity: %s", import.board.current_velocity)
-    LogService.rake format("Trello API calls: %s", trello_api_calls)
+    ImportLogger.info format("Created %s events.", import.board.events.count)
+    ImportLogger.info format("Created %s wip_logs.", import.board.wip_logs.count)
+    ImportLogger.info format("Current Board Velocity: %s", import.board.current_velocity)
+    ImportLogger.info format("Trello API calls: %s", trello_api_calls)
   end
 
   # rake trello:wish_heap[5b26fe3ad86bfdbb5a8290b1]
@@ -55,7 +55,7 @@ namespace :trello do
     board = TrelloService.board(args[:board_id])
     wish_heap = board.lists.find { |list| list.name.downcase.include? 'wish heap' }
 
-    LogService.rake(
+    ImportLogger.info(
       format("Board %s Wish Heap stories: %d", board.name, wish_heap.cards.length)
     )
   end
@@ -74,10 +74,10 @@ namespace :trello do
     backlog.cards.each do |card|
       story_points = ScrumStory.points_from_card(card)
       backlog_story_points += story_points
-      LogService.rake format('[%d] %s', story_points, card.name)
+      ImportLogger.info format('[%d] %s', story_points, card.name)
     end
 
-    LogService.rake format("Backlog points for board %s: %d", board.name, backlog_story_points)
+    ImportLogger.info format("Backlog points for board %s: %d", board.name, backlog_story_points)
   end
 
   # rake trello:boards[scrumwell]
@@ -92,8 +92,8 @@ namespace :trello do
       board_map[board.name] = board.id
     end
 
-    LogService.pretty board_map
-    LogService.rake format("%s has %d boards", member.username, board_map.keys.count)
+    ImportLogger.info board_map
+    ImportLogger.info format("%s has %d boards", member.username, board_map.keys.count)
   end
 
   # rake trello:orgs[scrumwell]
@@ -108,8 +108,8 @@ namespace :trello do
       org_map[org.name] = org.id
     end
 
-    LogService.pretty org_map
-    LogService.rake format("%s belongs to %d orgs", member.username, org_map.keys.count)
+    ImportLogger.info org_map
+    ImportLogger.info format("%s belongs to %d orgs", member.username, org_map.keys.count)
   end
 
   desc "Lists organization ids for kwoss org"
@@ -121,8 +121,8 @@ namespace :trello do
       board_map[board.name] = board.id
     end
 
-    LogService.pretty board_map
-    LogService.rake format("%s org has %d boards", org.name, board_map.keys.count)
+    ImportLogger.info board_map
+    ImportLogger.info format("%s org has %d boards", org.name, board_map.keys.count)
   end
 
   desc "Lists board's lists"
@@ -141,8 +141,10 @@ namespace :trello do
       board_lists_map[board.name] << list_data
     end
 
-    LogService.pretty board_lists_map
-    LogService.rake format("%s board has %d lists.", board.name, board_lists_map[board.name].count)
+    ImportLogger.info board_lists_map
+    ImportLogger.info format("%s board has %d lists.",
+                             board.name,
+                             board_lists_map[board.name].count)
   end
 end
 # rubocop: enable Metrics/BlockLength

@@ -55,7 +55,7 @@ gem 'ruby-trello'
 gem 'omniauth-google-oauth2'
 
 # Simple charts: https://github.com/ankane/chartkick#installation
-gem 'chartkick'
+gem 'chartkick', '>= 3.2.0'
 
 # For background jobs: https://github.com/mperham/sidekiq
 gem 'sidekiq'

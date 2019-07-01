@@ -15,5 +15,14 @@ module Scrumwell
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
+
+    # Configure Logger
+    # https://stackify.com/rails-logger-and-rails-logging-best-practices/
+    config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
+    config.logger.level = Logger::DEBUG
+    config.logger.datetime_format = "%Y-%m-%d %H:%M:%S"
+    config.logger.formatter = proc do | severity, datetime, progname, message |
+      "[#{datetime}] #{severity}: #{progname} #{message}\n"
+    end
   end
 end

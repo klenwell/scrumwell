@@ -48,6 +48,14 @@ namespace :test do
       exit Brakeman::Errors_Found_Exit_Code if tracker.errors.any?
     end
   end
+
+  # rake test:logger
+  desc "Test ImportLogger"
+  task logger: :environment do |_|
+    ImportLogger.debug('testing ImportLogger.debug')
+    ImportLogger.info('testing ImportLogger.info')
+    ImportLogger.error('testing ImportLogger.error')
+  end
 end
 # rubocop: enable Metrics/BlockLength
 

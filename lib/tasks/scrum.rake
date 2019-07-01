@@ -6,9 +6,9 @@ namespace :scrum do
     # Arrange
     board_id = args[:scrum_board_id]
     board = ScrumBoard.find(board_id)
-    LogService.rake format("Updating board %s (last update: %s)",
-                           board.name,
-                           board.last_event.occurred_at)
+    ImportLogger.info format("Updating board %s (last update: %s)",
+                             board.name,
+                             board.last_event.occurred_at)
     `rake log:clear` if Rails.env.development?
 
     # Update scrum board from Trello board
@@ -17,12 +17,12 @@ namespace :scrum do
 
     # Report
     trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
-    LogService.rake format("Created %s wip_logs.", board.wip_logs.count)
-    LogService.rake format("Current Board Velocity: %s", board.current_velocity)
-    LogService.rake format("Trello API calls: %s", trello_api_calls)
+    ImportLogger.info format("Created %s wip_logs.", board.wip_logs.count)
+    ImportLogger.info format("Current Board Velocity: %s", board.current_velocity)
+    ImportLogger.info format("Trello API calls: %s", trello_api_calls)
     if import.events.present?
-      LogService.rake format("Imported %s events from %s to %s.", import.events.count,
-                             import.events.first.occurred_at, import.events.last.occurred_at)
+      ImportLogger.info format("Imported %s events from %s to %s.", import.events.count,
+                               import.events.first.occurred_at, import.events.last.occurred_at)
     end
   end
 
@@ -34,12 +34,12 @@ namespace :scrum do
 
     `rake log:clear` if Rails.env.development?
 
-    LogService.rake format("Rebuilding WipLog for board: %s", board.name)
+    ImportLogger.info format("Rebuilding WipLog for board: %s", board.name)
     board.build_wip_log_from_scratch
     board.reload
 
-    LogService.rake format("WIP logs for board %s: %s", board.name, board.wip_logs.count)
-    LogService.rake format("Current Board Velocity: %s", board.current_velocity)
+    ImportLogger.info format("WIP logs for board %s: %s", board.name, board.wip_logs.count)
+    ImportLogger.info format("Current Board Velocity: %s", board.current_velocity)
   end
 
   # rake scrum:sandbox

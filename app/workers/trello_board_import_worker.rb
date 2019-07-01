@@ -6,21 +6,21 @@ class TrelloBoardImportWorker
   def perform(import_id)
     import = TrelloImport.find(import_id)
     board = import.board
-    LogService.sidekiq format("TrelloBoardImportWorker started: %s", import.id)
+    ImportLogger.info format("TrelloBoardImportWorker started: %s", import.id)
 
     import = board.update_from_trello(import)
 
     # Log Results
     board.reload
     if import.events.present?
-      LogService.sidekiq format("Imported %s events from %s to %s.", import.events.count,
-                                import.events.first.occurred_at, import.events.last.occurred_at)
+      ImportLogger.info format("Imported %s events from %s to %s.", import.events.count,
+                               import.events.first.occurred_at, import.events.last.occurred_at)
     end
-    LogService.sidekiq format("Created %s wip_logs.", board.wip_logs.count)
-    LogService.sidekiq format("Current Board Velocity: %s", board.current_velocity)
-    LogService.sidekiq format("TrelloBoardImportWorker succeeded: %s", import.id)
+    ImportLogger.info format("Created %s wip_logs.", board.wip_logs.count)
+    ImportLogger.info format("Current Board Velocity: %s", board.current_velocity)
+    ImportLogger.info format("TrelloBoardImportWorker succeeded: %s", import.id)
   rescue StandardError => e
-    LogService.sidekiq format("TrelloBoardImportWorker failed: %s", import_id)
+    ImportLogger.error format("TrelloBoardImportWorker failed: %s", import_id)
     import.err_now(e) if import.present?
     raise e
   end

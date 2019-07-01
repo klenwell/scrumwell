@@ -113,4 +113,30 @@ class TrelloImportTest < ActiveSupport::TestCase
     assert_not import.stuck?
     assert import.aborted?
   end
+
+  test "expects to log trello action when there is an error during full board import" do
+    # Arrange
+    trello_board_id = 'foo'
+    scrum_board = scrum_boards(:scrummy)
+    trello_board = MockTrelloBoard.scrummy
+    trello_list = MockTrelloList.new(name: 'Whatever')
+    trello_action = MockTrelloAction.new(id: 'ABC123')
+    import_error = StandardError.new('testing')
+
+    TrelloService.stubs(:board).returns(trello_board)
+    ScrumBoard.stubs(:find_or_create_by_trello_board).returns(scrum_board)
+    TrelloImport.any_instance.stubs(:import_board_lists).returns([trello_list])
+    ScrumBoard.any_instance.stubs(:latest_trello_actions).returns([trello_action])
+    ScrumEvent.stubs(:create_from_trello_import).raises(import_error)
+
+    # Assume
+    expected_error_message = format("%s: %s", trello_action, import_error)
+    ImportLogger.expects(:error).with(expected_error_message).once
+
+    # Act
+    import = TrelloImport.import_full_board(trello_board_id)
+
+    # Assert
+    assert_equal scrum_board, import.board
+  end
 end
