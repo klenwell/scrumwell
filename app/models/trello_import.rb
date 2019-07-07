@@ -60,7 +60,7 @@ class TrelloImport < ApplicationRecord
       ImportLogger.debug event.to_stdout
     rescue StandardError => e
       # If error, log error and stop
-      ImportLogger.error format('%s: %s', e, trello_action)
+      ImportLogger.error format('%s: %s', e, trello_action.data)
       err_now(e)
       return import_count
     end

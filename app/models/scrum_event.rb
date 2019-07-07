@@ -318,6 +318,8 @@ class ScrumEvent < ApplicationRecord
       update_story_contributor
     end
 
+    WipLog.create_from_event(event) if event.wip?
+
     reload
   end
   # rubocop: enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

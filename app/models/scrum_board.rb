@@ -206,7 +206,6 @@ class ScrumBoard < ApplicationRecord
     events.reverse_each do |event|
       next unless event.wip?
       wip_log = WipLog.create_from_event(event)
-      ImportLogger.debug wip_log.to_stdout
       new_logs << wip_log
     end
 
