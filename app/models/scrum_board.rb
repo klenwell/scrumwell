@@ -128,6 +128,15 @@ class ScrumBoard < ApplicationRecord
   #
   ## Action / Event Imports
   def update_from_trello(trello_import)
+    trello_import.latest_board_actions
+    trello_import.update_sprints
+    trello_import.end_now
+    trello_import
+  end
+
+  # -------- Deprecated -------- #
+
+  def deprecated_update_from_trello(trello_import)
     # Import lists and actions.
     trello_import.import_board_lists
     trello_import.import_board_actions

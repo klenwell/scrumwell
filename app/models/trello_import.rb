@@ -50,8 +50,8 @@ class TrelloImport < ApplicationRecord
     queues
   end
 
-  def import_board_actions
-    # Processes latest board actions to update sprints and board WIP.
+  def latest_board_actions
+    # Processes latest board actions to update sprints
     import_count = 0
 
     scrum_board.latest_trello_actions(BOARD_ACTION_IMPORT_LIMIT).each do |trello_action|
@@ -59,10 +59,23 @@ class TrelloImport < ApplicationRecord
       import_count += 1
       ImportLogger.debug event.to_stdout
     rescue StandardError => e
-      ImportLogger.error e
+      # If error, log error and stop
+      ImportLogger.error format('%s: %s', e, trello_action)
+      err_now(e)
+      return import_count
     end
 
     import_count
+  end
+
+  def update_sprints
+    # Update wish heap
+
+    # Update backlog
+
+    # Update current sprint
+
+    # Update recently completed sprints
   end
 
   def end_now
