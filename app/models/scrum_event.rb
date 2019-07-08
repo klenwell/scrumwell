@@ -318,7 +318,7 @@ class ScrumEvent < ApplicationRecord
       update_story_contributor
     end
 
-    WipLog.create_from_event(event) if event.wip?
+    WipLog.create_from_event(self) if self.wip?
 
     reload
   end

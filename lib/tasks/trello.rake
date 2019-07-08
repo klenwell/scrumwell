@@ -4,6 +4,29 @@ namespace :trello do
   kwoss_org_id = '5129323d688a384c63007609'
   scrumwell_board_id = '5b26fe3ad86bfdbb5a8290b1'
 
+  # rake trello:scrumwell[reset]
+  desc "Imports Scrumwell board."
+  task :scrumwell, [:reset] => :environment do |_, args|
+    # Parse args
+    reset = args[:reset] == 'reset'
+    ImportLogger.info format('reset: %s', reset)
+
+    # Reset
+    if reset
+      # Clean database and logs
+      `rake db:schema:load` if Rails.env.development?
+      `rake log:clear` if Rails.env.development?
+    end
+
+    # Create board
+    trello_board = TrelloService.board(scrumwell_board_id)
+    scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
+
+    # Compare Scrum::BoardsController#import and TrelloBoardImportWorker#perform
+    import = TrelloImport.create(scrum_board: scrum_board)
+    TrelloBoardImportWorker.new.perform(import.id)
+  end
+
   # rake trello:import_board[:id]
   desc "Imports most recent board actions from Trello to update board."
   task :import_board, [:scrum_board_id] => :environment do |_, args|
