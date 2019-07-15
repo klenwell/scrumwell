@@ -127,31 +127,15 @@ class ScrumBoard < ApplicationRecord
   # Instance Methods
   #
   ## Action / Event Imports
-  def update_from_trello(trello_import)
-    trello_import.latest_board_actions
-    trello_import.update_sprints
-    trello_import.end_now
-    trello_import
-  end
-
-  # -------- Deprecated -------- #
-
-  def deprecated_update_from_trello(trello_import)
-    # Import lists and actions.
-    trello_import.import_board_lists
-    trello_import.import_board_actions
-
-    # Build WipLogs and SprintContributions
-    build_wip_log_from_scratch
-    build_sprint_contributions_from_scratch
-
-    # Conclude
+  def update_from_trello(trello_import, action_limit=1000)
+    trello_import.latest_board_actions(action_limit)
+    #trello_import.update_sprints
     trello_import.end_now
     trello_import
   end
 
   # rubocop: disable Metrics/AbcSize
-  def latest_trello_actions(count=1000)
+  def latest_trello_actions(action_limit=1000)
     # Board actions are ordered in DESC order: most recent are first. So to pull the latest,
     # need to import since last imported id going backwards.
     latest_actions = []
@@ -179,7 +163,7 @@ class ScrumBoard < ApplicationRecord
     end
 
     # Actions come in reverse chronological order per https://stackoverflow.com/a/51817635/1093087
-    latest_actions.reverse.slice(0, count)
+    latest_actions.reverse.slice(0, action_limit)
   end
   # rubocop: enable Metrics/AbcSize
 

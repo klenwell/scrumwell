@@ -11,33 +11,18 @@ class TrelloImport < ApplicationRecord
   validate :no_board_imports_in_progress, on: :create
 
   # Imports full board from Trello all at once.
-  # rubocop: disable Metrics/AbcSize
   def self.import_full_board(trello_board_id)
+    # Still want to set a limit
+    action_limit = 100_000
+
     # Create board and import.
     trello_board = TrelloService.board(trello_board_id)
     scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
     trello_import = TrelloImport.create(scrum_board: scrum_board)
 
-    # Import board lists.
-    trello_import.import_board_lists
-
     # Import board actions.
-    scrum_board.latest_trello_actions(100_000).each do |trello_action|
-      event = ScrumEvent.create_from_trello_import(trello_import.id, trello_action)
-      ImportLogger.debug event.to_stdout
-    rescue StandardError => e
-      ImportLogger.error format("%s: %s", trello_action, e)
-    end
-
-    # Build WipLogs and SprintContributions
-    scrum_board.build_wip_log_from_scratch
-    scrum_board.build_sprint_contributions_from_scratch
-
-    # Conclude
-    trello_import.end_now
-    trello_import
+    scrum_board.update_from_trello(trello_import, action_limit)
   end
-  # rubocop: enable Metrics/AbcSize
 
   def import_board_lists
     queues = []
@@ -50,11 +35,13 @@ class TrelloImport < ApplicationRecord
     queues
   end
 
-  def latest_board_actions
+  def latest_board_actions(limit=nil)
+    limit ||= BOARD_ACTION_IMPORT_LIMIT
+
     # Processes latest board actions to update sprints
     import_count = 0
 
-    scrum_board.latest_trello_actions(BOARD_ACTION_IMPORT_LIMIT).each do |trello_action|
+    scrum_board.latest_trello_actions(limit).each do |trello_action|
       event = ScrumEvent.create_from_trello_import(self, trello_action)
       import_count += 1
       ImportLogger.debug event.to_stdout
