@@ -19,15 +19,21 @@ namespace :trello do
     TrelloBoardImportWorker.new.perform(import.id)
   end
 
-  # rake trello:reimport_board[5b26fe3ad86bfdbb5a8290b1]
+  #
+  # Sandbox / Test Methods
+  #
+
+  # rake trello:reimport_board[:id]
+  # Because this deletes the existing board using Rails. Note: for large boards, this is
+  # sloooowwww. Therefore, it is not recommended you use this task. It's quicker just to
+  # nuke the database with rake db:schema:load (but that will take everything with it.)
   desc "Fully reconstructs a Trello board by importing its actions."
   task :reimport_board, [:trello_board_id] => :environment do |_, args|
     # Parse args
     trello_board_id = args[:trello_board_id]
 
     # Delete existing board
-    # Note: this is slow for large boards. It's quicker just to nuke the database
-    # with rake db:schema:load (but that will take everything with it.)
+    # Note: this is slow for large boards.
     board = ScrumBoard.find_by(trello_board_id: trello_board_id)
     if board.present?
       ImportLogger.info format("Destroying existing board: %s", board.name)
@@ -45,6 +51,29 @@ namespace :trello do
     ImportLogger.info format("Created %s wip_logs.", import.board.wip_logs.count)
     ImportLogger.info format("Current Board Velocity: %s", import.board.current_velocity)
     ImportLogger.info format("Trello API calls: %s", trello_api_calls)
+  end
+
+  # rake trello:scrumwell[reset]
+  desc "Imports Scrumwell board."
+  task :scrumwell, [:reset] => :environment do |_, args|
+    # Parse args
+    reset = args[:reset] == 'reset'
+    ImportLogger.info format('reset: %s', reset)
+
+    # Reset
+    if reset
+      # Clean database and logs
+      `rake db:schema:load` if Rails.env.development?
+      `rake log:clear` if Rails.env.development?
+    end
+
+    # Create board
+    trello_board = TrelloService.board(scrumwell_board_id)
+    scrum_board = ScrumBoard.find_or_create_by_trello_board(trello_board)
+
+    # Compare Scrum::BoardsController#import and TrelloBoardImportWorker#perform
+    import = TrelloImport.create(scrum_board: scrum_board)
+    TrelloBoardImportWorker.new.perform(import.id)
   end
 
   # rake trello:wish_heap[5b26fe3ad86bfdbb5a8290b1]

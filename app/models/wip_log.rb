@@ -17,9 +17,11 @@ class WipLog < ApplicationRecord
   # Class Methods
   #
   def self.create_from_event(scrum_event)
-    WipLog.create!(event: scrum_event,
-                   board: scrum_event.scrum_board,
-                   occurred_at: scrum_event.occurred_at)
+    wip_log = WipLog.create!(event: scrum_event,
+                             board: scrum_event.scrum_board,
+                             occurred_at: scrum_event.occurred_at)
+    ImportLogger.debug wip_log.to_stdout
+    wip_log
   end
 
   # rubocop: disable Metrics/AbcSize
