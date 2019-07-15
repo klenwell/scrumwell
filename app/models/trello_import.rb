@@ -56,16 +56,6 @@ class TrelloImport < ApplicationRecord
     import_count
   end
 
-  def update_sprints
-    # Update wish heap
-
-    # Update backlog
-
-    # Update current sprint
-
-    # Update recently completed sprints
-  end
-
   def end_now
     update!(ended_at: Time.zone.now)
   end
