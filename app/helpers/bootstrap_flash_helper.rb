@@ -23,7 +23,6 @@ module BootstrapFlashHelper
       tag_options = { class: "alert fade-in alert-#{type} #{tag_class}" }.merge(options)
 
       close_button = content_tag(
-        # rubocop: disable Rails/OutputSafety
         :button, raw("&times;"),
         :class => "close", "data-dismiss" => "alert"
       )
@@ -35,5 +34,5 @@ module BootstrapFlashHelper
     end
     flash_messages.join("\n").html_safe
   end
-  # rubocop:enable Rails/OutputSafety, Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 end
