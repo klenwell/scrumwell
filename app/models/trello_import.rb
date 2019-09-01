@@ -1,5 +1,5 @@
 class TrelloImport < ApplicationRecord
-  BOARD_ACTION_IMPORT_LIMIT = 1000
+  BOARD_ACTION_IMPORT_LIMIT = 5000
   STALLED_IMPORT_TIME_LIMIT = 30.seconds
 
   belongs_to :scrum_board
@@ -13,8 +13,8 @@ class TrelloImport < ApplicationRecord
 
   # Imports full board from Trello all at once.
   def self.import_full_board(trello_board_id)
-    # Still want to set a limit
-    action_limit = 100_000
+    # TODO: make this an arg.
+    action_limit = BOARD_ACTION_IMPORT_LIMIT
 
     # Create board and import.
     trello_board = TrelloService.board(trello_board_id)
@@ -36,9 +36,7 @@ class TrelloImport < ApplicationRecord
     queues
   end
 
-  def latest_board_actions(limit=nil)
-    limit ||= BOARD_ACTION_IMPORT_LIMIT
-
+  def latest_board_actions(limit=BOARD_ACTION_IMPORT_LIMIT)
     # Processes latest board actions to update sprints
     import_count = 0
 
@@ -50,6 +48,7 @@ class TrelloImport < ApplicationRecord
       # If error, log error and stop
       ImportLogger.error format('%s: %s', e, trello_action.data)
       err_now(e)
+      raise e
       return import_count
     end
 
