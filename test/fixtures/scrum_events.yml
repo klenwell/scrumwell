@@ -3,3 +3,4 @@
 creates_card:
   trello_import_id: <%= ActiveRecord::FixtureSet.identify(:complete) %>
   action: created
+  occurred_at: <%= Time.zone.now - 4.hours %>
