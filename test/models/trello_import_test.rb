@@ -134,9 +134,11 @@ class TrelloImportTest < ActiveSupport::TestCase
     ImportLogger.expects(:error).with(expected_error_message).once
 
     # Act
-    import = TrelloImport.import_full_board(trello_board_id)
+    raised_error = assert_raises StandardError do
+      TrelloImport.import_full_board(trello_board_id)
+    end
 
     # Assert
-    assert_equal scrum_board, import.board
+    assert_equal("testing", raised_error.message)
   end
 end

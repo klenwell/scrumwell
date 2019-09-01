@@ -49,7 +49,6 @@ class TrelloImport < ApplicationRecord
       ImportLogger.error format('%s: %s', e, trello_action.data)
       err_now(e)
       raise e
-      return import_count
     end
 
     import_count
