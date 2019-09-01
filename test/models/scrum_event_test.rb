@@ -88,4 +88,44 @@ class ScrumEventTest < ActiveSupport::TestCase
     assert_equal 1, story.contributors.count
     assert_equal contributor, story.contributors.first
   end
+
+  test "expects to move story for event even when story does not yet exist" do
+    # For more information, see https://github.com/klenwell/scrumwell/issues/36
+    # Arrange
+    trello_import = trello_imports(:in_progress)
+    contributor = scrum_contributors(:developer)
+    trello_card_id = 'test-card'
+
+    # Mock addMemberToCard action.
+    action_data = {
+      "old" => { "idList" => "old-list-id"},
+      "card" => {
+        "idList" => "new-list-id",
+        "id" => trello_card_id,
+        "name" => "Mock Test Card",
+        "idShort" => 999,
+        "shortLink" => "card-short-link"
+      },
+      "board" => {
+        "id" => "test-board",
+        "name" => "Test Board",
+        "shortLink" => "board-short-link"
+      },
+      "listBefore" => { "id" => "old-list-id", "name" => "Current Sprint"},
+      "listAfter" => {"id" => "new-list-id", "name" => "Sprint 20190901 Completed"}
+    }
+    trello_action = MockTrelloAction.new(id: 'issue-36-fix',
+                                         type: 'updateCard',
+                                         member_creator_id: contributor.trello_member_id,
+                                         date: Time.zone.yesterday.beginning_of_day,
+                                         data: action_data)
+
+    # Assume
+    assert ScrumStory.find_by(trello_card_id: trello_card_id).nil?
+
+    # Act
+    event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
+
+    # Assert
+  end
 end
