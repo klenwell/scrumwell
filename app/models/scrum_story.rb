@@ -6,10 +6,7 @@ class ScrumStory < ApplicationRecord
   belongs_to :scrum_queue, optional: true
   has_many :story_contributions, dependent: :destroy
   has_many :scrum_contributors, through: :story_contributions
-
-  # rubocop: disable Rails/InverseOf
   has_many :scrum_events, -> { order(occurred_at: :desc) }, as: :eventable
-  # rubocop: enable Rails/InverseOf
 
   ## Aliases
   alias_attribute :contributors, :scrum_contributors
