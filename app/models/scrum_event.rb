@@ -165,6 +165,7 @@ class ScrumEvent < ApplicationRecord
     raise 'listAfter id not found' unless list_id
 
     story = ScrumStory.find_by(trello_card_id: trello_card_id)
+    story ||= create_story_for_board(trello_import.board)
     new_queue = ScrumQueue.find_by(trello_list_id: list_id)
     story.change_queue(new_queue, event: self)
 

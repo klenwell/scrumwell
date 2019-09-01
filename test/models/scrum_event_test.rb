@@ -96,23 +96,18 @@ class ScrumEventTest < ActiveSupport::TestCase
     contributor = scrum_contributors(:developer)
     trello_card_id = 'test-card'
 
+    # Stub Trello API response for card
+    stub_trello_response
+    card_data = { 'last_activity_date' => Time.zone.now - 2.days }
+    ScrumStory.stubs(:points_from_card).returns(1)
+    ScrumStory.any_instance.stubs(:trello_data).returns(card_data)
+
     # Mock addMemberToCard action.
     action_data = {
-      "old" => { "idList" => "old-list-id"},
-      "card" => {
-        "idList" => "new-list-id",
-        "id" => trello_card_id,
-        "name" => "Mock Test Card",
-        "idShort" => 999,
-        "shortLink" => "card-short-link"
-      },
-      "board" => {
-        "id" => "test-board",
-        "name" => "Test Board",
-        "shortLink" => "board-short-link"
-      },
-      "listBefore" => { "id" => "old-list-id", "name" => "Current Sprint"},
-      "listAfter" => {"id" => "new-list-id", "name" => "Sprint 20190901 Completed"}
+      "old" => { "idList" => "old-list-id" },
+      "card" => { "idList" => "new-list-id", "id" => trello_card_id, "name" => "Mock Card" },
+      "listBefore" => { "id" => "old-list-id", "name" => "Current Sprint" },
+      "listAfter" => { "id" => "new-list-id", "name" => "Sprint 20190901 Completed" }
     }
     trello_action = MockTrelloAction.new(id: 'issue-36-fix',
                                          type: 'updateCard',
@@ -127,5 +122,7 @@ class ScrumEventTest < ActiveSupport::TestCase
     event = ScrumEvent.create_from_trello_import(trello_import, trello_action)
 
     # Assert
+    assert_equal 'changed_queue', event.action
+    assert ScrumStory.find_by(trello_card_id: trello_card_id).present?
   end
 end
