@@ -31,5 +31,7 @@ class WipLogTest < ActiveSupport::TestCase
 
     # Assert
     assert_equal scrum_event, wip_log.event
+    assert_equal({ "d7" => 0, "d14" => 0, "d28" => 0, "d42" => 0, "all" => 0 },
+                 wip_log.daily_velocity)
   end
 end

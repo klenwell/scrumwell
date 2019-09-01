@@ -141,10 +141,12 @@ class WipLog < ApplicationRecord
   end
 
   def project_started_at
+    return nil unless board.completed_queues.first
     board.completed_queues.first.started_on.beginning_of_day
   end
 
   def all_time_daily_velocity
+    return 0 unless project_started_at
     WipLog.daily_velocity_between(board, project_started_at, occurred_at)
   end
 
