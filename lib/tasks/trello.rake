@@ -4,9 +4,26 @@ namespace :trello do
   kwoss_org_id = '5129323d688a384c63007609'
   scrumwell_board_id = '5b26fe3ad86bfdbb5a8290b1'
 
-  # rake trello:import_board[:id]
+  # rake trello:import_board[:trello_board_id]
   desc "Imports most recent board actions from Trello to update board."
-  task :import_board, [:scrum_board_id] => :environment do |_, args|
+  task :import_board, [:trello_board_id] => :environment do |_, args|
+    # Parse args
+    trello_board_id = args[:trello_board_id]
+
+    # Import Trello board
+    import = TrelloImport.import_full_board(trello_board_id)
+
+    # Stdout
+    trello_api_calls = `grep httplog log/development.log | grep "api.trello.com" | wc -l`
+    ImportLogger.info format("Created %s events.", import.board.events.count)
+    ImportLogger.info format("Created %s wip_logs.", import.board.wip_logs.count)
+    ImportLogger.info format("Current Board Velocity: %s", import.board.current_velocity)
+    ImportLogger.info format("Trello API calls: %s", trello_api_calls)
+  end
+
+  # rake trello:import_actions[:id]
+  desc "Imports most recent board actions from Trello to update board."
+  task :import_actions, [:scrum_board_id] => :environment do |_, args|
     # Parse args
     scrum_board_id = args[:scrum_board_id]
 

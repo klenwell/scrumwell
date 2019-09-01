@@ -131,4 +131,8 @@ From your browser, head to http://localhost:3000
 
 See lib/tasks for rake modules. To import the Scrumwell Trello board:
 
-    rake scrum:import_board[5b26fe3ad86bfdbb5a8290b1]
+    rake trello:import_board[5b26fe3ad86bfdbb5a8290b1]
+
+To update a board:
+
+    rake trello:import_actions[1]
